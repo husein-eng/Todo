@@ -193,6 +193,11 @@ textarea.im{width:100%;min-height:90px;background:var(--bg);border:1px solid var
 .card a{color:var(--accent)}
 .card .btn.pri{flex:none}
 .btn[aria-pressed=true]{border-color:var(--accent);color:var(--accent)}
+.head{position:relative}
+.ring{margin-top:20px}
+.langsw{position:absolute;top:10px;right:12px;display:flex;gap:2px;padding:2px;border-radius:999px;background:rgba(255,255,255,.1);z-index:2}
+.langsw button{border:0;background:none;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.04em;padding:4px 10px;min-height:24px;border-radius:999px}
+.langsw button[aria-pressed=true]{background:var(--accent);color:var(--on)}
 /* Navigasi */
 .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:9}
 .tabs div{display:grid;grid-template-columns:repeat(3,1fr);max-width:640px;margin:0 auto}
@@ -234,6 +239,7 @@ textarea.im{width:100%;min-height:90px;background:var(--bg);border:1px solid var
   <section id="v-day">
     <div class="colL">
     <div class="head">
+      <div class="langsw" role="group" aria-label="Language"><button id="lEn" aria-pressed="true">EN</button><button id="lId" aria-pressed="false">ID</button></div>
       <div class="ring" id="ring">
         <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="trk" cx="50" cy="50" r="42"/><circle class="bar" id="rbar" cx="50" cy="50" r="42" stroke-dasharray="263.89" stroke-dashoffset="263.89"/></svg>
         <b id="rpct">0%</b>
@@ -371,7 +377,6 @@ textarea.im{width:100%;min-height:90px;background:var(--bg);border:1px solid var
 
   <!-- Data -->
   <section id="v-data" hidden>
-    <div class="card"><p><b>Language / Bahasa</b></p><div class="btns"><button class="btn sec" id="lEn" aria-pressed="true">English</button><button class="btn sec" id="lId" aria-pressed="false">Bahasa Indonesia</button></div></div>
     <div class="card" id="syncCard">
       <p><b>Sinkron antar perangkat (GitHub Gist)</b></p>
       <div id="gOffBlock">
@@ -1371,7 +1376,7 @@ function trs(s){
 }
 function tr(s){return LANG==='en'?trs(s):s;}
 var HELP_ID='',HELP_EN='<li>Prefixes like <code>-</code>, <code>*</code>, <code>1.</code> or <code>[ ]</code> are removed automatically. <code>[x]</code> marks a task as done.</li><li>A line ending with <code>:</code> or starting with <code># </code> (with a space) becomes the category for the lines below it.</li><li>Per line: <code>#category</code>, <code>!high</code> <code>!medium</code> <code>!low</code>, <code>@daily</code>, <code>@monthly</code>, <code>@mon,thu</code>. All optional, and they override the settings below.</li>';
-var SKIP='.txt,.notebox,.tag.cat,[data-cat],[data-tl],.srow>span,.hrow>span:first-child,.ghb b,[data-ni]';
+var SKIP='.txt,.notebox,.tag.cat,[data-cat]:not([data-cat=""]),[data-tl],.srow>span,.hrow>span:first-child,.ghb b,[data-ni]';
 var ORIG=new WeakMap(),AORIG=new WeakMap(),ATTRS=['placeholder','aria-label','title'];
 function textNode(n){
   var p=n.parentElement,cur=n.nodeValue;
