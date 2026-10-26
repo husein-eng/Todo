@@ -192,6 +192,7 @@ textarea.im{width:100%;min-height:90px;background:var(--bg);border:1px solid var
 .card input[type=password]{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:11px 14px;font-size:16px;min-height:46px}
 .card a{color:var(--accent)}
 .card .btn.pri{flex:none}
+.btn[aria-pressed=true]{border-color:var(--accent);color:var(--accent)}
 /* Navigasi */
 .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:9}
 .tabs div{display:grid;grid-template-columns:repeat(3,1fr);max-width:640px;margin:0 auto}
@@ -260,7 +261,7 @@ textarea.im{width:100%;min-height:90px;background:var(--bg);border:1px solid var
       <p class="sub">Tempel seluruh daftar Anda. Setiap baris menjadi satu kegiatan, dan hasilnya bisa dicek sebelum ditambahkan.</p>
       <details>
         <summary>Format yang dikenali</summary>
-        <ul>
+        <ul id="pHelp" data-ni>
           <li>Awalan <code>-</code>, <code>*</code>, <code>1.</code>, atau <code>[ ]</code> dibuang otomatis. <code>[x]</code> menandai kegiatan sudah selesai.</li>
           <li>Baris berakhiran <code>:</code> atau diawali <code># </code> (dengan spasi) menjadi kategori untuk baris di bawahnya.</li>
           <li>Per baris: <code>#kategori</code>, <code>!tinggi</code> <code>!sedang</code> <code>!rendah</code>, <code>@harian</code>, <code>@bulanan</code>, <code>@senin,kamis</code>. Semuanya opsional dan menimpa pengaturan di bawah.</li>
@@ -370,6 +371,7 @@ textarea.im{width:100%;min-height:90px;background:var(--bg);border:1px solid var
 
   <!-- Data -->
   <section id="v-data" hidden>
+    <div class="card"><p><b>Language / Bahasa</b></p><div class="btns"><button class="btn sec" id="lEn" aria-pressed="true">English</button><button class="btn sec" id="lId" aria-pressed="false">Bahasa Indonesia</button></div></div>
     <div class="card" id="syncCard">
       <p><b>Sinkron antar perangkat (GitHub Gist)</b></p>
       <div id="gOffBlock">
@@ -709,6 +711,7 @@ function tab(name){
     $('#t-'+n).setAttribute('aria-selected',n===name);
   });
   if(name!=='day'){selMode=false;sel={};$('#bulk').hidden=true;document.body.classList.remove('bk');}
+  $('#fab').hidden=name!=='day';
   if(name==='hist')renderHist();
   if(name==='day')renderDay();
   window.scrollTo(0,0);
@@ -840,7 +843,7 @@ $('#f').onsubmit=function(e){
 $('#fCancel').onclick=function(){resetForm();};
 
 /* ---------- tempel daftar ---------- */
-var DAYMAP={senin:1,sen:1,selasa:2,sel:2,rabu:3,rab:3,kamis:4,kam:4,jumat:5,jum:5,sabtu:6,sab:6,minggu:0,min:0,ahad:0};
+var DAYMAP={senin:1,sen:1,selasa:2,sel:2,rabu:3,rab:3,kamis:4,kam:4,jumat:5,jum:5,sabtu:6,sab:6,minggu:0,min:0,ahad:0,mon:1,monday:1,tue:2,tues:2,tuesday:2,wed:3,wednesday:3,thu:4,thur:4,thurs:4,thursday:4,fri:5,friday:5,sat:6,saturday:6,sun:0,sunday:0};
 var pDays=[],pSkip={},parsed=[];
 function cleanCat(s){return String(s).replace(/^[\s*_#]+|[\s*_:#]+$/g,'').replace(/\s+/g,' ').slice(0,24);}
 function parseList(txt,def){
@@ -862,14 +865,14 @@ function parseList(txt,def){
     line.split(/\s+/).forEach(function(w){
       var lw=w.toLowerCase();
       if(w.length>1&&/^#[A-Za-z\u00c0-\u024f]/.test(w)){cat=cleanCat(w.slice(1).replace(/_/g,' '));return;}
-      if(lw==='!tinggi'||lw==='!penting'){pri=3;return;}
-      if(lw==='!sedang'){pri=2;return;}
-      if(lw==='!rendah'){pri=1;return;}
+      if(lw==='!tinggi'||lw==='!penting'||lw==='!high'||lw==='!important'){pri=3;return;}
+      if(lw==='!sedang'||lw==='!medium'){pri=2;return;}
+      if(lw==='!rendah'||lw==='!low'){pri=1;return;}
       if(w.charAt(0)==='@'&&w.length>1){
         var v=lw.slice(1).replace(/[.,;]+$/,'');
-        if(v==='harian'){rec={freq:'daily'};return;}
-        if(v==='bulanan'){rec={freq:'monthly'};return;}
-        if(v==='sekali'){rec={freq:'none'};return;}
+        if(v==='harian'||v==='daily'){rec={freq:'daily'};return;}
+        if(v==='bulanan'||v==='monthly'){rec={freq:'monthly'};return;}
+        if(v==='sekali'||v==='once'){rec={freq:'none'};return;}
         var ds=[];
         v.split(',').forEach(function(p){
           if(Object.prototype.hasOwnProperty.call(DAYMAP,p)&&ds.indexOf(DAYMAP[p])<0)ds.push(DAYMAP[p]);
@@ -998,7 +1001,7 @@ function renderTpl(){
 $('#pSave').onclick=function(){
   var txt=$('#pText').value.trim();
   if(!txt){toast('Tempel daftar dulu');return;}
-  var name=prompt('Nama template:');
+  var name=prompt(tr('Nama template:'));
   if(!name||!name.trim())return;
   state.tpls=state.tpls||[];
   state.tpls.push({name:name.trim().slice(0,24),text:txt});
@@ -1064,12 +1067,12 @@ $('#bulk').onclick=function(e){
     picked.forEach(function(t){t.done=t.done||{};if(every)delete t.done[cur];else t.done[cur]=true;});
     save();finish(picked.length+' kegiatan diperbarui');
   }else if(act==='cat'){
-    var c=prompt('Kategori baru (kosongkan untuk menghapus kategori):','');
+    var c=prompt(tr('Kategori baru (kosongkan untuk menghapus kategori):'),'');
     if(c===null)return;
     c=cleanCat(c);picked.forEach(function(t){t.cat=c;});
     save();finish('Kategori diubah');
   }else if(act==='move'){
-    var d=prompt('Pindah ke tanggal (format 2026-10-27). Kegiatan berulang tidak ikut dipindah:',addDays(cur,1));
+    var d=prompt(tr('Pindah ke tanggal (format 2026-10-27). Kegiatan berulang tidak ikut dipindah:'),addDays(cur,1));
     if(d===null)return;
     d=d.trim();
     if(!isDate(d)){toast('Format tanggal tidak valid');return;}
@@ -1250,6 +1253,177 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)doSy
 window.addEventListener('online',doSync);
 window.addEventListener('focus',doSync);
 setInterval(function(){if(!document.hidden)doSync();},5000);
+
+/* ---------- bahasa / language ---------- */
+var LANG='en';
+try{LANG=localStorage.getItem('todo-lang')||'en';}catch(e){}
+var HID=HARI.slice(),BID=BULAN.slice(),PID={1:PRI[1],2:PRI[2],3:PRI[3]};
+var HEN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var BEN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var PEN={1:'Low',2:'Medium',3:'High'};
+function setArr(){
+  var h=LANG==='en'?HEN:HID,b=LANG==='en'?BEN:BID,q=LANG==='en'?PEN:PID,i;
+  for(i=0;i<7;i++)HARI[i]=h[i];
+  for(i=0;i<12;i++)BULAN[i]=b[i];
+  for(i=1;i<4;i++)PRI[i]=q[i];
+}
+function P(n,w){return n+' '+w+(String(n)==='1'?'':'s');}
+var DICT={
+'Penyimpanan browser tidak tersedia, jadi data hilang saat halaman ditutup. Buka file ini dengan Chrome atau Safari, dan gunakan menu Data untuk membuat cadangan.':'Browser storage is unavailable, so data is lost when the page closes. Open this file in Chrome or Safari, and use the Data tab to make a backup.',
+'Hari ini':'Today','Tempel daftar':'Paste list',
+'Tempel seluruh daftar Anda. Setiap baris menjadi satu kegiatan, dan hasilnya bisa dicek sebelum ditambahkan.':'Paste your whole list. Each line becomes one task, and you can review the result before adding.',
+'Format yang dikenali':'Recognized format',
+'Prioritas tinggi':'High priority','Prioritas sedang':'Medium priority','Prioritas rendah':'Low priority',
+'Sekali saja':'One time only','Ulangi setiap hari':'Repeat every day','Ulangi mingguan (pilih hari)':'Repeat weekly (choose days)','Ulangi bulanan (tanggal yang sama)':'Repeat monthly (same date)',
+'Tambahkan':'Add','Simpan template':'Save template','Tutup':'Close',
+'Opsi: prioritas, kategori, ulangi, catatan':'Options: priority, category, repeat, notes',
+'Tambah':'Add','Batal':'Cancel','Pindahkan ke hari ini':'Move to today',
+'Urutan':'Sort','Prioritas':'Priority','Manual':'Manual','Ringkas':'Compact','Sembunyikan selesai':'Hide done','Kelompok':'Group','Pilih':'Select',
+'Rata-rata 7 hari terakhir':'7-day average','Hari beruntun selesai semua':'Day streak, all done','Kalender':'Calendar',
+'Tidak ada kegiatan':'No tasks','Belum ada yang selesai':'None done yet','Sebagian':'Partly done','Semua selesai':'All done',
+'Per kategori (30 hari)':'By category (30 days)','14 hari terakhir':'Last 14 days','Per tanggal':'By date',
+'Sinkron antar perangkat (GitHub Gist)':'Sync across devices (GitHub Gist)','Buat token':'Create a token',
+'(centang gist saja), lalu salin tokennya.':'(tick only gist), then copy the token.',
+'2. Tempel di sini, buat kata sandi enkripsi (minimal 12 karakter), lalu ketuk Hubungkan. Ulangi di perangkat lain dengan token dan kata sandi yang sama. Data dienkripsi sebelum dikirim. Jika kata sandi lupa, data di cloud tidak bisa dibuka.':'2. Paste it here, create an encryption password (at least 12 characters), then tap Connect. Repeat on your other devices with the same token and password. Data is encrypted before it is sent. If you forget the password, the data in the cloud cannot be opened.',
+'Sinkron lama dinonaktifkan karena kini memakai enkripsi. Token Anda masih tersimpan, cukup isi kata sandi.':'The old sync is disabled because encryption is now used. Your token is still saved, just enter a password.',
+'Hubungkan':'Connect','Sinkronkan sekarang':'Sync now','Putuskan':'Disconnect',
+'Data tersimpan di browser perangkat ini. Untuk memindahkan ke perangkat lain, ekspor di sini lalu impor di sana.':'Data is stored in this device browser. To move it to another device, export here and import there.',
+'Unduh cadangan':'Download backup','Salin data':'Copy data',
+'Impor akan mengganti seluruh data di perangkat ini.':'Importing replaces all data on this device.',
+'Impor dari teks':'Import from text','Impor dari file':'Import from file',
+'Hapus semua kegiatan dan riwayat di perangkat ini.':'Delete all tasks and history on this device.','Hapus semua data':'Delete all data',
+'Semua':'All','Selesai':'Done','Kategori':'Category','Pindah':'Move','Hapus':'Delete','Urungkan':'Undo','Harian':'Daily','Riwayat':'History',
+'Hari sebelumnya':'Previous day','Hari berikutnya':'Next day','Pilih tanggal':'Choose date','Cari kegiatan':'Search tasks',
+'Cari kegiatan, kategori, atau catatan':'Search tasks, categories, or notes',
+'Pagi:\n- Olahraga @harian\n- Minum vitamin #kesehatan !tinggi\nKantor:\n1. Balas email\n[x] Rapat tim @senin,kamis':'Morning:\n- Exercise @daily\n- Take vitamins #health !high\nOffice:\n1. Reply to email\n[x] Team meeting @mon,thu',
+'Prioritas bawaan':'Default priority','Kategori bawaan':'Default category','Pengulangan bawaan':'Default repeat',
+'Tambah kegiatan':'Add task','Pengulangan':'Repeat','Catatan (opsional)':'Notes (optional)',
+'Bulan sebelumnya':'Previous month','Bulan berikutnya':'Next month','Token GitHub':'GitHub token',
+'Kata sandi enkripsi':'Encryption password','Tempel data cadangan di sini':'Paste backup data here',
+'Sen':'Mon','Sel':'Tue','Rab':'Wed','Kam':'Thu','Jum':'Fri','Sab':'Sat','Min':'Sun',
+'Tidak ada kegiatan yang ditampilkan (selesai atau tersaring).':'No tasks to show (done or filtered out).',
+'Belum ada kegiatan di tanggal ini. Tambahkan lewat kolom di atas.':'No tasks on this date yet. Tap + to add one.',
+'Tandai selesai':'Mark as done','Ubah':'Edit',
+'Geser untuk mengubah urutan. Gunakan panah atas dan bawah di keyboard.':'Drag to reorder. Use the up and down arrow keys on the keyboard.',
+'Dipindah':'Moved','Catatan':'Notes',
+'Riwayat muncul setelah Anda menambahkan kegiatan.':'History appears after you add tasks.',
+'Ketik untuk mencari di semua tanggal.':'Type to search across all dates.',
+'Pilih minimal satu hari':'Choose at least one day','Perubahan disimpan':'Changes saved','Kegiatan ditambahkan':'Task added',
+'Pratinjau muncul setelah Anda menempelkan daftar.':'A preview appears after you paste a list.',
+'Tanpa kategori':'No category','Belum ada data.':'No data yet.',
+'Tempel daftar dulu':'Paste a list first','Nama template:':'Template name:','Template disimpan':'Template saved','Hapus template?':'Delete template?',
+'Dibatalkan':'Undone','Pilih kegiatan dulu':'Select tasks first',
+'Kategori baru (kosongkan untuk menghapus kategori):':'New category (leave empty to remove the category):','Kategori diubah':'Category changed',
+'Pindah ke tanggal (format 2026-10-27). Kegiatan berulang tidak ikut dipindah:':'Move to date (format 2026-10-27). Repeating tasks are not moved:',
+'Format tanggal tidak valid':'Invalid date format',
+'Kegiatan yang dipilih akan dihapus. Anda masih bisa menekan Urungkan.':'The selected tasks will be deleted. You can still tap Undo.','Dihapus':'Deleted',
+'Token ditolak. Buat token baru.':'Token rejected. Create a new token.',
+'Browser ini tidak mendukung enkripsi, sinkron dinonaktifkan.':'This browser does not support encryption, so sync is disabled.',
+'Offline. Akan disinkron saat online.':'Offline. Will sync when back online.',
+'Kata sandi salah atau data rusak.':'Wrong password or corrupted data.',
+'Belum pernah sinkron':'Never synced','Tempel token dulu':'Paste the token first',
+'Kata sandi minimal 12 karakter':'Password must be at least 12 characters','Menyinkron...':'Syncing...',
+'Putuskan sinkron?':'Disconnect sync?',
+'Token dihapus dari perangkat ini. Data di perangkat dan di Gist tetap ada.':'The token is removed from this device. Data on the device and in the Gist stays.',
+'Sinkron diputus':'Sync disconnected','Simpan':'Save','Hapus kegiatan?':'Delete task?','Hapus kegiatan berulang?':'Delete repeating task?',
+'Hapus permanen beserta riwayat':'Delete permanently with history',
+'Cadangan diunduh':'Backup downloaded','Data disalin':'Data copied','Salin manual dari kolom impor':'Copy manually from the import box',
+'Format data tidak valid':'Invalid data format','Ganti semua data?':'Replace all data?','Ganti data':'Replace data',
+'Data diimpor':'Data imported','Tempel data dulu':'Paste data first','Hapus semua data?':'Delete all data?',
+'Semua kegiatan dan riwayat di perangkat ini akan hilang dan tidak bisa dikembalikan.':'All tasks and history on this device will be lost and cannot be restored.',
+'Hapus semua':'Delete all','Semua data dihapus':'All data deleted'
+};
+var PAT=[
+[/^(?:(Hari ini|Besok|Kemarin), )?(?:(\d+) dari (\d+) selesai|Belum ada kegiatan)$/,function(m,r,d,t){var x=r?{'Hari ini':'Today','Besok':'Tomorrow','Kemarin':'Yesterday'}[r]+', ':'';return x+(d?d+' of '+t+' done':'Nothing planned');}],
+[/^(\d+)\/(\d+) selesai \((\d+)%\)$/,'$1/$2 done ($3%)'],
+[/^Tiap tgl (\d+)$/,'Monthly, day $1'],
+[/^Dari (.+)$/,'From $1'],
+[/^Lewati hanya (.+)$/,'Skip only $1'],
+[/^Hentikan mulai (.+) \(riwayat lama tetap\)$/,'Stop from $1 (past history stays)'],
+[/^"([\s\S]*)" akan dihapus\.$/,'"$1" will be deleted.'],
+[/^Template "([\s\S]*)" akan dihapus\.$/,'Template "$1" will be deleted.'],
+[/^"([\s\S]*)" berulang \(([\s\S]*)\)\. Pilih cara menghapusnya\.$/,'"$1" repeats ($2). Choose how to delete it.'],
+[/^Hapus (\d+) kegiatan\?$/,function(m,n){return 'Delete '+P(n,'task')+'?';}],
+[/^(\d+) kegiatan dipilih$/,'$1 selected'],
+[/^(\d+) kegiatan diperbarui$/,function(m,n){return P(n,'task')+' updated';}],
+[/^(\d+) kegiatan dipindahkan ke hari ini$/,function(m,n){return P(n,'task')+' moved to today';}],
+[/^(\d+) kegiatan dipindahkan$/,function(m,n){return P(n,'task')+' moved';}],
+[/^(\d+) kegiatan ditambahkan$/,function(m,n){return P(n,'task')+' added';}],
+[/^(\d+) kegiatan dari hari sebelumnya belum selesai\.$/,function(m,n){return P(n,'task')+' from previous days not done.';}],
+[/^(\d+) kegiatan di tanggal ini belum selesai\.$/,function(m,n){return P(n,'task')+' on this date not done.';}],
+[/^(\d+) kegiatan terdeteksi untuk (.+)\. Hilangkan centang untuk melewati\.$/,function(m,n,d){return P(n,'task')+' detected for '+d+'. Uncheck to skip.';}],
+[/^Tambahkan (\d+) kegiatan$/,function(m,n){return 'Add '+P(n,'task');}],
+[/^(\d+) kegiatan akan menggantikan data di perangkat ini\.$/,function(m,n){return P(n,'task')+' will replace the data on this device.';}],
+[/^Tidak ada hasil untuk "([\s\S]*)"\.$/,'No results for "$1".'],
+[/^(.*), mulai (.*), selesai (\d+) kali$/,function(m,a,b,n){return a+', from '+b+', done '+P(n,'time');}],
+[/^(.*?)( \(selesai\))((?:, [\s\S]*)?)$/,'$1 (done)$3'],
+[/^(.*): (\d+)% selesai$/,'$1: $2% done'],
+[/^Hapus template ([\s\S]*)$/,'Delete template $1'],
+[/^Gagal: ([\s\S]*)$/,function(m,x){return 'Failed: '+trs(x);}],
+[/^Terakhir sinkron: (.*)$/,'Last synced: $1']
+];
+function trs(s){
+  var k=s.trim(),r;
+  if(!k)return s;
+  if(Object.prototype.hasOwnProperty.call(DICT,k))r=DICT[k];
+  else for(var i=0;i<PAT.length;i++){if(PAT[i][0].test(k)){r=k.replace(PAT[i][0],PAT[i][1]);break;}}
+  return r===undefined?s:s.replace(k,function(){return r;});
+}
+function tr(s){return LANG==='en'?trs(s):s;}
+var HELP_ID='',HELP_EN='<li>Prefixes like <code>-</code>, <code>*</code>, <code>1.</code> or <code>[ ]</code> are removed automatically. <code>[x]</code> marks a task as done.</li><li>A line ending with <code>:</code> or starting with <code># </code> (with a space) becomes the category for the lines below it.</li><li>Per line: <code>#category</code>, <code>!high</code> <code>!medium</code> <code>!low</code>, <code>@daily</code>, <code>@monthly</code>, <code>@mon,thu</code>. All optional, and they override the settings below.</li>';
+var SKIP='.txt,.notebox,.tag.cat,[data-cat],[data-tl],.srow>span,.hrow>span:first-child,.ghb b,[data-ni]';
+var ORIG=new WeakMap(),AORIG=new WeakMap(),ATTRS=['placeholder','aria-label','title'];
+function textNode(n){
+  var p=n.parentElement,cur=n.nodeValue;
+  if(!p||/^(SCRIPT|STYLE|TEXTAREA)$/.test(p.tagName))return;
+  if(p.closest(SKIP)&&cur.trim()!=='Tanpa kategori')return;
+  var m=ORIG.get(n),src=(m&&(cur===m.en||cur===m.id))?m.id:cur;
+  var out=LANG==='en'?trs(src):src;
+  if(out!==cur)n.nodeValue=out;
+  if(!m||m.id!==src)ORIG.set(n,{id:src,en:trs(src)});
+}
+function attrs(el){
+  ATTRS.forEach(function(a){
+    if(!el.hasAttribute(a)||el.closest('[data-ni]'))return;
+    var cur=el.getAttribute(a),all=AORIG.get(el)||{},m=all[a];
+    var src=(m&&(cur===m.en||cur===m.id))?m.id:cur;
+    var out=LANG==='en'?trs(src):src;
+    if(out!==cur)el.setAttribute(a,out);
+    if(!m||m.id!==src){all[a]={id:src,en:trs(src)};AORIG.set(el,all);}
+  });
+}
+function walk(n){
+  if(n.nodeType===3){textNode(n);return;}
+  if(n.nodeType!==1||/^(SCRIPT|STYLE)$/.test(n.tagName))return;
+  attrs(n);
+  for(var c=n.firstChild;c;c=c.nextSibling)walk(c);
+}
+var OBS_CFG={childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:ATTRS};
+var obs=new MutationObserver(function(recs){
+  obs.disconnect();
+  recs.forEach(function(r){
+    if(r.type==='childList')r.addedNodes.forEach(walk);
+    else if(r.type==='characterData')textNode(r.target);
+    else attrs(r.target);
+  });
+  obs.observe(document.body,OBS_CFG);
+});
+function setLang(l,init){
+  LANG=l;
+  if(!init){try{localStorage.setItem('todo-lang',l);}catch(e){}}
+  document.documentElement.lang=l;
+  setArr();
+  obs.disconnect();
+  $('#pHelp').innerHTML=l==='en'?HELP_EN:HELP_ID;
+  walk(document.body);
+  $('#lEn').setAttribute('aria-pressed',String(l==='en'));
+  $('#lId').setAttribute('aria-pressed',String(l==='id'));
+  obs.observe(document.body,OBS_CFG);
+  if(!$('#v-hist').hidden)renderHist();else renderDay();
+}
+function initLang(){HELP_ID=$('#pHelp').innerHTML;setLang(LANG,true);$('#fab').hidden=false;}
+$('#lEn').onclick=function(){setLang('en');};
+$('#lId').onclick=function(){setLang('id');};
 
 /* ---------- list actions ---------- */
 $('#chips').onclick=function(e){
@@ -1491,6 +1665,7 @@ lastSnap=snap();
 $('#warn').hidden=!memOnly;
 renderDay();
 renderSync();
+initLang();
 doSync();
 })();
 </script>
