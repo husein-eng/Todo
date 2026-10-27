@@ -11,6 +11,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>To-Do Harian</title>
+<script>try{var m=localStorage.getItem('todo-theme')||'dark',r=m==='auto'?(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):m;document.documentElement.setAttribute('data-theme',r);}catch(e){}</script>
 <style>
 :root{
   --bg:#0b0d1a;--surface:#151933;--surface2:#1e2347;--line:#272c55;
@@ -229,6 +230,40 @@ textarea.im{width:100%;min-height:90px;background:var(--bg);border:1px solid var
 .dz .idn{color:#c9c6dd}
 .dz p b{display:inline-block;font-size:10px;letter-spacing:.06em;color:var(--accent);border:1px solid var(--line);border-radius:6px;padding:0 5px;margin-right:8px;vertical-align:2px}
 .dzx{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.tag.tgt{cursor:pointer;background:none;color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,transparent)}
+.tag.tgt.off{color:var(--p2);border-color:color-mix(in srgb,var(--p2) 50%,transparent)}
+.item.off .chk{background:var(--p2);border-color:var(--p2)}
+.tag.sub{cursor:pointer;background:none;color:var(--text)}
+.subs{margin-top:8px;display:grid;gap:4px}
+.srow2{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+.srow2 input{width:18px;height:18px;accent-color:var(--accent)}
+.lockov{position:fixed;inset:0;z-index:60;background:var(--bg);display:grid;place-items:center;padding:20px}
+.lockbox{width:min(360px,100%);display:grid;gap:10px;text-align:center}
+.lockbox h2{margin:0}
+.lockbox p{margin:0;color:var(--muted)}
+.lockbox input{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:18px;text-align:center;letter-spacing:.2em;min-height:52px}
+.lockbox .lkerr{color:var(--p3);min-height:1.3em;font-size:14px}
+.dzbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;color:var(--muted);font-size:14px}
+.dzl{display:flex;align-items:center;gap:10px}
+.dzt{color:var(--muted);font-size:14px}
+.dzc{border:0;font:inherit;cursor:pointer;display:flex;gap:6px;align-items:center;min-width:64px;justify-content:center}
+.dzc small{opacity:.8}
+.dzc.ok{background:var(--ok);color:#06241b}
+.hrow .dots{grid-column:1/-1;display:flex;gap:6px}
+.dot{width:14px;height:14px;border-radius:50%;background:var(--surface2);border:1px solid var(--line)}
+.dot.on{background:var(--ok);border-color:var(--ok)}
+html[data-theme=light]{--bg:#f4f3fb;--surface:#fff;--surface2:#ebeaf6;--line:#d9d7ec;--text:#1d1b33;--muted:#6a6788;--accent:#e2582a;--ok:#12a37f;--on:#fff;--p3:#e0334c;--p2:#c98a00;--p1:#1b86b8;color-scheme:light}
+html[data-theme=light] .head{background:radial-gradient(120% 150% at 0 0,#ffe2d6 0%,#ece8ff 60%,#e4e1fb 100%);border-color:#e0dcf6}
+html[data-theme=light] .greet{color:#b8431b}
+html[data-theme=light] .ring .trk{stroke:rgba(0,0,0,.1)}
+html[data-theme=light] .langsw{background:rgba(0,0,0,.07)}
+html[data-theme=light] .item:hover{border-color:#bdbade}
+html[data-theme=light] .chk{border-color:#a9a6cc}
+html[data-theme=light] .dz .idn{color:#4a4766}
+html[data-theme=light] .btn.dng{background:#fde8eb;color:#b4233a;border-color:#f4c4cc}
+html[data-theme=light] .warn{background:#fff3d6;border-color:#f0d58a;color:#7a5600}
+html[data-theme=light] .tag.cat{color:hsl(var(--h) 55% 32%);border-color:hsl(var(--h) 40% 78%);background:hsl(var(--h) 60% 94%)}
+html[data-theme=light] .item.done .chk,html[data-theme=light] .chk.pk[aria-pressed=true]{color:#fff}
 /* Navigasi */
 .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:9}
 .tabs div{display:grid;grid-template-columns:repeat(4,1fr);max-width:640px;margin:0 auto}
@@ -270,7 +305,7 @@ textarea.im{width:100%;min-height:90px;background:var(--bg);border:1px solid var
   <section id="v-day">
     <div class="colL">
     <div class="head">
-      <div class="langsw" role="group" aria-label="Language"><button id="lEn" aria-pressed="true">EN</button><button id="lId" aria-pressed="false">ID</button></div>
+      <div class="langsw" role="group" aria-label="Language"><button id="lEn" aria-pressed="true">EN</button><button id="lId" aria-pressed="false">ID</button><button id="thm" aria-label="Tema">&#9680;</button></div>
       <div class="ring" id="ring">
         <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="trk" cx="50" cy="50" r="42"/><circle class="bar" id="rbar" cx="50" cy="50" r="42" stroke-dasharray="263.89" stroke-dashoffset="263.89"/></svg>
         <b id="rpct">0%</b>
@@ -349,6 +384,7 @@ textarea.im{width:100%;min-height:90px;background:var(--bg);border:1px solid var
         </select>
         <div class="daychips full" id="fDays" hidden></div>
         <textarea id="fNote" class="full" placeholder="Catatan (opsional)" maxlength="1000"></textarea>
+        <textarea id="fSub" class="full" placeholder="Checklist (satu per baris)" maxlength="1000"></textarea>
       </div></details>
       <datalist id="cats"></datalist>
       <div class="act">
@@ -386,6 +422,8 @@ textarea.im{width:100%;min-height:90px;background:var(--bg);border:1px solid var
       <div class="seg" role="group" aria-label="Waktu dzikir"><button id="dzAm">Pagi</button><button id="dzPm">Petang</button></div>
     </div>
     <p class="dznote">Teks Arab dan Inggris dari dataset Hisnul Muslim (lisensi MIT), bab Dzikir Pagi dan Petang. Terjemah Indonesia adalah terjemah makna yang disusun asisten AI. Mohon diperiksa dengan rujukan terpercaya atau ustadz sebelum diandalkan. Waktu otomatis mengikuti jam (sebelum pukul 12 pagi, setelah itu petang) dan bisa diubah manual.</p>
+    <div class="dzbar"><span id="dzProg"></span><div class="seg" role="group" aria-label="Ketukan maks."><button id="cap10">10</button><button id="cap20">20</button></div></div>
+    <p class="dznote">Ketuk angka di kartu untuk menghitung. Bacaan di atas batas dibagi rata, misalnya 100× dengan batas 10 berarti 10 ketukan @10×.</p>
     <div id="dzList" data-ni></div>
   </section>
 
@@ -409,6 +447,10 @@ textarea.im{width:100%;min-height:90px;background:var(--bg);border:1px solid var
         <span><i style="background:var(--ok)"></i>Semua selesai</span>
       </div>
     </div>
+    <h2>Ringkasan minggu ini</h2>
+    <div class="card" id="weekSum" data-ni></div>
+    <h2>Dzikir (7 hari)</h2>
+    <div id="dzHist" data-ni></div>
     <h2>Per kategori (30 hari)</h2>
     <div id="catStats"></div>
     <h2>14 hari terakhir</h2>
@@ -419,6 +461,10 @@ textarea.im{width:100%;min-height:90px;background:var(--bg);border:1px solid var
 
   <!-- Data -->
   <section id="v-data" hidden>
+    <div class="card" id="pinCard"><p><b>Kunci aplikasi (PIN)</b></p>
+      <p>PIN melindungi token dan kata sandi sinkron serta menutup layar. Data kegiatan di perangkat tidak dienkripsi.</p>
+      <p id="pinStat"></p>
+      <div class="btns"><button class="btn sec" id="pinSet">Atur PIN</button><button class="btn sec" id="pinNow" hidden>Kunci sekarang</button><button class="btn dng" id="pinOff" hidden>Hapus PIN</button></div></div>
     <div class="card" id="syncCard">
       <p><b>Sinkron antar perangkat (GitHub Gist)</b></p>
       <div id="gOffBlock">
@@ -430,7 +476,7 @@ textarea.im{width:100%;min-height:90px;background:var(--bg);border:1px solid var
       </div>
       <div id="gOnBlock" hidden>
         <p id="gStat"></p>
-        <div class="btns"><button class="btn sec" id="gNow">Sinkronkan sekarang</button><button class="btn dng" id="gOff">Putuskan</button></div>
+        <div class="btns"><button class="btn sec" id="gNow">Sinkronkan sekarang</button><button class="btn sec" id="gRes">Pulihkan versi lama</button><button class="btn dng" id="gOff">Putuskan</button></div>
       </div>
     </div>
     
@@ -457,6 +503,13 @@ textarea.im{width:100%;min-height:90px;background:var(--bg);border:1px solid var
   </section>
 </main>
 
+<div class="lockov" id="lock" hidden><div class="lockbox">
+  <h2 id="lkT">Terkunci</h2><p id="lkP">Masukkan PIN untuk membuka.</p>
+  <input type="password" id="lkIn" inputmode="numeric" autocomplete="off" placeholder="PIN">
+  <input type="password" id="lkIn2" inputmode="numeric" autocomplete="off" placeholder="Ulangi PIN" hidden>
+  <p id="lkErr" class="lkerr"></p>
+  <div class="btns" style="justify-content:center"><button class="btn pri" id="lkGo">Buka</button><button class="btn sec" id="lkX" hidden>Batal</button></div>
+</div></div>
 <div class="scrim" id="scrim"></div>
 <button class="fab" id="fab" aria-label="Tambah kegiatan">+</button>
 <div class="bulk" id="bulk" hidden><span id="bCount"></span><button class="chip" data-b="all">Semua</button><button class="chip" data-b="done">Selesai</button><button class="chip" data-b="cat">Kategori</button><button class="chip" data-b="move">Pindah</button><button class="chip" data-b="del">Hapus</button><button class="chip" data-b="exit">Batal</button></div>
@@ -481,14 +534,16 @@ function load(){
     var r=localStorage.getItem(KEY);
     if(r){
       var p=JSON.parse(r);
-      if(p&&Array.isArray(p.tasks)){state.tasks=p.tasks;state.sort=p.sort==='manual'?'manual':'priority';state.group=!!p.group;state.lock=p.lock===false?false:true;state.collapsed=p.collapsed&&typeof p.collapsed==='object'?p.collapsed:{};state.compact=!!p.compact;state.hide=!!p.hide;state.tpls=Array.isArray(p.tpls)?p.tpls:[];state.sync=p.sync&&p.sync.token?p.sync:null;state.tomb=p.tomb&&typeof p.tomb==='object'?p.tomb:{};state.tplsU=p.tplsU||0;}
+      if(p&&Array.isArray(p.tasks)){state.tasks=p.tasks;state.sort=p.sort==='manual'?'manual':'priority';state.group=!!p.group;state.lock=p.lock===false?false:true;state.collapsed=p.collapsed&&typeof p.collapsed==='object'?p.collapsed:{};state.compact=!!p.compact;state.hide=!!p.hide;state.tpls=Array.isArray(p.tpls)?p.tpls:[];state.sync=p.sync&&(p.sync.token||p.vault)?p.sync:null;state.tomb=p.tomb&&typeof p.tomb==='object'?p.tomb:{};state.tplsU=p.tplsU||0;state.order=Array.isArray(p.order)?p.order:null;state.orderU=p.orderU||0;state.vault=p.vault||null;state.dz=p.dz&&typeof p.dz==='object'?p.dz:{};state.cap=p.cap===20?20:10;}
     }
   }catch(e){memOnly=true;}
 }
 var undoStack=[],lastSnap='',ut;
 function snap(){return JSON.stringify({tasks:state.tasks,tpls:state.tpls});}
 function persist(){
-  try{localStorage.setItem(KEY,JSON.stringify(state));}
+  var c=state;
+  if(state.vault&&state.sync){c=Object.assign({},state);c.sync=Object.assign({},state.sync);delete c.sync.token;delete c.sync.pw;}
+  try{localStorage.setItem(KEY,JSON.stringify(c));}
   catch(e){memOnly=true;}
   $('#warn').hidden=!memOnly;
 }
@@ -595,6 +650,7 @@ function persistOrder(ids){
   var map={},slots=[];
   state.tasks.forEach(function(t,i){map[t.id]=t;if(ids.indexOf(t.id)>=0)slots.push(i);});
   ids.forEach(function(id,k){state.tasks[slots[k]]=map[id];});
+  state.order=state.tasks.map(function(t){return t.id;});state.orderU=Date.now();
   save();
 }
 
@@ -674,7 +730,11 @@ function renderDay(){
   var itemHtml=function(t){
     var dn=t.done&&t.done[cur];
     var open=!!openNotes[t.id];
-    return '<li class="item p'+t.pri+(dn?' done':'')+(sel[t.id]?' picked':'')+'" data-id="'+t.id+'">'+
+    var sb=t.sub||[],sdn=(t.sd&&t.sd[cur])||[],sopen=!!openSubs[t.id];
+    var tgtH=dn?'<button class="tag tgt'+(dn===2?' off':'')+'" data-act="tgt">'+(dn===2?'Tidak sesuai target':'Sesuai target')+'</button>':'';
+    var subT=sb.length?'<button class="tag sub" data-act="sub" aria-expanded="'+sopen+'">Checklist '+sdn.length+'/'+sb.length+'</button>':'';
+    var subH=(sb.length&&sopen)?'<div class="subs">'+sb.map(function(x,i){return '<label class="srow2"><input type="checkbox" data-si="'+i+'"'+(sdn.indexOf(i)>=0?' checked':'')+'><span>'+esc(x)+'</span></label>';}).join('')+'</div>':'';
+    return '<li class="item p'+t.pri+(dn?' done':'')+(dn===2?' off':'')+(sel[t.id]?' picked':'')+'" data-id="'+t.id+'">'+
       (selMode?'<button class="chk pk" data-act="pick" aria-label="Pilih" aria-pressed="'+(!!sel[t.id])+'">&#10003;</button>':'<button class="chk" data-act="toggle" aria-label="Tandai selesai" aria-pressed="'+(!!dn)+'">&#10003;</button>')+
       '<div class="body"><div class="txt">'+esc(t.text)+'</div><div class="meta">'+
         '<span class="tag">'+PRI[t.pri]+'</span>'+
@@ -682,9 +742,10 @@ function renderDay(){
         (t.rec?'<span class="tag rec">'+esc(recLabel(t))+'</span>':'')+
         (t.from?'<span class="tag">Dari '+dm(t.from)+'</span>':'')+
         (t.carried?'<span class="tag">Dipindah</span>':'')+
-        (t.note?'<button class="tag note" data-act="note" aria-expanded="'+open+'">Catatan</button>':'')+
-      '</div>'+(t.note&&open?'<div class="notebox">'+esc(t.note)+'</div>':'')+'</div>'+
+        tgtH+subT+(t.note?'<button class="tag note" data-act="note" aria-expanded="'+open+'">Catatan</button>':'')+
+      '</div>'+(t.note&&open?'<div class="notebox">'+esc(t.note)+'</div>':'')+subH+'</div>'+
       '<button class="ic drag" data-act="drag" aria-label="Geser untuk mengubah urutan. Gunakan panah atas dan bawah di keyboard.">&#8801;</button>'+
+      '<button class="ic" data-act="tom" aria-label="Pindahkan ke besok">&raquo;</button>'+
       '<button class="ic" data-act="edit" aria-label="Ubah">&#9998;</button>'+
       '<button class="ic" data-act="del" aria-label="Hapus">&#10005;</button>'+
     '</li>';
@@ -728,7 +789,7 @@ function renderHist(){
   }
   $('#sStreak').textContent=streak;
 
-  renderCal();renderCatStats();
+  renderCal();renderWeek();renderDzHist();renderCatStats();
 
   var bars='';
   for(i=13;i>=0;i--){
@@ -868,12 +929,13 @@ $('#f').onsubmit=function(e){
   e.preventDefault();
   var text=$('#fText').value.trim();
   if(!text)return;
-  var pri=Number($('#fPri').value),cat=normCats($('#fCat').value),rep=$('#fRep').value,note=$('#fNote').value.trim();
+  var pri=Number($('#fPri').value),cat=normCats($('#fCat').value),rep=$('#fRep').value,note=$('#fNote').value.trim(),sub=$('#fSub').value.split(/\r?\n/).map(function(x){return x.trim();}).filter(Boolean).slice(0,30);
   if(rep==='weekly'&&!fDays.length){toast('Pilih minimal satu hari');return;}
   if(editing){
     var t=state.tasks.find(function(x){return x.id===editing;});
     if(t){
-      t.text=text;t.pri=pri;t.cat=cat;t.note=note;
+      t.text=text;t.pri=pri;t.cat=cat;t.note=note;t.sub=sub;
+      if(t.sd)Object.keys(t.sd).forEach(function(k){t.sd[k]=t.sd[k].filter(function(i){return i<sub.length;});if(!t.sd[k].length)delete t.sd[k];});
       if(rep==='none'){
         if(t.rec){t.rec=false;t.date=cur;delete t.start;delete t.end;delete t.freq;delete t.days;}
       }else{
@@ -884,7 +946,7 @@ $('#f').onsubmit=function(e){
     }
     toast('Perubahan disimpan');
   }else{
-    var nt={id:uid(),text:text,pri:pri,cat:cat,note:note,rec:rep!=='none',done:{}};
+    var nt={id:uid(),text:text,pri:pri,cat:cat,note:note,sub:sub,rec:rep!=='none',done:{}};
     if(nt.rec){nt.freq=rep;nt.start=cur;nt.end=null;if(rep==='weekly')nt.days=fDays.slice();}
     else nt.date=cur;
     state.tasks.push(nt);
@@ -1079,7 +1141,7 @@ $('#undo').onclick=function(){
   var tn=Date.now(),had={},has={},xi;
   state.tomb=state.tomb||{};
   state.tasks.forEach(function(t){had[t.id]=1;});
-  state.tasks=p.tasks;state.tpls=p.tpls||[];state.tplsU=tn;
+  state.tasks=p.tasks;state.tpls=p.tpls||[];state.tplsU=tn;state.order=p.tasks.map(function(t){return t.id;});state.orderU=tn;
   state.tasks.forEach(function(t){has[t.id]=1;t.u=tn;delete state.tomb[t.id];});
   for(xi in had)if(!has[xi])state.tomb[xi]=tn;
   lastSnap=snap();persist();
@@ -1196,10 +1258,10 @@ function decrypt(env,pw){
     return crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(env.iv)},key,unb64(env.data));
   }).then(function(pt){return JSON.parse(new TextDecoder().decode(pt));});
 }
-function payload(m){return{v:1,tasks:m.tasks,tomb:m.tomb||{},tpls:m.tpls||[],tplsU:m.tplsU||0};}
+function payload(m){return{v:1,tasks:m.tasks,tomb:m.tomb||{},tpls:m.tpls||[],tplsU:m.tplsU||0,order:m.order||null,orderU:m.orderU||0};}
 function normalize(r){
   var tb=r.tomb||{};
-  return JSON.stringify({t:(r.tasks||[]).slice().sort(function(a,b){return a.id<b.id?-1:1;}),b:Object.keys(tb).sort().map(function(k){return[k,tb[k]];}),l:r.tpls||[],u:r.tplsU||0});
+  return JSON.stringify({t:(r.tasks||[]).slice().sort(function(a,b){return a.id<b.id?-1:1;}),b:Object.keys(tb).sort().map(function(k){return[k,tb[k]];}),l:r.tpls||[],u:r.tplsU||0,o:r.order||null,ou:r.orderU||0});
 }
 function readFile(g){
   var f=g.files&&g.files[FN];
@@ -1223,7 +1285,9 @@ function merge(r){
   });
   for(k in tomb)if(tomb[k]<cut)delete tomb[k];
   var remoteNewer=(r.tplsU||0)>(state.tplsU||0);
-  return{tasks:tasks,tomb:tomb,tpls:remoteNewer&&Array.isArray(r.tpls)?r.tpls:(state.tpls||[]),tplsU:Math.max(r.tplsU||0,state.tplsU||0)};
+  var rOrd=(r.orderU||0)>(state.orderU||0),ord=rOrd?r.order:state.order,ou=Math.max(r.orderU||0,state.orderU||0);
+  if(Array.isArray(ord)){var ix={};ord.forEach(function(id,i){ix[id]=i;});tasks.sort(function(a,b){return (a.id in ix?ix[a.id]:1e9)-(b.id in ix?ix[b.id]:1e9);});}
+  return{tasks:tasks,tomb:tomb,tpls:remoteNewer&&Array.isArray(r.tpls)?r.tpls:(state.tpls||[]),tplsU:Math.max(r.tplsU||0,state.tplsU||0),order:Array.isArray(ord)?ord:null,orderU:ou};
 }
 function findGist(page){
   return gh('/gists?per_page=100&page='+page).then(function(list){
@@ -1263,7 +1327,7 @@ function doSync(){
       var m=merge(rem||{}),out=payload(m);
       var changed=!rem||normalize(rem)!==normalize(out);
       var b4=snap();
-      state.tasks=m.tasks;state.tomb=m.tomb;state.tpls=m.tpls;state.tplsU=m.tplsU;
+      state.tasks=m.tasks;state.tomb=m.tomb;state.tpls=m.tpls;state.tplsU=m.tplsU;state.order=m.order;state.orderU=m.orderU;
       var ch=snap()!==b4;
       lastSnap=snap();persist();
       if(ch){if(!$('#v-hist').hidden)renderHist();else renderDay();}
@@ -1295,12 +1359,12 @@ $('#gConn').onclick=function(){
   var pw=$('#gPw').value;
   if(!tk){toast('Tempel token dulu');return;}
   if(pw.length<12){toast('Kata sandi minimal 12 karakter');return;}
-  state.sync={token:tk,pw:pw};$('#gTok').value='';$('#gPw').value='';persist();renderSync();doSync();
+  state.sync={token:tk,pw:pw};$('#gTok').value='';$('#gPw').value='';if(PK)saveVault();persist();renderSync();doSync();
 };
 $('#gNow').onclick=function(){setStat('Menyinkron...');doSync();};
 $('#gOff').onclick=function(){
   modal('Putuskan sinkron?','Token dihapus dari perangkat ini. Data di perangkat dan di Gist tetap ada.',[
-    {label:'Putuskan',cls:'dng',fn:function(){state.sync=null;persist();renderSync();toast('Sinkron diputus');}},
+    {label:'Putuskan',cls:'dng',fn:function(){state.sync=null;if(PK)saveVault();persist();renderSync();toast('Sinkron diputus');}},
     {label:'Batal'}
   ]);
 };
@@ -1324,6 +1388,22 @@ function setArr(){
 }
 function P(n,w){return n+' '+w+(String(n)==='1'?'':'s');}
 var DICT={
+'Sesuai target':'On target','Tidak sesuai target':'Off target','Pindahkan ke besok':'Move to tomorrow','Dipindahkan ke besok':'Moved to tomorrow',
+'Checklist (satu per baris)':'Checklist (one per line)','Tema':'Theme','Tema gelap':'Dark theme','Tema terang':'Light theme','Tema otomatis':'Auto theme',
+'Ringkasan minggu ini':'This week summary','Dzikir (7 hari)':'Adhkar (7 days)','Ketukan maks.':'Max taps',
+'Dzikir pagi selesai':'Morning adhkar complete','Dzikir petang selesai':'Evening adhkar complete',
+'Ketuk angka di kartu untuk menghitung. Bacaan di atas batas dibagi rata, misalnya 100\u00d7 dengan batas 10 berarti 10 ketukan @10\u00d7.':'Tap the number on a card to count. Recitations above the limit are split evenly, for example 100\u00d7 with a limit of 10 means 10 taps of @10\u00d7.',
+'Kunci aplikasi (PIN)':'App lock (PIN)',
+'PIN melindungi token dan kata sandi sinkron serta menutup layar. Data kegiatan di perangkat tidak dienkripsi.':'The PIN protects the sync token and password and covers the screen. Task data on the device is not encrypted.',
+'PIN aktif.':'PIN is on.','PIN belum diatur.':'No PIN set.','Atur PIN':'Set PIN','Ubah PIN':'Change PIN','Kunci sekarang':'Lock now','Hapus PIN':'Remove PIN',
+'Terkunci':'Locked','Masukkan PIN untuk membuka.':'Enter your PIN to unlock.','Buka':'Unlock','Atur PIN baru':'Set a new PIN','Gunakan minimal 6 karakter.':'Use at least 6 characters.',
+'Ulangi PIN':'Repeat PIN','PIN salah.':'Wrong PIN.','PIN minimal 6 karakter.':'PIN must be at least 6 characters.','PIN tidak sama.':'PINs do not match.',
+'PIN disimpan':'PIN saved','PIN dihapus':'PIN removed','Hapus PIN?':'Remove PIN?',
+'Token dan kata sandi sinkron akan tersimpan tanpa PIN di perangkat ini.':'The sync token and password will be stored without a PIN on this device.',
+'Browser ini tidak mendukung enkripsi':'This browser does not support encryption',
+'Pulihkan versi lama':'Restore an earlier version','Pilih salah satu versi untuk dipulihkan.':'Choose a version to restore.','Pulihkan':'Restore',
+'Kegiatan saat ini akan diganti oleh isi versi ini. Anda masih bisa menekan Urungkan.':'Current tasks will be replaced by this version. You can still tap Undo.',
+'Versi dipulihkan':'Version restored','Memuat riwayat...':'Loading history...','Memuat versi...':'Loading version...','Hubungkan sinkron dulu':'Connect sync first','Versi ini kosong':'This version is empty',
 'Dzikir':'Adhkar','Dzikir pagi dan petang':'Morning and evening adhkar','Pagi':'Morning','Petang':'Evening','Waktu dzikir':'Adhkar time',
 'Teks Arab dan Inggris dari dataset Hisnul Muslim (lisensi MIT), bab Dzikir Pagi dan Petang. Terjemah Indonesia adalah terjemah makna yang disusun asisten AI. Mohon diperiksa dengan rujukan terpercaya atau ustadz sebelum diandalkan. Waktu otomatis mengikuti jam (sebelum pukul 12 pagi, setelah itu petang) dan bisa diubah manual.':'Arabic and English text from the Hisnul Muslim dataset (MIT license), chapter on morning and evening adhkar. The Indonesian translation is a meaning translation prepared by an AI assistant. Please verify with a trusted reference or a teacher before relying on it. The time of day follows the clock automatically (before 12 noon it is morning, after that evening) and can be changed manually.',
 'Opsi tampilan':'View options','Urutan terkunci':'Order locked','Urutan terbuka':'Order unlocked',
@@ -1393,6 +1473,8 @@ var DICT={
 'Hapus semua':'Delete all','Semua data dihapus':'All data deleted'
 };
 var PAT=[
+[/^Selesai (\d+)\/(\d+)$/,'Done $1/$2'],
+[/^Pulihkan (\d+) kegiatan\?$/,function(m,n){return 'Restore '+P(n,'task')+'?';}],
 [/^(?:(Hari ini|Besok|Kemarin), )?(?:(\d+) dari (\d+) selesai|Belum ada kegiatan)$/,function(m,r,d,t){var x=r?{'Hari ini':'Today','Besok':'Tomorrow','Kemarin':'Yesterday'}[r]+', ':'';return x+(d?d+' of '+t+' done':'Nothing planned');}],
 [/^(\d+)\/(\d+) selesai \((\d+)%\)$/,'$1/$2 done ($3%)'],
 [/^Tiap tgl (\d+)$/,'Monthly, day $1'],
@@ -1430,7 +1512,7 @@ function trs(s){
 }
 function tr(s){return LANG==='en'?trs(s):s;}
 var HELP_ID='',HELP_EN='<li>Prefixes like <code>-</code>, <code>*</code>, <code>1.</code> or <code>[ ]</code> are removed automatically. <code>[x]</code> marks a task as done.</li><li>A line ending with <code>:</code> or starting with <code># </code> (with a space) becomes the category for the lines below it.</li><li>Per line: <code>#category</code>, <code>!high</code> <code>!medium</code> <code>!low</code>, <code>@daily</code>, <code>@monthly</code>, <code>@mon,thu</code>. All optional, and they override the settings below.</li>';
-var SKIP='.txt,.notebox,.tag.cat,[data-cat]:not([data-cat=""]),[data-tl],.srow>span,.hrow>span:first-child,.ghb b,[data-ni]';
+var SKIP='.subs span,.txt,.notebox,.tag.cat,[data-cat]:not([data-cat=""]),[data-tl],.srow>span,.hrow>span:first-child,.ghb b,[data-ni]';
 var ORIG=new WeakMap(),AORIG=new WeakMap(),ATTRS=['placeholder','aria-label','title'];
 function textNode(n){
   var p=n.parentElement,cur=n.nodeValue;
@@ -1526,23 +1608,42 @@ function armLock(){
 }
 var DZ=[{"n":1,"c":1,"w":"b","ar":{"m":"أَعُوذُ بِاللَّهِ مِنَ الشَّيطَانِ الرَّجِيمِ ﴿اللَّهُ لاَ إِلَهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ لَّهُ مَا فِي السَّمَوَاتِ وَمَا فِي الأَرْضِ مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء وَسِعَ كُرْسِيُّهُ السَّمَوَاتِ وَالْأَرْضَ وَلاَ يَؤُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ﴾."},"en":{"m":"I seek refuge in Allah from Satan, the accursed. Allah - there is no deity except Him, the Ever-Living, the Sustainer of [all] existence. Neither drowsiness overtakes Him nor sleep. To Him belongs whatever is in the heavens and whatever is on the earth. Who is it that can intercede with Him except by His permission? He knows what is [presently] before them and what will be after them, and they encompass not a thing of His knowledge except for what He wills. His Kursi extends over the heavens and the earth, and their preservation tires Him not. And He is the Most High, the Most Great."},"id":{"m":"Aku berlindung kepada Allah dari setan yang terkutuk. Allah, tidak ada sembahan yang berhak disembah selain Dia, Yang Mahahidup lagi terus-menerus mengurus makhluk-Nya. Dia tidak mengantuk dan tidak tidur. Milik-Nya apa yang ada di langit dan di bumi. Siapakah yang dapat memberi syafaat di sisi-Nya tanpa izin-Nya? Dia mengetahui apa yang di hadapan mereka dan apa yang di belakang mereka, dan mereka tidak mengetahui sesuatu pun dari ilmu-Nya kecuali apa yang Dia kehendaki. Kursi-Nya meliputi langit dan bumi, dan Dia tidak merasa berat menjaga keduanya. Dia Mahatinggi lagi Mahaagung."}},{"n":2,"c":3,"w":"b","ar":{"m":"بسم الله الرحمن الرحيم ﴿قُلْ هُوَ اللَّهُ أَحَدٌ اللَّهُ الصَّمَدُ لَمْ يَلِدْ وَلَمْ يُولَدْ وَلَمْ يَكُن لَّهُ كُفُواً أَحَدٌ﴾. بسم الله الرحمن الرحيم ﴿قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ مِن شَرِّ مَا خَلَقَ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ﴾. بسم الله الرحمن الرحيم ﴿قُلْ أَعُوذُ بِرَبِّ النَّاسِ مَلِكِ النَّاسِ إِلَهِ النَّاسِ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ مِنَ الْجِنَّةِ وَ النَّاسِ﴾ (ثلاثَ مرَّاتٍ)."},"en":{"m":"In the name of Allah, the Most Gracious, the Most Merciful.\n\nSurah Al-Ikhlas: Say, He is Allah, [who is] One, Allah, the Eternal Refuge. He neither begets nor is born, Nor is there to Him any equivalent.\n\nSurah Al-Falaq: Say, I seek refuge in the Lord of daybreak From the evil of that which He created And from the evil of darkness when it settles And from the evil of the blowers in knots And from the evil of an envier when he envies.\n\nSurah An-Nas: Say, I seek refuge in the Lord of mankind, The Sovereign of mankind. The God of mankind, From the evil of the retreating whisperer - Who whispers [evil] into the breasts of mankind - From among the jinn and mankind."},"id":{"m":"Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang.\n\nSurah Al-Ikhlas: Katakanlah, Dialah Allah, Yang Maha Esa. Allah tempat bergantung segala sesuatu. Dia tidak beranak dan tidak pula diperanakkan. Dan tidak ada sesuatu pun yang setara dengan-Nya.\n\nSurah Al-Falaq: Katakanlah, aku berlindung kepada Tuhan yang menguasai subuh, dari kejahatan makhluk yang Dia ciptakan, dari kejahatan malam apabila telah gelap gulita, dari kejahatan para penyihir yang meniup pada buhul-buhul, dan dari kejahatan orang yang dengki apabila ia dengki.\n\nSurah An-Nas: Katakanlah, aku berlindung kepada Tuhan manusia, Raja manusia, sembahan manusia, dari kejahatan bisikan setan yang bersembunyi, yang membisikkan kejahatan ke dalam dada manusia, dari golongan jin dan manusia."}},{"n":3,"c":1,"w":"b","ar":{"m":"أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَهَ إلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذَا الْيَوْمِ وَخَيرَ مَا بَعْدَهُ ، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذَا الْيَوْمِ وَشَرِّ مَا بَعْدَهُ، رَبِّ أَعُوذُ بِكَ مِنَ الْكَسَلِ وَسُوءِ الْكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ فِي النَّارِ وَعَذَابٍ فِي الْقَبْرِ","e":"أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَهَ إلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذِهِ اللَّيْلَةِ وَخَيرَ مَا بَعْدَهَا ، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذِهِ اللَّيْلَةِ وَشَرِّ مَا بَعْدَهَا، رَبِّ أَعُوذُ بِكَ مِنَ الْكَسَلِ وَسُوءِ الْكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ فِي النَّارِ وَعَذَابٍ فِي الْقَبْرِ"},"en":{"m":"We have reached the morning and at this very time unto Allaah, belongs all sovereignty, and all praise is for Allaah. None has the right to be worshipped except Allaah, alone, without any partner, to Him belong all sovereignty and praise and He is over all things omnipotent. My Lord, I ask You for the good of this day and the good of what follows it and I take refuge in You from the evil of this day and the evil of what follows it. My Lord, I take refuge in You from laziness and senility. My Lord, I take refuge in You from torment in the Fire and punishment in the grave.","e":"We have reached the evening and at this very time unto Allaah, belongs all sovereignty, and all praise is for Allaah. None has the right to be worshipped except Allaah, alone, without any partner, to Him belong all sovereignty and praise and He is over all things omnipotent. My Lord, I ask You for the good of this night and the good of what follows it and I take refuge in You from the evil of this night and the evil of what follows it. My Lord, I take refuge in You from laziness and senility. My Lord, I take refuge in You from torment in the Fire and punishment in the grave."},"id":{"m":"Kami memasuki waktu pagi dan kerajaan hanya milik Allah. Segala puji bagi Allah. Tidak ada sembahan yang berhak disembah selain Allah semata, tidak ada sekutu bagi-Nya. Milik-Nya kerajaan dan milik-Nya segala puji, dan Dia Mahakuasa atas segala sesuatu. Wahai Tuhanku, aku memohon kepada-Mu kebaikan pada hari ini dan kebaikan sesudahnya, dan aku berlindung kepada-Mu dari keburukan pada hari ini dan keburukan sesudahnya. Wahai Tuhanku, aku berlindung kepada-Mu dari kemalasan dan buruknya masa tua. Wahai Tuhanku, aku berlindung kepada-Mu dari azab di neraka dan azab di kubur.","e":"Kami memasuki waktu petang dan kerajaan hanya milik Allah. Segala puji bagi Allah. Tidak ada sembahan yang berhak disembah selain Allah semata, tidak ada sekutu bagi-Nya. Milik-Nya kerajaan dan milik-Nya segala puji, dan Dia Mahakuasa atas segala sesuatu. Wahai Tuhanku, aku memohon kepada-Mu kebaikan pada malam ini dan kebaikan sesudahnya, dan aku berlindung kepada-Mu dari keburukan pada malam ini dan keburukan sesudahnya. Wahai Tuhanku, aku berlindung kepada-Mu dari kemalasan dan buruknya masa tua. Wahai Tuhanku, aku berlindung kepada-Mu dari azab di neraka dan azab di kubur."}},{"n":4,"c":1,"w":"b","ar":{"m":"اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا ، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ","e":"اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ"},"en":{"m":"O Allah, by Your leave we have reached the morning and by Your leave we have reached the evening, by Your leave we live and die and unto You is our resurrection.","e":"O Allah, by Your leave we have reached the evening and by Your leave we have reached the morning, by Your leave we live and die and unto You is our return."},"id":{"m":"Ya Allah, dengan-Mu kami memasuki waktu pagi, dengan-Mu kami memasuki waktu petang, dengan-Mu kami hidup, dengan-Mu kami mati, dan kepada-Mu kebangkitan.","e":"Ya Allah, dengan-Mu kami memasuki waktu petang, dengan-Mu kami memasuki waktu pagi, dengan-Mu kami hidup, dengan-Mu kami mati, dan kepada-Mu tempat kembali."}},{"n":5,"c":1,"w":"b","ar":{"m":"اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلاَّ أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لاَ يَغْفِرُ الذُّنوبَ إِلاَّ أَنْتَ"},"en":{"m":"O Allah, You are my Lord, none has the right to be worshipped except You, You created me and I am Your servant and I abide to Your covenant and promise as best I can, I take refuge in You from the evil of which I have committed. I acknowledge Your favour upon me and I acknowledge my sin, so forgive me, for verily none can forgive sin except You."},"id":{"m":"Ya Allah, Engkaulah Tuhanku, tidak ada sembahan yang berhak disembah selain Engkau. Engkau menciptakanku dan aku adalah hamba-Mu. Aku berada di atas perjanjian dan janji-Mu semampuku. Aku berlindung kepada-Mu dari keburukan perbuatanku. Aku mengakui nikmat-Mu kepadaku dan aku mengakui dosaku, maka ampunilah aku, karena sesungguhnya tidak ada yang mengampuni dosa kecuali Engkau."}},{"n":6,"c":4,"w":"b","ar":{"m":"اللَّهُمَّ إِنِّي أَصْبَحْتُ أُشْهِدُكَ، وَأُشْهِدُ حَمَلَةَ عَرْشِكَ، وَمَلاَئِكَتِكَ، وَجَمِيعَ خَلْقِكَ، أَنَّكَ أَنْتَ اللَّهُ لَا إِلَهَ إِلاَّ أَنْتَ وَحْدَكَ لاَ شَرِيكَ لَكَ، وَأَنَّ مُحَمَّداً عَبْدُكَ وَرَسُولُكَ","e":"اللَّهُمَّ إِنِّي أَمْسَيْتُ أُشْهِدُكَ، وَأُشْهِدُ حَمَلَةَ عَرْشِكَ، وَمَلاَئِكَتِكَ، وَجَمِيعَ خَلْقِكَ، أَنَّكَ أَنْتَ اللَّهُ لَا إِلَهَ إِلاَّ أَنْتَ وَحْدَكَ لاَ شَرِيكَ لَكَ، وَأَنَّ مُحَمَّداً عَبْدُكَ وَرَسُولُكَ"},"en":{"m":"O Allah, verily I have reached the morning and call on You, the bearers of Your throne, Your angels, and all of Your creation to witness that You are Allah, none has the right to be worshipped except You, alone, without partner and that Muhammad is Your Servant and Messenger.","e":"O Allah, verily I have reached the evening and call on You, the bearers of Your throne, Your angels, and all of Your creation to witness that You are Allah, none has the right to be worshipped except You, alone, without partner and that Muhammad is Your Servant and Messenger."},"id":{"m":"Ya Allah, sesungguhnya aku telah memasuki waktu pagi; aku mempersaksikan Engkau, para pemikul Arsy-Mu, para malaikat-Mu, dan seluruh makhluk-Mu, bahwa Engkaulah Allah, tidak ada sembahan yang berhak disembah selain Engkau semata, tidak ada sekutu bagi-Mu, dan bahwa Muhammad adalah hamba dan utusan-Mu.","e":"Ya Allah, sesungguhnya aku telah memasuki waktu petang; aku mempersaksikan Engkau, para pemikul Arsy-Mu, para malaikat-Mu, dan seluruh makhluk-Mu, bahwa Engkaulah Allah, tidak ada sembahan yang berhak disembah selain Engkau semata, tidak ada sekutu bagi-Mu, dan bahwa Muhammad adalah hamba dan utusan-Mu."}},{"n":7,"c":1,"w":"b","ar":{"m":"اللَّهُمَّ مَا أَصْبَحَ بِي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ فَمِنْكَ وَحْدَكَ لاَ شَرِيكَ لَكَ، فَلَكَ الْحَمْدُ وَلَكَ الشُّكْرُ","e":"اللَّهُمَّ مَا أَمْسَى بِي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ فَمِنْكَ وَحْدَكَ لاَ شَرِيكَ لَكَ، فَلَكَ الْحَمْدُ وَلَكَ الشُّكْرُ"},"en":{"m":"O Allah, what blessing I or any of Your creation have risen upon, is from You alone, without partner, so for You is all praise and unto You all thanks."},"id":{"m":"Ya Allah, nikmat apa pun yang sampai kepadaku atau kepada salah satu makhluk-Mu pada waktu pagi ini, semuanya dari-Mu semata, tidak ada sekutu bagi-Mu. Maka bagi-Mu segala puji dan bagi-Mu segala syukur.","e":"Ya Allah, nikmat apa pun yang sampai kepadaku atau kepada salah satu makhluk-Mu pada waktu petang ini, semuanya dari-Mu semata, tidak ada sekutu bagi-Mu. Maka bagi-Mu segala puji dan bagi-Mu segala syukur."}},{"n":8,"c":3,"w":"b","ar":{"m":"اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي، لاَ إِلَهَ إِلاَّ أَنْتَ. اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكُفْرِ، وَالفَقْرِ، وَأَعُوذُ بِكَ مِنْ عَذَابِ القَبْرِ، لاَ إِلَهَ إِلاَّ أَنْتَ"},"en":{"m":"O Allah, grant my body health, O Allah, grant my hearing health, O Allah, grant my sight health. None has the right to be worshipped except You. O Allah, I take refuge with You from disbelief and poverty, and I take refuge with You from the punishment of the grave. None has the right to be worshipped except You."},"id":{"m":"Ya Allah, sehatkanlah badanku. Ya Allah, sehatkanlah pendengaranku. Ya Allah, sehatkanlah penglihatanku. Tidak ada sembahan yang berhak disembah selain Engkau. Ya Allah, aku berlindung kepada-Mu dari kekufuran dan kefakiran, dan aku berlindung kepada-Mu dari azab kubur. Tidak ada sembahan yang berhak disembah selain Engkau."}},{"n":9,"c":7,"w":"b","ar":{"m":"حَسْبِيَ اللَّهُ لاَ إِلَهَ إِلاَّ هُوَ عَلَيهِ تَوَكَّلتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ"},"en":{"m":"Allah is Sufficient for me, none has the right to be worshipped except Him, upon Him I rely and He is Lord of the exalted throne."},"id":{"m":"Cukuplah Allah bagiku, tidak ada sembahan yang berhak disembah selain Dia. Hanya kepada-Nya aku bertawakal, dan Dia adalah Tuhan Arsy yang agung."}},{"n":10,"c":1,"w":"b","ar":{"m":"اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالآخِرَةِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ: فِي دِينِي وَدُنْيَايَ وَأَهْلِي، وَمَالِي، اللَّهُمَّ اسْتُرْ عَوْرَاتِي، وَآمِنْ رَوْعَاتِي، اللَّهُمَّ احْفَظْنِي مِنْ بَينِ يَدَيَّ، وَمِنْ خَلْفِي، وَعَنْ يَمِينِي، وَعَنْ شِمَالِي، وَمِنْ فَوْقِي، وَأَعُوذُ بِعَظَمَتِكَ أَنْ أُغْتَالَ مِنْ تَحْتِي"},"en":{"m":"O Allah, I ask You for pardon and well-being in this life and the next. O Allah, I ask You for pardon and well-being in my religious and worldly affairs, and my family and my wealth. O Allah, veil my weaknesses and set at ease my dismay. O Allah, preserve me from the front and from behind and on my right and on my left and from above, and I take refuge with You lest I be swallowed up by the earth."},"id":{"m":"Ya Allah, aku memohon kepada-Mu ampunan dan keselamatan di dunia dan akhirat. Ya Allah, aku memohon kepada-Mu ampunan dan keselamatan dalam agamaku, duniaku, keluargaku, dan hartaku. Ya Allah, tutupilah aibku dan tenteramkanlah kegelisahanku. Ya Allah, jagalah aku dari depan, belakang, kanan, kiri, dan dari atasku, dan aku berlindung dengan keagungan-Mu agar aku tidak dibinasakan dari bawahku."}},{"n":11,"c":1,"w":"b","ar":{"m":"اللَّهُمَّ عَالِمَ الغَيْبِ وَالشَّهَادَةِ فَاطِرَ السَّمَوَاتِ وَالْأَرْضِ، رَبَّ كُلِّ شَيْءٍ وَمَلِيكَهُ، أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ أَنْتَ، أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي، وَمِنْ شَرِّ الشَّيْطانِ وَشَرَكِهِ، وَأَنْ أَقْتَرِفَ عَلَى نَفْسِي سُوءاً، أَوْ أَجُرَّهُ إِلَى مُسْلِمٍ"},"en":{"m":"O Allah, Knower of the unseen and the seen, Creator of the heavens and the Earth, Lord and Sovereign of all things, I bear witness that none has the right to be worshipped except You. I take refuge in You from the evil of my soul and from the evil and shirk of the devil, and from committing wrong against my soul or bringing such upon another Muslim."},"id":{"m":"Ya Allah, Yang Mengetahui perkara gaib dan nyata, Pencipta langit dan bumi, Tuhan dan Pemilik segala sesuatu, aku bersaksi bahwa tidak ada sembahan yang berhak disembah selain Engkau. Aku berlindung kepada-Mu dari keburukan diriku, dari keburukan setan dan ajakan syiriknya, dan dari melakukan kejahatan terhadap diriku atau menimpakannya kepada seorang muslim."}},{"n":12,"c":3,"w":"b","ar":{"m":"بِسْمِ اللَّهِ الَّذِي لاَ يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلاَ فِي السّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ"},"en":{"m":"In the name of Allah with whose name nothing is harmed on earth nor in the heavens and He is The All-Seeing, The All-Knowing."},"id":{"m":"Dengan nama Allah, yang bersama nama-Nya tidak ada sesuatu pun di bumi dan di langit yang dapat membahayakan, dan Dia Maha Mendengar lagi Maha Mengetahui."}},{"n":13,"c":3,"w":"b","ar":{"m":"رَضِيتُ بِاللَّهِ رَبَّاً، وَبِالْإِسْلاَمِ دِيناً، وَبِمُحَمَّدٍ صلى الله عليه وسلم نَبِيّاً"},"en":{"m":"I am pleased with Allah as a Lord, and Islam as a religion and Muhammad as a Prophet."},"id":{"m":"Aku ridha Allah sebagai Tuhan, Islam sebagai agama, dan Muhammad sebagai nabi."}},{"n":14,"c":1,"w":"b","ar":{"m":"يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغيثُ أَصْلِحْ لِي شَأْنِيَ كُلَّهُ وَلاَ تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ"},"en":{"m":"O Ever Living, O Self-Subsisting and Supporter of all, by Your mercy I seek assistance, rectify for me all of my affairs and do not leave me to myself, even for the blink of an eye."},"id":{"m":"Wahai Yang Mahahidup, wahai Yang terus-menerus mengurus makhluk-Nya, dengan rahmat-Mu aku memohon pertolongan. Perbaikilah seluruh urusanku dan jangan serahkan aku kepada diriku sendiri walau sekejap mata."}},{"n":15,"c":1,"w":"b","ar":{"m":"أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ رَبِّ الْعَالَمِينَ، اللَّهُـمَّ إِنِّي أَسْأَلُكَ خَيْرَ هَذَا الْيَوْمِ:فَتْحَهُ، وَنَصْرَهُ، وَنورَهُ، وَبَرَكَتَهُ، وَهُدَاهُ، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِيهِ وَشَرِّ مَا بَعْدَهُ","e":"أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ رَبِّ الْعَالَمِينَ، اللَّهُـمَّ إِنِّي أَسْأَلُكَ خَيْرَ هَذِهِ اللَّيْلَةِ: فَتْحَهَا، وَنَصْرَهَا، وَنُورَهَا، وَبَرَكَتَهَا، وَهُدَاهَا، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِيهَا وَشَرِّ مَا بَعْدَهَا"},"en":{"m":"We have reached the morning and at this very time all sovereignty belongs to Allah, Lord of the worlds. O Allah, I ask You for the good of this day, its triumphs and its victories, its light and its blessings and its guidance, and I take refuge in You from the evil of this day and the evil that follows it.","e":"We have reached the evening and at this very time all sovereignty belongs to Allah, Lord of the worlds. O Allah, I ask You for the good of tonight, its triumphs and its victories, its light and its blessings and its guidance, and I take refuge in You from the evil of tonight and the evil that follows it."},"id":{"m":"Kami memasuki waktu pagi dan kerajaan milik Allah, Tuhan semesta alam. Ya Allah, aku memohon kepada-Mu kebaikan hari ini: kemenangannya, pertolongannya, cahayanya, keberkahannya, dan petunjuknya. Aku berlindung kepada-Mu dari keburukan yang ada di dalamnya dan keburukan sesudahnya.","e":"Kami memasuki waktu petang dan kerajaan milik Allah, Tuhan semesta alam. Ya Allah, aku memohon kepada-Mu kebaikan malam ini: kemenangannya, pertolongannya, cahayanya, keberkahannya, dan petunjuknya. Aku berlindung kepada-Mu dari keburukan yang ada di dalamnya dan keburukan sesudahnya."}},{"n":16,"c":1,"w":"b","ar":{"m":"أَصْبَحْنا عَلَى فِطْرَةِ الْإِسْلاَمِ، وَعَلَى كَلِمَةِ الْإِخْلاَصِ، وَعَلَى دِينِ نَبِيِّنَا مُحَمَّدٍ صلى الله عليه وسلم، وَعَلَى مِلَّةِ أَبِينَا إِبْرَاهِيمَ، حَنِيفاً مُسْلِماً وَمَا كَانَ مِنَ الْمُشرِكِينَ","e":"أَمْسَيْنَا عَلَى فِطْرَةِ الْإِسْلاَمِ، وَعَلَى كَلِمَةِ الْإِخْلاَصِ، وَعَلَى دِينِ نَبِيِّنَا مُحَمَّدٍ صلى الله عليه وسلم، وَعَلَى مِلَّةِ أَبِينَا إِبْرَاهِيمَ، حَنِيفاً مُسْلِماً وَمَا كَانَ مِنَ الْمُشرِكِينَ"},"en":{"m":"We have reached the morning upon the fitrah of Islam, and the word of pure faith, and upon the religion of our Prophet Muhammad and the religion of our forefather Ibraheem, who was a Muslim and of true faith and was not of those who associate others with Allah.","e":"We have reached the evening upon the fitrah of Islam, and the word of pure faith, and upon the religion of our Prophet Muhammad and the religion of our forefather Ibraheem, who was a Muslim and of true faith and was not of those who associate others with Allah."},"id":{"m":"Kami memasuki waktu pagi di atas fitrah Islam, di atas kalimat ikhlas, di atas agama nabi kami Muhammad, dan di atas agama bapak kami Ibrahim, yang lurus lagi muslim, dan beliau bukan termasuk orang-orang musyrik.","e":"Kami memasuki waktu petang di atas fitrah Islam, di atas kalimat ikhlas, di atas agama nabi kami Muhammad, dan di atas agama bapak kami Ibrahim, yang lurus lagi muslim, dan beliau bukan termasuk orang-orang musyrik."}},{"n":17,"c":100,"w":"b","ar":{"m":"سُبْحَانَ اللَّهِ وَبِحَمْدِهِ"},"en":{"m":"How perfect Allah is and I praise Him."},"id":{"m":"Mahasuci Allah dan dengan memuji-Nya."}},{"n":18,"c":10,"w":"b","ar":{"m":"لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ"},"en":{"m":"None has the right to be worshipped except Allah, alone, without partner, to Him belongs all sovereignty and praise, and He is over all things omnipotent."},"id":{"m":"Tidak ada sembahan yang berhak disembah selain Allah semata, tidak ada sekutu bagi-Nya. Milik-Nya kerajaan dan milik-Nya segala puji, dan Dia Mahakuasa atas segala sesuatu."},"note":{"id":"Sepuluh kali, atau sekali jika sedang malas.","en":"Ten times, or once if feeling lazy."}},{"n":19,"c":100,"w":"a","ar":{"m":"لاَ إِلَهَ إِلاَّ اللَّهُ، وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ"},"en":{"m":"None has the right to be worshipped except Allah, alone, without partner, to Him belongs all sovereignty and praise, and He is over all things omnipotent."},"id":{"m":"Tidak ada sembahan yang berhak disembah selain Allah semata, tidak ada sekutu bagi-Nya. Milik-Nya kerajaan dan milik-Nya segala puji, dan Dia Mahakuasa atas segala sesuatu."},"note":{"id":"Seratus kali, dibaca di pagi hari.","en":"One hundred times, recited in the morning."}},{"n":20,"c":3,"w":"a","ar":{"m":"سُبْحَانَ اللَّهِ وَبِحَمْدِهِ: عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ"},"en":{"m":"How perfect Allah is and I praise Him by the number of His creation and His pleasure, and by the weight of His throne, and the ink of His words."},"id":{"m":"Mahasuci Allah dan dengan memuji-Nya, sebanyak bilangan makhluk-Nya, sesuai keridhaan-Nya, seberat Arsy-Nya, dan sebanyak tinta kalimat-kalimat-Nya."}},{"n":21,"c":1,"w":"a","ar":{"m":"اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْماً نَافِعاً، وَرِزْقاً طَيِّباً، وَعَمَلاً مُتَقَبَّلاً"},"en":{"m":"O Allah, I ask You for knowledge which is beneficial and sustenance which is good, and deeds which are acceptable."},"id":{"m":"Ya Allah, aku memohon kepada-Mu ilmu yang bermanfaat, rezeki yang baik, dan amal yang diterima."}},{"n":22,"c":100,"w":"b","ar":{"m":"أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ"},"en":{"m":"I seek Allaah’s forgiveness and I turn to Him in repentance."},"id":{"m":"Aku memohon ampun kepada Allah dan bertobat kepada-Nya."},"note":{"id":"Seratus kali dalam sehari.","en":"One hundred times a day."}},{"n":23,"c":3,"w":"p","ar":{"m":"أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ"},"en":{"m":"I take refuge in Allah’s perfect words from the evil He has created."},"id":{"m":"Aku berlindung dengan kalimat-kalimat Allah yang sempurna dari keburukan makhluk yang Dia ciptakan."}},{"n":24,"c":10,"w":"b","ar":{"m":"اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبَيِّنَا مُحَمَّدٍ"},"en":{"m":"O Allaah, send prayers and peace upon our Prophet Muhammad."},"id":{"m":"Ya Allah, limpahkanlah shalawat dan salam kepada nabi kami Muhammad."}}];
 var dzP=null;
+function dzList(){return DZ.filter(function(d){return !((d.w==='a'&&dzP!=='am')||(d.w==='p'&&dzP!=='pm'));});}
+function dzNeed(d){return Math.min(d.c,state.cap===20?20:10);}
 function renderDz(){
   if(!dzP)dzP=new Date().getHours()<12?'am':'pm';
   $('#dzAm').setAttribute('aria-pressed',String(dzP==='am'));
   $('#dzPm').setAttribute('aria-pressed',String(dzP==='pm'));
-  var h='',k=0,ev=dzP==='pm';
+  $('#cap10').setAttribute('aria-pressed',String(state.cap!==20));
+  $('#cap20').setAttribute('aria-pressed',String(state.cap===20));
+  var day=(state.dz&&state.dz[todayStr]&&state.dz[todayStr][dzP])||{},h='',k=0,dn=0,ev=dzP==='pm';
   function pk(o){return ev&&o.e?o.e:o.m;}
-  DZ.forEach(function(d){
-    if((d.w==='a'&&!(dzP==='am'))||(d.w==='p'&&!(dzP==='pm')))return;
+  dzList().forEach(function(d){
     k++;
-    h+='<article class="dz"><div class="dzh"><span class="dzn">'+k+'</span><span class="dzc">'+d.c+'\u00d7</span></div>'+
+    var need=dzNeed(d),step=Math.ceil(d.c/need),tp=day[d.n]||0,ok=tp>=need;
+    if(ok)dn++;
+    h+='<article class="dz"><div class="dzh"><span class="dzl"><span class="dzn">'+k+'</span><span class="dzt">'+d.c+'\u00d7</span></span>'+
+      '<button class="dzc'+(ok?' ok':'')+'" data-n="'+d.n+'" aria-label="Count"><span>'+tp+'/'+need+'</span>'+(step>1?'<small>@'+step+'\u00d7</small>':'')+'</button></div>'+
       '<p class="ar" lang="ar" dir="rtl">'+esc(pk(d.ar))+'</p>'+
       '<p class="en" lang="en"><b>EN</b>'+esc(pk(d.en))+'</p>'+
       '<p class="idn" lang="id"><b>ID</b>'+esc(pk(d.id))+'</p>'+
       (d.note?'<p class="dzx">'+esc(d.note.id)+' / '+esc(d.note.en)+'</p>':'')+'</article>';
   });
   $('#dzList').innerHTML=h;
+  $('#dzProg').textContent=(k&&dn===k)?(dzP==='am'?'Dzikir pagi selesai':'Dzikir petang selesai'):'Selesai '+dn+'/'+k;
 }
+$('#dzList').onclick=function(e){
+  var b=e.target.closest('[data-n]');if(!b)return;
+  var n=Number(b.dataset.n),d=DZ.filter(function(x){return x.n===n;})[0];if(!d)return;
+  state.dz=state.dz||{};
+  var dd=state.dz[todayStr]=state.dz[todayStr]||{},day=dd[dzP]=dd[dzP]||{};
+  var tp=day[n]||0;day[n]=tp>=dzNeed(d)?0:tp+1;
+  var all=dzList().every(function(x){return (day[x.n]||0)>=dzNeed(x);});
+  if(all)dd['d_'+dzP]=1;else delete dd['d_'+dzP];
+  persist();renderDz();
+};
+$('#cap10').onclick=function(){state.cap=10;persist();renderDz();};
+$('#cap20').onclick=function(){state.cap=20;persist();renderDz();};
 $('#dzAm').onclick=function(){dzP='am';renderDz();};
 $('#dzPm').onclick=function(){dzP='pm';renderDz();};
 var TABS=['day','dz','hist','data'],sx=0,sy=0,st0=0,sTg=null;
@@ -1555,12 +1656,208 @@ document.addEventListener('touchend',function(e){
   sTg=null;
   if(Math.abs(dx)<70||Math.abs(dy)>Math.abs(dx)*0.6||Date.now()-st0>700)return;
   if(drag||document.body.classList.contains('sh')||!$('#paste').hidden||document.querySelector('.ov'))return;
-  if(el.closest&&el.closest('.chips,input,textarea,select,.drag,.pv,.add,.paste,.chart,.daychips,.modal,.cal'))return;
+  if(el.closest&&el.closest('.chips,input,textarea,select,.drag,.pv,.add,.paste,.chart,.daychips,.modal,.cal,.item,.lockbox'))return;
   var ci=-1;
   TABS.forEach(function(n,i){if(!$('#v-'+n).hidden)ci=i;});
   var ni=ci+(dx<0?1:-1);
   if(ci>=0&&ni>=0&&ni<TABS.length)tab(TABS[ni]);
 },{passive:true});
+
+/* ---------- fitur lanjutan ---------- */
+var openSubs={};
+function L(a,b){return LANG==='en'?b:a;}
+function findTask(id){return state.tasks.find(function(x){return x.id===id;});}
+function moveTomorrow(t){
+  var tm=addDays(cur,1);
+  if(t.rec){
+    t.skip=t.skip||{};t.skip[cur]=true;
+    state.tasks.push({id:uid(),text:t.text,pri:t.pri,cat:t.cat||'',note:t.note||'',sub:(t.sub||[]).slice(),rec:false,date:tm,done:{},from:cur});
+  }else{t.date=tm;t.done={};delete t.sd;}
+  save();renderDay();toast('Dipindahkan ke besok');
+}
+$('#list').addEventListener('change',function(e){
+  var c=e.target.closest('[data-si]');if(!c)return;
+  var li=c.closest('[data-id]'),t=li&&findTask(li.dataset.id);if(!t)return;
+  var i=Number(c.dataset.si),a=((t.sd&&t.sd[cur])||[]).slice(),k=a.indexOf(i);
+  t.sd=t.sd||{};
+  if(c.checked&&k<0)a.push(i);
+  if(!c.checked&&k>=0)a.splice(k,1);
+  if(a.length)t.sd[cur]=a;else delete t.sd[cur];
+  save();renderDay();
+});
+var iw=null;
+$('#list').addEventListener('touchstart',function(e){
+  var li=e.target.closest('.item');
+  if(!li||selMode||document.body.classList.contains('sh')||e.target.closest('button,input,label,.drag')){iw=null;return;}
+  var t=e.touches[0];iw={id:li.dataset.id,x:t.clientX,y:t.clientY,t:Date.now()};
+},{passive:true});
+$('#list').addEventListener('touchend',function(e){
+  if(!iw)return;
+  var s0=iw,t=e.changedTouches[0],dx=t.clientX-s0.x,dy=t.clientY-s0.y;
+  iw=null;
+  if($('#list').classList.contains('manual'))return;
+  if(Math.abs(dx)<90||Math.abs(dy)>Math.abs(dx)*0.5||Date.now()-s0.t>600)return;
+  var task=findTask(s0.id);if(!task)return;
+  if(dx>0){task.done=task.done||{};if(task.done[cur])delete task.done[cur];else task.done[cur]=true;save();renderDay();}
+  else askDelete(task);
+},{passive:true});
+
+/* tema */
+var THEMES=['dark','light','auto'];
+function themeMode(){try{return localStorage.getItem('todo-theme')||'dark';}catch(e){return 'dark';}}
+function applyTheme(){
+  var m=themeMode(),mq=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)');
+  var r=m==='auto'?(mq&&mq.matches?'light':'dark'):m;
+  document.documentElement.setAttribute('data-theme',r);
+  var mt=document.querySelector('meta[name=theme-color]');if(mt)mt.content=r==='light'?'#f4f3fb':'#0b0d1a';
+}
+$('#thm').onclick=function(){
+  var n=THEMES[(THEMES.indexOf(themeMode())+1)%3];
+  try{localStorage.setItem('todo-theme',n);}catch(e){}
+  applyTheme();toast(n==='dark'?'Tema gelap':n==='light'?'Tema terang':'Tema otomatis');
+};
+try{window.matchMedia('(prefers-color-scheme: light)').addEventListener('change',applyTheme);}catch(e){}
+applyTheme();
+
+/* ringkasan mingguan dan riwayat dzikir */
+function weekStats(o){
+  var r={total:0,done:0,on:0,off:0,best:null,bestPct:-1,cats:{}},i,d;
+  for(i=0;i<7;i++){
+    d=addDays(todayStr,-(o*7+i));
+    var l=tasksOn(d),dn=0;
+    l.forEach(function(t){
+      var v=t.done&&t.done[d];
+      r.total++;
+      if(v){r.done++;dn++;if(v===2)r.off++;else r.on++;}
+      (catList(t).length?catList(t):['Tanpa kategori']).forEach(function(c){var x=r.cats[c]||(r.cats[c]={t:0,n:0});x.t++;if(v)x.n++;});
+    });
+    if(l.length&&dn/l.length>r.bestPct){r.bestPct=dn/l.length;r.best=d;}
+  }
+  return r;
+}
+function renderWeek(){
+  var a=weekStats(0),b=weekStats(1),box=$('#weekSum');
+  if(!a.total){box.innerHTML='<p>'+L('Belum cukup data minggu ini.','Not enough data this week yet.')+'</p>';return;}
+  var pa=Math.round(a.done/a.total*100),pb=b.total?Math.round(b.done/b.total*100):null;
+  var dl=pb===null?'':' ('+(pa-pb>=0?'+':'')+(pa-pb)+' '+L('dibanding minggu lalu','vs last week')+')';
+  var rate=a.done?Math.round(a.on/a.done*100):0,worst=null;
+  Object.keys(a.cats).forEach(function(c){var x=a.cats[c];if(x.t>=3){var q=x.n/x.t;if(!worst||q<worst.q)worst={c:c,q:q};}});
+  box.innerHTML='<p><b>'+pa+'%</b> '+L('selesai','completed')+dl+'</p>'+
+    '<p>'+L('Sesuai target','On target')+': '+rate+'% '+L('dari yang selesai','of completed')+'. '+L('Tidak sesuai target','Off target')+': '+a.off+'</p>'+
+    (a.best&&a.bestPct>0?'<p>'+L('Hari terbaik','Best day')+': '+shortDate(a.best)+' ('+Math.round(a.bestPct*100)+'%)</p>':'')+
+    (worst?'<p>'+L('Paling sering terlewat','Most missed')+': '+esc(worst.c==='Tanpa kategori'?L('Tanpa kategori','No category'):worst.c)+' ('+Math.round(worst.q*100)+'% '+L('selesai','done')+')</p>':'');
+}
+function renderDzHist(){
+  var h='';
+  ['am','pm'].forEach(function(p){
+    var n=0,dots='',i,d,ok;
+    for(i=6;i>=0;i--){d=addDays(todayStr,-i);ok=!!(state.dz&&state.dz[d]&&state.dz[d]['d_'+p]);if(ok)n++;dots+='<i class="dot'+(ok?' on':'')+'"></i>';}
+    h+='<div class="hrow" style="cursor:default"><span>'+(p==='am'?L('Pagi','Morning'):L('Petang','Evening'))+'</span><small>'+n+'/7</small><span class="dots">'+dots+'</span></div>';
+  });
+  $('#dzHist').innerHTML=h;
+}
+
+/* pulihkan versi lama dari riwayat gist */
+$('#gRes').onclick=function(){
+  var sy=state.sync;
+  if(!sy||!sy.gid||!sy.pw){toast('Hubungkan sinkron dulu');return;}
+  setStat('Memuat riwayat...');
+  gh('/gists/'+sy.gid+'/commits?per_page=15').then(function(list){
+    setStat('');
+    var btns=list.slice(0,10).map(function(c){
+      return{label:new Date(c.committed_at).toLocaleString([],{dateStyle:'medium',timeStyle:'short'}),cls:'sec',fn:function(){pickRev(c.version);}};
+    });
+    btns.push({label:'Batal'});
+    modal('Pulihkan versi lama','Pilih salah satu versi untuk dipulihkan.',btns);
+  }).catch(function(e){setStat('Gagal: '+(e.message||'tidak ada koneksi'));});
+};
+function pickRev(v){
+  var sy=state.sync;
+  setStat('Memuat versi...');
+  gh('/gists/'+sy.gid+'/'+v).then(readFile).then(function(env){
+    if(!env||!env.data)throw new Error('Versi ini kosong');
+    return decrypt(env,sy.pw);
+  }).then(function(o){
+    setStat('');
+    modal('Pulihkan '+(o.tasks||[]).length+' kegiatan?','Kegiatan saat ini akan diganti oleh isi versi ini. Anda masih bisa menekan Urungkan.',[
+      {label:'Pulihkan',cls:'pri',fn:function(){restoreTasks(o);}},{label:'Batal'}
+    ]);
+  }).catch(function(e){setStat('Gagal: '+(e.message||'data tidak terbaca'));});
+}
+function restoreTasks(o){
+  var tn=Date.now(),has={},had={},k;
+  state.tomb=state.tomb||{};
+  state.tasks.forEach(function(t){had[t.id]=1;});
+  state.tasks=(o.tasks||[]).filter(function(t){return t&&t.id&&typeof t.text==='string';});
+  state.tasks.forEach(function(t){has[t.id]=1;t.u=tn;delete state.tomb[t.id];});
+  for(k in had)if(!has[k])state.tomb[k]=tn;
+  if(Array.isArray(o.tpls)){state.tpls=o.tpls;state.tplsU=tn;}
+  state.order=state.tasks.map(function(t){return t.id;});state.orderU=tn;
+  save();renderDay();doSync();toast('Versi dipulihkan');
+}
+
+/* kunci PIN */
+var PK=null,hideAt=0,lkMode='unlock';
+function showLock(on,mode){
+  $('#lock').hidden=!on;
+  if(!on)return;
+  lkMode=mode||'unlock';
+  var st=lkMode==='set';
+  $('#lkT').textContent=st?'Atur PIN baru':'Terkunci';
+  $('#lkP').textContent=st?'Gunakan minimal 6 karakter.':'Masukkan PIN untuk membuka.';
+  $('#lkIn').value='';$('#lkIn2').value='';$('#lkErr').textContent='';
+  $('#lkIn2').hidden=!st;$('#lkX').hidden=!st;
+  $('#lkGo').textContent=st?'Simpan':'Buka';
+  setTimeout(function(){$('#lkIn').focus();},50);
+}
+function lockNow(){
+  if(state.sync){delete state.sync.token;delete state.sync.pw;}
+  PK=null;renderSync();showLock(true,'unlock');
+}
+function saveVault(){
+  var sy=state.sync||{};
+  return encrypt({token:sy.token||'',pw:sy.pw||''},PK.pin,PK.salt).then(function(env){state.vault=env;persist();});
+}
+$('#lkGo').onclick=function(){
+  var p1=$('#lkIn').value;
+  if(lkMode==='unlock'){
+    if(!state.vault){showLock(false);return;}
+    decrypt(state.vault,p1).then(function(o){
+      PK={pin:p1,salt:unb64(state.vault.salt)};
+      if(state.sync&&o.token){state.sync.token=o.token;state.sync.pw=o.pw;}
+      showLock(false);renderSync();doSync();
+    }).catch(function(){$('#lkErr').textContent='PIN salah.';$('#lkIn').value='';});
+  }else{
+    if(p1.length<6){$('#lkErr').textContent='PIN minimal 6 karakter.';return;}
+    if(p1!==$('#lkIn2').value){$('#lkErr').textContent='PIN tidak sama.';return;}
+    PK={pin:p1,salt:crypto.getRandomValues(new Uint8Array(16))};
+    saveVault().then(function(){showLock(false);renderPin();toast('PIN disimpan');});
+  }
+};
+$('#lkX').onclick=function(){showLock(false);};
+['lkIn','lkIn2'].forEach(function(id){$('#'+id).addEventListener('keydown',function(e){if(e.key==='Enter')$('#lkGo').click();});});
+function renderPin(){
+  var on=!!state.vault;
+  $('#pinStat').textContent=on?'PIN aktif.':'PIN belum diatur.';
+  $('#pinSet').textContent=on?'Ubah PIN':'Atur PIN';
+  $('#pinNow').hidden=!on;$('#pinOff').hidden=!on;
+}
+$('#pinSet').onclick=function(){
+  if(!(window.crypto&&crypto.subtle)){toast('Browser ini tidak mendukung enkripsi');return;}
+  showLock(true,'set');
+};
+$('#pinNow').onclick=lockNow;
+$('#pinOff').onclick=function(){
+  modal('Hapus PIN?','Token dan kata sandi sinkron akan tersimpan tanpa PIN di perangkat ini.',[
+    {label:'Hapus PIN',cls:'dng',fn:function(){state.vault=null;PK=null;persist();renderPin();toast('PIN dihapus');}},
+    {label:'Batal'}
+  ]);
+};
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden){hideAt=Date.now();return;}
+  if(PK&&state.vault&&Date.now()-hideAt>300000)lockNow();
+});
+function initPin(){renderPin();if(state.vault)showLock(true,'unlock');}
 
 /* ---------- list actions ---------- */
 $('#chips').onclick=function(e){
@@ -1589,11 +1886,17 @@ $('#list').onclick=function(e){
     if(!t.done)t.done={};
     if(t.done[cur])delete t.done[cur];else t.done[cur]=true;
     save();renderDay();
+  }else if(act==='tgt'){
+    t.done[cur]=(t.done[cur]===2)?true:2;save();renderDay();
+  }else if(act==='sub'){
+    openSubs[t.id]=!openSubs[t.id];renderDay();
+  }else if(act==='tom'){
+    moveTomorrow(t);
   }else if(act==='note'){
     openNotes[t.id]=!openNotes[t.id];renderDay();
   }else if(act==='edit'){
     editing=t.id;
-    $('#fText').value=t.text;$('#fPri').value=String(t.pri);$('#fCat').value=t.cat||'';renderCatSug();$('#fNote').value=t.note||'';
+    $('#fText').value=t.text;$('#fPri').value=String(t.pri);$('#fCat').value=t.cat||'';renderCatSug();$('#fNote').value=t.note||'';$('#fSub').value=(t.sub||[]).join('\n');
     $('#fRep').value=t.rec?(t.freq||'daily'):'none';
     fDays=t.rec&&(t.freq==='weekly')?weekDays(t).slice():[];
     updateRep();
@@ -1747,8 +2050,10 @@ function doImport(txt){
       note:typeof t.note==='string'?t.note.slice(0,1000):'',
       rec:!!t.rec,done:{}
     };
-    if(t.done&&typeof t.done==='object')Object.keys(t.done).forEach(function(k){if(t.done[k]&&isDate(k))n.done[k]=true;});
+    if(t.done&&typeof t.done==='object')Object.keys(t.done).forEach(function(k){if(t.done[k]&&isDate(k))n.done[k]=t.done[k]===2?2:true;});
     if(t.skip&&typeof t.skip==='object'){n.skip={};Object.keys(t.skip).forEach(function(k){if(isDate(k))n.skip[k]=true;});}
+    if(Array.isArray(t.sub))n.sub=t.sub.map(String).slice(0,30);
+    if(t.sd&&typeof t.sd==='object'){n.sd={};Object.keys(t.sd).forEach(function(k){if(isDate(k)&&Array.isArray(t.sd[k]))n.sd[k]=t.sd[k].map(Number).filter(function(i){return i>=0;});});}
     if(n.rec){
       n.freq=['daily','weekly','monthly'].indexOf(t.freq)>=0?t.freq:'daily';
       n.start=isDate(t.start)?t.start:todayStr;
@@ -1804,6 +2109,7 @@ $('#warn').hidden=!memOnly;
 renderDay();
 renderSync();
 initLang();
+initPin();
 doSync();
 })();
 </script>
