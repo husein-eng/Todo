@@ -312,6 +312,12 @@ html[data-theme=light] .ddb.catsel{color:hsl(var(--h) 55% 32%);border-color:hsl(
 .psheet .act{display:flex;margin-top:14px}
 body.psh .scrim{opacity:1;pointer-events:auto}
 @media(min-width:900px){.psheet{max-width:560px;left:auto;right:36px}}
+.tag.miss{cursor:pointer;background:none;border-style:dashed;color:var(--muted)}
+.tag.miss.on{border-style:solid;color:var(--p3);border-color:color-mix(in srgb,var(--p3) 50%,transparent)}
+.item.missed{opacity:.6}
+.item.missed .txt{text-decoration:line-through;text-decoration-color:var(--p3)}
+.item.missed .chk{border-color:var(--p3);border-style:dashed}
+.compact .tag.miss:not(.on){display:none}
 /* Navigasi */
 .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:9}
 .tabs div{display:grid;grid-template-columns:repeat(5,1fr);max-width:640px;margin:0 auto}
@@ -461,6 +467,7 @@ body.psh .scrim{opacity:1;pointer-events:auto}
         <div class="ddm" hidden>
           <button class="orow" data-t="compact" id="tCompact"><span>Ringkas</span><i></i></button>
           <button class="orow" data-t="hide" id="tHide"><span>Sembunyikan selesai</span><i></i></button>
+          <button class="orow" data-t="hidemiss" id="tHideMiss"><span>Sembunyikan terlewat</span><i></i></button>
           <button class="orow" data-t="group" id="tGroup"><span>Kelompok</span><i></i></button>
           <button class="orow" data-t="select" id="tSelect"><span>Pilih</span><i></i></button>
         </div></div>
@@ -596,7 +603,7 @@ body.psh .scrim{opacity:1;pointer-events:auto}
 </div></div>
 <div class="scrim" id="scrim"></div>
 <button class="fab" id="fab" aria-label="Tambah kegiatan">+</button>
-<div class="bulk" id="bulk" hidden><span id="bCount"></span><button class="chip" data-b="all">Semua</button><button class="chip" data-b="done">Selesai</button><button class="chip" data-b="cat">Kategori</button><button class="chip" data-b="move">Pindah</button><button class="chip" data-b="del">Hapus</button><button class="chip" data-b="exit">Batal</button></div>
+<div class="bulk" id="bulk" hidden><span id="bCount"></span><button class="chip" data-b="all">Semua</button><button class="chip" data-b="done">Selesai</button><button class="chip" data-b="miss">Terlewat</button><button class="chip" data-b="cat">Kategori</button><button class="chip" data-b="move">Pindah</button><button class="chip" data-b="del">Hapus</button><button class="chip" data-b="exit">Batal</button></div>
 <button class="undo" id="undo" hidden>Urungkan</button>
 <nav class="tabs" role="tablist"><div>
   <button role="tab" id="t-day" aria-selected="true">Harian</button>
@@ -621,7 +628,7 @@ function load(){
     var r=localStorage.getItem(KEY);
     if(r){
       var p=JSON.parse(r);
-      if(p&&Array.isArray(p.tasks)){state.tasks=p.tasks;state.sort=p.sort==='manual'?'manual':'priority';state.group=!!p.group;state.lock=p.lock===false?false:true;state.collapsed=p.collapsed&&typeof p.collapsed==='object'?p.collapsed:{};state.compact=!!p.compact;state.hide=!!p.hide;state.tpls=Array.isArray(p.tpls)?p.tpls:[];state.sync=p.sync&&(p.sync.token||p.vault)?p.sync:null;state.tomb=p.tomb&&typeof p.tomb==='object'?p.tomb:{};state.tplsU=p.tplsU||0;state.order=Array.isArray(p.order)?p.order:null;state.orderU=p.orderU||0;state.vault=p.vault||null;state.dz=p.dz&&typeof p.dz==='object'?p.dz:{};state.cap=p.cap===20?20:10;state.catHue=p.catHue&&typeof p.catHue==='object'?p.catHue:{};state.dzU=p.dzU&&typeof p.dzU==='object'?p.dzU:{};}
+      if(p&&Array.isArray(p.tasks)){state.tasks=p.tasks;state.sort=p.sort==='manual'?'manual':'priority';state.group=!!p.group;state.hideMiss=!!p.hideMiss;state.lock=p.lock===false?false:true;state.collapsed=p.collapsed&&typeof p.collapsed==='object'?p.collapsed:{};state.compact=!!p.compact;state.hide=!!p.hide;state.tpls=Array.isArray(p.tpls)?p.tpls:[];state.sync=p.sync&&(p.sync.token||p.vault)?p.sync:null;state.tomb=p.tomb&&typeof p.tomb==='object'?p.tomb:{};state.tplsU=p.tplsU||0;state.order=Array.isArray(p.order)?p.order:null;state.orderU=p.orderU||0;state.vault=p.vault||null;state.dz=p.dz&&typeof p.dz==='object'?p.dz:{};state.cap=p.cap===20?20:10;state.catHue=p.catHue&&typeof p.catHue==='object'?p.catHue:{};state.dzU=p.dzU&&typeof p.dzU==='object'?p.dzU:{};}
     }
   }catch(e){memOnly=true;}
 }
@@ -727,7 +734,7 @@ function pendingTasks(){
   var lo=addDays(todayStr,-30);
   return state.tasks.filter(function(t){
     if(t.rec||t.carried||!t.date)return false;
-    if(t.done&&t.done[t.date])return false;
+    if((t.done&&t.done[t.date])||(t.ms&&t.ms[t.date]))return false;
     if(cur===todayStr)return t.date<todayStr&&t.date>=lo;
     return t.date===cur;
   });
@@ -805,7 +812,7 @@ function renderDay(){
 
   var idx={};
   state.tasks.forEach(function(t,i){idx[t.id]=i;});
-  var list=all.filter(function(t){return (!filterCat||hasCat(t,filterCat))&&!(state.hide&&t.done&&t.done[cur]);});
+  var list=all.filter(function(t){return (!filterCat||hasCat(t,filterCat))&&!(state.hide&&t.done&&t.done[cur])&&!(state.hideMiss&&t.ms&&t.ms[cur]);});
   if(state.sort==='priority'){
     list.sort(function(a,b){
       var da=a.done&&a.done[cur]?1:0,db=b.done&&b.done[cur]?1:0;
@@ -823,11 +830,12 @@ function renderDay(){
   var itemHtml=function(t){
     var dn=t.done&&t.done[cur];
     var open=!!openNotes[t.id];
-    var sb=t.sub||[],sdn=(t.sd&&t.sd[cur])||[],sopen=!!openSubs[t.id];
+    var ms=!!(t.ms&&t.ms[cur]),sb=t.sub||[],sdn=(t.sd&&t.sd[cur])||[],sopen=!!openSubs[t.id];
     var tgtH=dn?'<button class="tag tgt'+(dn===2?' off':'')+'" data-act="tgt">'+(dn===2?'Tidak sesuai target':'Sesuai target')+'</button>':'';
+    var missH=dn?'':'<button class="tag miss'+(ms?' on':'')+'" data-act="miss">'+(ms?'Terlewat':'Tandai terlewat')+'</button>';
     var subT=sb.length?'<button class="tag sub" data-act="sub" aria-expanded="'+sopen+'">Checklist '+sdn.length+'/'+sb.length+'</button>':'';
     var subH=(sb.length&&sopen)?'<div class="subs">'+sb.map(function(x,i){return '<label class="srow2"><input type="checkbox" data-si="'+i+'"'+(sdn.indexOf(i)>=0?' checked':'')+'><span>'+esc(x)+'</span></label>';}).join('')+'</div>':'';
-    return '<li class="item p'+t.pri+(dn?' done':'')+(dn===2?' off':'')+(sel[t.id]?' picked':'')+'" data-id="'+t.id+'">'+
+    return '<li class="item p'+t.pri+(dn?' done':'')+(dn===2?' off':'')+(ms?' missed':'')+(sel[t.id]?' picked':'')+'" data-id="'+t.id+'">'+
       (selMode?'<button class="chk pk" data-act="pick" aria-label="Pilih" aria-pressed="'+(!!sel[t.id])+'">&#10003;</button>':'<button class="chk" data-act="toggle" aria-label="Tandai selesai" aria-pressed="'+(!!dn)+'">&#10003;</button>')+
       '<div class="body"><div class="txt">'+esc(t.text)+'</div><div class="meta">'+
         '<span class="tag">'+PRI[t.pri]+'</span>'+
@@ -835,7 +843,7 @@ function renderDay(){
         (t.rec?'<span class="tag rec">'+esc(recLabel(t))+'</span>':'')+
         (t.from?'<span class="tag">Dari '+dm(t.from)+'</span>':'')+
         (t.carried?'<span class="tag">Dipindah</span>':'')+
-        tgtH+subT+(t.note?'<button class="tag note" data-act="note" aria-expanded="'+open+'">Catatan</button>':'')+
+        tgtH+missH+subT+(t.note?'<button class="tag note" data-act="note" aria-expanded="'+open+'">Catatan</button>':'')+
       '</div>'+(t.note&&open?'<div class="notebox">'+esc(t.note)+'</div>':'')+subH+'</div>'+
       '<button class="ic drag" data-act="drag" aria-label="Geser untuk mengubah urutan. Gunakan panah atas dan bawah di keyboard.">&#8801;</button>'+
       '<button class="ic" data-act="tom" aria-label="Pindahkan ke besok">&raquo;</button>'+
@@ -1178,6 +1186,7 @@ function applyPrefs(){
   document.body.classList.toggle('compact',!!state.compact);
   $('#tCompact').setAttribute('aria-pressed',String(!!state.compact));
   $('#tHide').setAttribute('aria-pressed',String(!!state.hide));
+  $('#tHideMiss').setAttribute('aria-pressed',String(!!state.hideMiss));
   $('#tGroup').setAttribute('aria-pressed',String(!!state.group));
   $('#tSelect').setAttribute('aria-pressed',String(selMode));
   var lk=state.lock!==false;
@@ -1274,9 +1283,13 @@ $('#bulk').onclick=function(e){
   if(act==='exit'){finish();return;}
   if(act==='all'){var all=picked.length===vis.length;vis.forEach(function(t){sel[t.id]=!all;});renderDay();return;}
   if(!picked.length){toast('Pilih kegiatan dulu');return;}
-  if(act==='done'){
+  if(act==='miss'){
+    var allm=picked.every(function(t){return t.ms&&t.ms[cur];});
+    picked.forEach(function(t){t.ms=t.ms||{};if(allm)delete t.ms[cur];else{t.ms[cur]=true;if(t.done)delete t.done[cur];}});
+    save();finish(picked.length+' kegiatan diperbarui');
+  }else if(act==='done'){
     var every=picked.every(function(t){return t.done&&t.done[cur];});
-    picked.forEach(function(t){t.done=t.done||{};if(every)delete t.done[cur];else t.done[cur]=true;});
+    picked.forEach(function(t){t.done=t.done||{};if(every)delete t.done[cur];else{t.done[cur]=true;if(t.ms)delete t.ms[cur];}});
     save();finish(picked.length+' kegiatan diperbarui');
   }else if(act==='cat'){
     var c=prompt(tr('Kategori baru (kosongkan untuk menghapus kategori):'),'');
@@ -1506,6 +1519,7 @@ function setArr(){
 }
 function P(n,w){return n+' '+w+(String(n)==='1'?'':'s');}
 var DICT={
+'Terlewat':'Missed','Tandai terlewat':'Mark as missed','Sembunyikan terlewat':'Hide missed',
 'Semua kategori':'All categories','Tampilan':'View','Manual (terbuka)':'Manual (unlocked)',
 'Hapus hanya di tanggal ini':'Delete on this date only','Hapus permanen di semua hari':'Delete permanently on all days',
 'Kegiatan berulang bisa dilewati hanya pada tanggal ini atau dihapus di semua hari. Kegiatan sekali-saja dihapus. Anda masih bisa menekan Urungkan.':'Repeating tasks can be skipped on this date only or deleted on all days. One-time tasks are deleted. You can still tap Undo.',
@@ -1799,7 +1813,7 @@ function moveTomorrow(t){
   if(t.rec){
     t.skip=t.skip||{};t.skip[cur]=true;
     state.tasks.push({id:uid(),text:t.text,pri:t.pri,cat:t.cat||'',note:t.note||'',sub:(t.sub||[]).slice(),rec:false,date:tm,done:{},from:cur});
-  }else{t.date=tm;t.done={};delete t.sd;}
+  }else{t.date=tm;t.done={};delete t.sd;delete t.ms;}
   save();renderDay();toast('Dipindahkan ke besok');
 }
 $('#list').addEventListener('change',function(e){
@@ -1825,7 +1839,7 @@ $('#list').addEventListener('touchend',function(e){
   if($('#list').classList.contains('manual'))return;
   if(Math.abs(dx)<90||Math.abs(dy)>Math.abs(dx)*0.5||Date.now()-s0.t>600)return;
   var task=findTask(s0.id);if(!task)return;
-  if(dx>0){task.done=task.done||{};if(task.done[cur])delete task.done[cur];else task.done[cur]=true;save();renderDay();}
+  if(dx>0){task.done=task.done||{};if(task.done[cur])delete task.done[cur];else{task.done[cur]=true;if(task.ms)delete task.ms[cur];}save();renderDay();}
   else askDelete(task);
 },{passive:true});
 
@@ -1848,7 +1862,7 @@ applyTheme();
 
 /* ringkasan mingguan dan riwayat dzikir */
 function weekStats(o){
-  var r={total:0,done:0,on:0,off:0,best:null,bestPct:-1,cats:{}},i,d;
+  var r={total:0,done:0,on:0,off:0,miss:0,best:null,bestPct:-1,cats:{}},i,d;
   for(i=0;i<7;i++){
     d=addDays(todayStr,-(o*7+i));
     var l=tasksOn(d),dn=0;
@@ -1856,6 +1870,7 @@ function weekStats(o){
       var v=t.done&&t.done[d];
       r.total++;
       if(v){r.done++;dn++;if(v===2)r.off++;else r.on++;}
+      else if(t.ms&&t.ms[d])r.miss++;
       (catList(t).length?catList(t):['Tanpa kategori']).forEach(function(c){var x=r.cats[c]||(r.cats[c]={t:0,n:0});x.t++;if(v)x.n++;});
     });
     if(l.length&&dn/l.length>r.bestPct){r.bestPct=dn/l.length;r.best=d;}
@@ -1870,7 +1885,7 @@ function renderWeek(){
   var rate=a.done?Math.round(a.on/a.done*100):0,worst=null;
   Object.keys(a.cats).forEach(function(c){var x=a.cats[c];if(x.t>=3){var q=x.n/x.t;if(!worst||q<worst.q)worst={c:c,q:q};}});
   box.innerHTML='<p><b>'+pa+'%</b> '+L('selesai','completed')+dl+'</p>'+
-    '<p>'+L('Sesuai target','On target')+': '+rate+'% '+L('dari yang selesai','of completed')+'. '+L('Tidak sesuai target','Off target')+': '+a.off+'</p>'+
+    '<p>'+L('Sesuai target','On target')+': '+rate+'% '+L('dari yang selesai','of completed')+'. '+L('Tidak sesuai target','Off target')+': '+a.off+'. '+L('Terlewat','Missed')+': '+a.miss+'</p>'+
     (a.best&&a.bestPct>0?'<p>'+L('Hari terbaik','Best day')+': '+shortDate(a.best)+' ('+Math.round(a.bestPct*100)+'%)</p>':'')+
     (worst?'<p>'+L('Paling sering terlewat','Most missed')+': '+esc(worst.c==='Tanpa kategori'?L('Tanpa kategori','No category'):worst.c)+' ('+Math.round(worst.q*100)+'% '+L('selesai','done')+')</p>':'');
 }
@@ -2122,6 +2137,7 @@ $('#tools').onclick=function(e){
   else if(b.dataset.t==='lock'){state.lock=(state.lock===false);if(state.lock===false)armLock();}
   else if(b.dataset.t==='group')state.group=!state.group;
   else if(b.dataset.t==='select'){selMode=!selMode;sel={};closeDd();}
+  else if(b.dataset.t==='hidemiss')state.hideMiss=!state.hideMiss;
   else state.hide=!state.hide;
   save();renderDay();
 };
@@ -2135,7 +2151,11 @@ $('#list').onclick=function(e){
   if(!t)return;
   if(act==='toggle'){
     if(!t.done)t.done={};
-    if(t.done[cur])delete t.done[cur];else t.done[cur]=true;
+    if(t.done[cur])delete t.done[cur];else{t.done[cur]=true;if(t.ms)delete t.ms[cur];}
+    save();renderDay();
+  }else if(act==='miss'){
+    t.ms=t.ms||{};
+    if(t.ms[cur])delete t.ms[cur];else{t.ms[cur]=true;if(t.done)delete t.done[cur];}
     save();renderDay();
   }else if(act==='tgt'){
     t.done[cur]=(t.done[cur]===2)?true:2;save();renderDay();
@@ -2303,6 +2323,7 @@ function doImport(txt){
     };
     if(t.done&&typeof t.done==='object')Object.keys(t.done).forEach(function(k){if(t.done[k]&&isDate(k))n.done[k]=t.done[k]===2?2:true;});
     if(t.skip&&typeof t.skip==='object'){n.skip={};Object.keys(t.skip).forEach(function(k){if(isDate(k))n.skip[k]=true;});}
+    if(t.ms&&typeof t.ms==='object'){n.ms={};Object.keys(t.ms).forEach(function(k){if(isDate(k)&&t.ms[k])n.ms[k]=true;});}
     if(Array.isArray(t.sub))n.sub=t.sub.map(String).slice(0,30);
     if(t.sd&&typeof t.sd==='object'){n.sd={};Object.keys(t.sd).forEach(function(k){if(isDate(k)&&Array.isArray(t.sd[k]))n.sd[k]=t.sd[k].map(Number).filter(function(i){return i>=0;});});}
     if(n.rec){
