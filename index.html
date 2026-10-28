@@ -264,9 +264,37 @@ html[data-theme=light] .btn.dng{background:#fde8eb;color:#b4233a;border-color:#f
 html[data-theme=light] .warn{background:#fff3d6;border-color:#f0d58a;color:#7a5600}
 html[data-theme=light] .tag.cat{color:hsl(var(--h) 55% 32%);border-color:hsl(var(--h) 40% 78%);background:hsl(var(--h) 60% 94%)}
 html[data-theme=light] .item.done .chk,html[data-theme=light] .chk.pk[aria-pressed=true]{color:#fff}
+.topbar{display:flex;justify-content:flex-end;margin:0 0 8px}
+.topbar .langsw{position:static;background:var(--surface)}
+.topbar .langsw button{padding:6px 14px;min-height:30px;font-size:12px}
+.ring{margin-top:0}
+.chip[data-cat]:not([data-cat=""]),.chip[data-cs]{color:hsl(var(--h) 70% 78%);border-color:hsl(var(--h) 35% 30%);background:hsl(var(--h) 30% 14%)}
+.chip[data-cat]:not([data-cat=""])[aria-pressed=true],.chip[data-cs][aria-pressed=true]{background:hsl(var(--h) 55% 38%);border-color:hsl(var(--h) 65% 58%);color:#fff;font-weight:700}
+.ghb[style] b,.ghb[style] .chev{color:hsl(var(--h) 70% 76%)}
+.ghb[style] .pb i{background:hsl(var(--h) 60% 55%)}
+.hrow.catrow span:first-child{color:hsl(var(--h) 70% 76%)}
+.hrow.catrow .pb i{background:hsl(var(--h) 60% 55%)}
+html[data-theme=light] .chip[data-cat]:not([data-cat=""]),html[data-theme=light] .chip[data-cs]{color:hsl(var(--h) 55% 32%);border-color:hsl(var(--h) 40% 78%);background:hsl(var(--h) 60% 94%)}
+html[data-theme=light] .chip[data-cat]:not([data-cat=""])[aria-pressed=true],html[data-theme=light] .chip[data-cs][aria-pressed=true]{background:hsl(var(--h) 60% 42%);border-color:hsl(var(--h) 60% 36%);color:#fff}
+html[data-theme=light] .ghb[style] b,html[data-theme=light] .ghb[style] .chev,html[data-theme=light] .hrow.catrow span:first-child{color:hsl(var(--h) 55% 32%)}
+.prhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+.prhead h2{margin:0}
+.prdate{color:var(--muted);font-size:14px;margin:0 0 10px}
+.prnext{font-size:16px;margin:0 0 12px;color:var(--accent);font-weight:600;min-height:1.4em}
+.pr{display:flex;justify-content:space-between;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 18px;margin-bottom:8px}
+.pr b{font:400 17px var(--sans)}
+.pr time{font:600 26px/1 var(--serif);letter-spacing:.02em}
+.pr.past{opacity:.55}
+.pr.nx{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.pr.sun{padding:8px 18px;background:none;border-style:dashed;color:var(--muted)}
+.pr.sun b{font-size:14px}
+.pr.sun time{font-size:16px}
+.prset{margin:14px 0 8px}
+.prset .row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.prset select,.prset input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:11px 14px;font-size:16px;min-height:46px}
 /* Navigasi */
 .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:9}
-.tabs div{display:grid;grid-template-columns:repeat(4,1fr);max-width:640px;margin:0 auto}
+.tabs div{display:grid;grid-template-columns:repeat(5,1fr);max-width:640px;margin:0 auto}
 .tabs button{position:relative;background:none;border:0;padding:14px 0 12px;color:var(--muted)}
 .tabs button[aria-selected=true]{color:var(--accent);font-weight:700}
 .tabs button[aria-selected=true]::before{content:"";position:absolute;top:0;left:32%;right:32%;height:3px;border-radius:0 0 3px 3px;background:var(--accent)}
@@ -287,7 +315,7 @@ html[data-theme=light] .item.done .chk,html[data-theme=light] .chk.pk[aria-press
   .tabs button[aria-selected=true]{background:var(--surface2)}
   .tabs button[aria-selected=true]::before{display:none}
   main{max-width:none;margin:0 0 0 220px;padding:28px 44px 60px}
-  #v-day,#v-dz,#v-hist,#v-data{max-width:900px;margin:0 auto}
+  #v-day,#v-pr,#v-dz,#v-hist,#v-data{max-width:900px;margin:0 auto}
   .fab{right:36px;bottom:36px}
   .undo{bottom:36px;left:256px}
   .bulk{left:244px;right:24px;bottom:16px;max-width:none}
@@ -304,8 +332,8 @@ html[data-theme=light] .item.done .chk,html[data-theme=light] .chk.pk[aria-press
   <!-- Hari -->
   <section id="v-day">
     <div class="colL">
+    <div class="topbar"><div class="langsw" role="group" aria-label="Language"><button id="lEn" aria-pressed="true">EN</button><button id="lId" aria-pressed="false">ID</button><button id="thm" aria-label="Tema">&#9680;</button></div></div>
     <div class="head">
-      <div class="langsw" role="group" aria-label="Language"><button id="lEn" aria-pressed="true">EN</button><button id="lId" aria-pressed="false">ID</button><button id="thm" aria-label="Tema">&#9680;</button></div>
       <div class="ring" id="ring">
         <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="trk" cx="50" cy="50" r="42"/><circle class="bar" id="rbar" cx="50" cy="50" r="42" stroke-dasharray="263.89" stroke-dashoffset="263.89"/></svg>
         <b id="rpct">0%</b>
@@ -417,6 +445,34 @@ html[data-theme=light] .item.done .chk,html[data-theme=light] .chk.pk[aria-press
   </section>
 
   <!-- Riwayat -->
+  <section id="v-pr" hidden>
+    <div class="prhead"><h2>Waktu sholat</h2>
+      <div class="seg"><button id="prPrev" aria-label="Hari sebelumnya">&lsaquo;</button><button id="prToday">Hari ini</button><button id="prNextD" aria-label="Hari berikutnya">&rsaquo;</button></div>
+    </div>
+    <p class="prdate" id="prDate"></p>
+    <p class="prnext" id="prNext2" data-ni></p>
+    <div id="prList" data-ni></div>
+    <details class="more prset" id="prSet"><summary>Lokasi dan metode</summary>
+      <div class="row">
+        <select id="prCity" class="full" aria-label="Kota"></select>
+        <button class="btn sec full" id="prGeo" type="button">Gunakan lokasi saya</button>
+        <input id="prLat" type="number" step="0.0001" placeholder="Lintang" aria-label="Lintang">
+        <input id="prLon" type="number" step="0.0001" placeholder="Bujur" aria-label="Bujur">
+        <select id="prMethod" class="full" aria-label="Metode perhitungan">
+          <option value="kemenag">Kemenag RI (perkiraan)</option>
+          <option value="sing">Singapura (MUIS)</option>
+          <option value="mwl">Liga Muslim Dunia</option>
+          <option value="ummq">Umm al-Qura</option>
+        </select>
+        <select id="prAsr" class="full" aria-label="Ashar">
+          <option value="std">Ashar standar (Syafi’i)</option>
+          <option value="hanafi">Ashar Hanafi</option>
+        </select>
+      </div>
+    </details>
+    <p class="dznote">Waktu dihitung di perangkat ini dengan pustaka Adhan (MIT) memakai koordinat dan metode di atas, jadi bisa dipakai tanpa internet. Hasilnya perkiraan dan bisa berbeda 1 sampai 2 menit dari jadwal resmi Kemenag atau masjid setempat. Mohon cocokkan dengan jadwal yang Anda percaya. Waktu ditampilkan mengikuti zona waktu perangkat ini, dan lokasi hanya disimpan di perangkat ini.</p>
+  </section>
+
   <section id="v-dz" hidden>
     <div class="dzhead"><h2>Dzikir pagi dan petang</h2>
       <div class="seg" role="group" aria-label="Waktu dzikir"><button id="dzAm">Pagi</button><button id="dzPm">Petang</button></div>
@@ -516,11 +572,14 @@ html[data-theme=light] .item.done .chk,html[data-theme=light] .chk.pk[aria-press
 <button class="undo" id="undo" hidden>Urungkan</button>
 <nav class="tabs" role="tablist"><div>
   <button role="tab" id="t-day" aria-selected="true">Harian</button>
+  <button role="tab" id="t-pr" aria-selected="false">Sholat</button>
   <button role="tab" id="t-dz" aria-selected="false">Dzikir</button>
   <button role="tab" id="t-hist" aria-selected="false">Riwayat</button>
   <button role="tab" id="t-data" aria-selected="false">Data</button>
 </div></nav>
 
+<!-- Adhan, Copyright (c) 2016 Batoul Apps, MIT License, https://github.com/batoulapps/adhan-js -->
+<script>!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeof define&&define.amd?define(["exports"],e):e((t="undefined"!=typeof globalThis?globalThis:t||self).adhan={})}(this,function(t){"use strict";function e(t,e,n){return(e=function(t){var e=function(t,e){if("object"!=typeof t||!t)return t;var n=t[Symbol.toPrimitive];if(void 0!==n){var r=n.call(t,e);if("object"!=typeof r)return r;throw new TypeError("@@toPrimitive must return a primitive value.")}return("string"===e?String:Number)(t)}(t,"string");return"symbol"==typeof e?e:e+""}(e))in t?Object.defineProperty(t,e,{value:n,enumerable:!0,configurable:!0,writable:!0}):t[e]=n,t}function n(t,e){var n=Object.keys(t);if(Object.getOwnPropertySymbols){var r=Object.getOwnPropertySymbols(t);e&&(r=r.filter(function(e){return Object.getOwnPropertyDescriptor(t,e).enumerable})),n.push.apply(n,r)}return n}function r(t){for(var r=1;r<arguments.length;r++){var i=null!=arguments[r]?arguments[r]:{};r%2?n(Object(i),!0).forEach(function(n){e(t,n,i[n])}):Object.getOwnPropertyDescriptors?Object.defineProperties(t,Object.getOwnPropertyDescriptors(i)):n(Object(i)).forEach(function(e){Object.defineProperty(t,e,Object.getOwnPropertyDescriptor(i,e))})}return t}const i={Shafi:"shafi",Hanafi:"hanafi"};const a={MiddleOfTheNight:"middleofthenight",SeventhOfTheNight:"seventhofthenight",TwilightAngle:"twilightangle",recommended:t=>t.latitude>48?a.SeventhOfTheNight:a.MiddleOfTheNight};class s{constructor(t,e){this.latitude=t,this.longitude=e}}const o={Nearest:"nearest",Up:"up",None:"none"};function h(t,e){const n=t.getFullYear(),r=t.getMonth(),i=t.getDate()+e,a=t.getHours(),s=t.getMinutes(),o=t.getSeconds();return new Date(n,r,i,a,s,o)}function u(t,e){return l(t,60*e)}function l(t,e){return new Date(t.getTime()+1e3*e)}function c(t){let e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:o.Nearest;const n=t.getUTCSeconds();let r=n>=30?60-n:-1*n;return e===o.Up?r=60-n:e===o.None&&(r=0),l(t,r)}function d(t){return t%4==0&&(t%100!=0||t%400==0)}function g(t){let e=0;const n=[31,d(t.getFullYear())?29:28,31,30,31,30,31,31,30,31,30,31];for(let r=0;r<t.getMonth();r++)e+=n[r];return e+=t.getDate(),e}function m(t){return t instanceof Date&&!isNaN(t.valueOf())}function f(t){return t*Math.PI/180}function M(t){return 180*t/Math.PI}function p(t,e){return t-e*Math.floor(t/e)}function b(t){return p(t,360)}const w={General:"general",Ahmer:"ahmer",Abyad:"abyad"},A={meanSolarLongitude(t){const e=t;return b(280.4664567+36000.76983*e+3032e-7*Math.pow(e,2))},meanLunarLongitude:t=>b(218.3165+481267.8813*t),ascendingLunarNodeLongitude(t){const e=t;return b(125.04452-1934.136261*e+.0020708*Math.pow(e,2)+Math.pow(e,3)/45e4)},meanSolarAnomaly(t){const e=t;return b(357.52911+35999.05029*e-1537e-7*Math.pow(e,2))},solarEquationOfTheCenter(t,e){const n=t,r=f(e);return(1.914602-.004817*n-14e-6*Math.pow(n,2))*Math.sin(r)+(.019993-101e-6*n)*Math.sin(2*r)+289e-6*Math.sin(3*r)},apparentSolarLongitude(t,e){const n=t,r=125.04-1934.136*n;return b(e+A.solarEquationOfTheCenter(n,A.meanSolarAnomaly(n))-.00569-.00478*Math.sin(f(r)))},meanObliquityOfTheEcliptic(t){const e=t;return 23.439291-.013004167*e-1.639e-7*Math.pow(e,2)+5.036e-7*Math.pow(e,3)},apparentObliquityOfTheEcliptic(t,e){const n=125.04-1934.136*t;return e+.00256*Math.cos(f(n))},meanSiderealTime(t){const e=t;return b(280.46061837+360.98564736629*(36525*e+2451545-2451545)+387933e-9*Math.pow(e,2)-Math.pow(e,3)/3871e4)},nutationInLongitude(t,e,n,r){const i=e,a=n,s=r;return-17.2/3600*Math.sin(f(s))-1.32/3600*Math.sin(2*f(i))-.23/3600*Math.sin(2*f(a))+.21/3600*Math.sin(2*f(s))},nutationInObliquity(t,e,n,r){const i=e,a=n,s=r;return 9.2/3600*Math.cos(f(s))+.57/3600*Math.cos(2*f(i))+.1/3600*Math.cos(2*f(a))-.09/3600*Math.cos(2*f(s))},altitudeOfCelestialBody(t,e,n){const r=t,i=e,a=n,s=Math.sin(f(r))*Math.sin(f(i)),o=Math.cos(f(r))*Math.cos(f(i))*Math.cos(f(a));return M(Math.asin(s+o))},approximateTransit(t,e,n){const r=t,i=p((n+-1*r-e)/360,1),a=p((12-r/15)/24,1);return i-a>.5?i-1:a-i>.5?i+1:i},correctedTransit(t,e,n,r,i,a){const s=t,o=r,h=i,u=a,l=-1*e,c=b(n+360.985647*s),d=b(A.interpolateAngles(o,h,u,s));var g;return 24*(s+((g=c-l-d)>=-180&&g<=180?g:g-360*Math.round(g/360))/-360)},correctedHourAngle(t,e,n,r,i,a,s,o,h,u,l){const c=t,d=e,g=i,m=a,p=s,w=o,j=h,T=u,S=l,v=-1*n.longitude,y=Math.sin(f(d))-Math.sin(f(n.latitude))*Math.sin(f(j)),D=Math.cos(f(n.latitude))*Math.cos(f(j)),O=M(Math.acos(y/D)),N=r?c+O/360:c-O/360,P=b(g+360.985647*N),C=b(A.interpolateAngles(m,p,w,N)),L=A.interpolate(j,T,S,N),F=P-v-C;return 24*(N+(A.altitudeOfCelestialBody(n.latitude,L,F)-d)/(360*Math.cos(f(L))*Math.cos(f(n.latitude))*Math.sin(f(F))))},interpolate(t,e,n,r){const i=t-e,a=n-t;return t+r/2*(i+a+r*(a-i))},interpolateAngles(t,e,n,r){const i=b(t-e),a=b(n-t);return t+r/2*(i+a+r*(a-i))},julianDay(t,e,n){let r=arguments.length>3&&void 0!==arguments[3]?arguments[3]:0;const i=Math.trunc,a=i(e>2?t:t-1),s=i(e>2?e:e+12),o=n+r/24,h=i(a/100),u=i(2-h+i(h/4));return i(365.25*(a+4716))+i(30.6001*(s+1))+o+u-1524.5},julianCentury:t=>(t-2451545)/36525,seasonAdjustedMorningTwilight(t,e,n,r){const i=75+28.65/55*Math.abs(t),a=75+19.44/55*Math.abs(t),s=75+32.74/55*Math.abs(t),o=75+48.1/55*Math.abs(t),h=function(){const r=A.daysSinceSolstice(e,n,t);return r<91?i+(a-i)/91*r:r<137?a+(s-a)/46*(r-91):r<183?s+(o-s)/46*(r-137):r<229?o+(s-o)/46*(r-183):r<275?s+(a-s)/46*(r-229):a+(i-a)/91*(r-275)}();return l(r,Math.round(-60*h))},seasonAdjustedEveningTwilight(t,e,n,r,i){let a,s,o,h;i===w.Ahmer?(a=62+17.4/55*Math.abs(t),s=62-7.16/55*Math.abs(t),o=62+5.12/55*Math.abs(t),h=62+19.44/55*Math.abs(t)):i===w.Abyad?(a=75+25.6/55*Math.abs(t),s=75+7.16/55*Math.abs(t),o=75+36.84/55*Math.abs(t),h=75+1.488*Math.abs(t)):(a=75+25.6/55*Math.abs(t),s=75+2.05/55*Math.abs(t),o=75-9.21/55*Math.abs(t),h=75+6.14/55*Math.abs(t));const u=function(){const r=A.daysSinceSolstice(e,n,t);return r<91?a+(s-a)/91*r:r<137?s+(o-s)/46*(r-91):r<183?o+(h-o)/46*(r-137):r<229?h+(o-h)/46*(r-183):r<275?o+(s-o)/46*(r-229):s+(a-s)/91*(r-275)}();return l(r,Math.round(60*u))},daysSinceSolstice(t,e,n){let r;const i=d(e)?173:172,a=d(e)?366:365;return n>=0?(r=t+10,r>=a&&(r-=a)):(r=t-i,r<0&&(r+=a)),r}};class j{constructor(t){const e=A.julianCentury(t),n=A.meanSolarLongitude(e),r=A.meanLunarLongitude(e),i=A.ascendingLunarNodeLongitude(e),a=f(A.apparentSolarLongitude(e,n)),s=A.meanSiderealTime(e),o=A.nutationInLongitude(e,n,r,i),h=A.nutationInObliquity(e,n,r,i),u=A.meanObliquityOfTheEcliptic(e),l=f(A.apparentObliquityOfTheEcliptic(e,u));this.declination=M(Math.asin(Math.sin(l)*Math.sin(a))),this.rightAscension=b(M(Math.atan2(Math.cos(l)*Math.sin(a),Math.cos(a)))),this.apparentSiderealTime=s+3600*o*Math.cos(f(u+h))/3600}}class T{constructor(t,e){const n=A.julianDay(t.getFullYear(),t.getMonth()+1,t.getDate(),0);this.observer=e,this.solar=new j(n),this.prevSolar=new j(n-1),this.nextSolar=new j(n+1);const r=A.approximateTransit(e.longitude,this.solar.apparentSiderealTime,this.solar.rightAscension),i=-50/60;this.approxTransit=r,this.transit=A.correctedTransit(r,e.longitude,this.solar.apparentSiderealTime,this.solar.rightAscension,this.prevSolar.rightAscension,this.nextSolar.rightAscension),this.sunrise=A.correctedHourAngle(r,i,e,!1,this.solar.apparentSiderealTime,this.solar.rightAscension,this.prevSolar.rightAscension,this.nextSolar.rightAscension,this.solar.declination,this.prevSolar.declination,this.nextSolar.declination),this.sunset=A.correctedHourAngle(r,i,e,!0,this.solar.apparentSiderealTime,this.solar.rightAscension,this.prevSolar.rightAscension,this.nextSolar.rightAscension,this.solar.declination,this.prevSolar.declination,this.nextSolar.declination)}hourAngle(t,e){return A.correctedHourAngle(this.approxTransit,t,this.observer,e,this.solar.apparentSiderealTime,this.solar.rightAscension,this.prevSolar.rightAscension,this.nextSolar.rightAscension,this.solar.declination,this.prevSolar.declination,this.nextSolar.declination)}afternoon(t){const e=Math.abs(this.observer.latitude-this.solar.declination),n=t+Math.tan(f(e)),r=M(Math.atan(1/n));return this.hourAngle(r,!0)}}const S={AqrabBalad:"AqrabBalad",AqrabYaum:"AqrabYaum",Unresolved:"Unresolved"},v=t=>!isNaN(t.sunrise)&&!isNaN(t.sunset),y=function(t,e){let n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:1,r=arguments.length>3&&void 0!==arguments[3]?arguments[3]:1;if(n>Math.ceil(182.5))return null;const i=new Date(e.getTime());i.setDate(i.getDate()+r*n);const a=h(i,1),s=new T(i,t),o=new T(a,t);return v(s)&&v(o)?{date:e,tomorrow:a,coordinates:t,solarTime:s,tomorrowSolarTime:o}:y(t,e,n+(r>0?0:1),-r)},D=(t,e,n)=>{const i=new T(e,r(r({},t),{},{latitude:n})),a=h(e,1),o=new T(a,r(r({},t),{},{latitude:n}));return v(i)&&v(o)?{date:e,tomorrow:a,coordinates:new s(n,t.longitude),solarTime:i,tomorrowSolarTime:o}:Math.abs(n)>=65?D(t,e,n-.5*Math.sign(n)):null};class O{constructor(t){let n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0,r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:0,s=arguments.length>3&&void 0!==arguments[3]?arguments[3]:0,h=arguments.length>4&&void 0!==arguments[4]?arguments[4]:0;e(this,"madhab",i.Shafi),e(this,"highLatitudeRule",a.MiddleOfTheNight),e(this,"adjustments",{fajr:0,sunrise:0,dhuhr:0,asr:0,maghrib:0,isha:0}),e(this,"methodAdjustments",{fajr:0,sunrise:0,dhuhr:0,asr:0,maghrib:0,isha:0}),e(this,"polarCircleResolution",S.Unresolved),e(this,"rounding",o.Nearest),e(this,"shafaq",w.General),this.method=t,this.fajrAngle=n,this.ishaAngle=r,this.ishaInterval=s,this.maghribAngle=h,null===this.method&&(this.method="Other")}nightPortions(){switch(this.highLatitudeRule){case a.MiddleOfTheNight:return{fajr:.5,isha:.5};case a.SeventhOfTheNight:return{fajr:1/7,isha:1/7};case a.TwilightAngle:return{fajr:this.fajrAngle/60,isha:this.ishaAngle/60};default:throw"Invalid high latitude rule found when attempting to compute night portions: ".concat(this.highLatitudeRule)}}}const N={MuslimWorldLeague(){const t=new O("MuslimWorldLeague",18,17);return t.methodAdjustments.dhuhr=1,t},Egyptian(){const t=new O("Egyptian",19.5,17.5);return t.methodAdjustments.dhuhr=1,t},Karachi(){const t=new O("Karachi",18,18);return t.methodAdjustments.dhuhr=1,t},UmmAlQura:()=>new O("UmmAlQura",18.5,0,90),Dubai(){const t=new O("Dubai",18.2,18.2);return t.methodAdjustments=r(r({},t.methodAdjustments),{},{sunrise:-3,dhuhr:3,asr:3,maghrib:3}),t},MoonsightingCommittee(){const t=new O("MoonsightingCommittee",18,18);return t.methodAdjustments=r(r({},t.methodAdjustments),{},{dhuhr:5,maghrib:3}),t},NorthAmerica(){const t=new O("NorthAmerica",15,15);return t.methodAdjustments.dhuhr=1,t},Kuwait:()=>new O("Kuwait",18,17.5),Qatar:()=>new O("Qatar",18,0,90),Singapore(){const t=new O("Singapore",20,18);return t.methodAdjustments.dhuhr=1,t.rounding=o.Up,t},Tehran:()=>new O("Tehran",17.7,14,0,4.5),Turkey(){const t=new O("Turkey",18,17);return t.methodAdjustments=r(r({},t.methodAdjustments),{},{sunrise:-7,dhuhr:5,asr:4,maghrib:7}),t},Other:()=>new O("Other",0,0)},P={Fajr:"fajr",Sunrise:"sunrise",Dhuhr:"dhuhr",Asr:"asr",Maghrib:"maghrib",Isha:"isha",None:"none"};class C{constructor(t){return this.hours=Math.floor(t),this.minutes=Math.floor(60*(t-this.hours)),this.seconds=Math.floor(60*(t-(this.hours+this.minutes/60))*60),this}utcDate(t,e,n){return new Date(Date.UTC(t,e,n,this.hours,this.minutes,this.seconds))}}class L{constructor(t,e,n){this.coordinates=t,this.date=e,this.calculationParameters=n;let r,a,s,o,d,f,M,p,b=new T(e,t);s=new C(b.transit).utcDate(e.getFullYear(),e.getMonth(),e.getDate()),a=new C(b.sunrise).utcDate(e.getFullYear(),e.getMonth(),e.getDate()),d=new C(b.sunset).utcDate(e.getFullYear(),e.getMonth(),e.getDate());const w=h(e,1);let j=new T(w,t);const v=n.polarCircleResolution;if((!m(a)||!m(d)||isNaN(j.sunrise))&&v!==S.Unresolved){const n=((t,e,n)=>{const r={date:e,tomorrow:h(e,1),coordinates:n,solarTime:new T(e,n),tomorrowSolarTime:new T(h(e,1),n)};switch(t){case S.AqrabYaum:return y(n,e)||r;case S.AqrabBalad:{const t=n.latitude;return D(n,e,t-.5*Math.sign(t))||r}default:return r}})(v,e,t);b=n.solarTime,j=n.tomorrowSolarTime;const r=[e.getFullYear(),e.getMonth(),e.getDate()];s=new C(b.transit).utcDate(...r),a=new C(b.sunrise).utcDate(...r),d=new C(b.sunset).utcDate(...r)}o=new C(b.afternoon(function(t){switch(t){case i.Shafi:return 1;case i.Hanafi:return 2;default:throw"Invalid Madhab"}}(n.madhab))).utcDate(e.getFullYear(),e.getMonth(),e.getDate());const O=new C(j.sunrise).utcDate(w.getFullYear(),w.getMonth(),w.getDate()),N=(Number(O)-Number(d))/1e3;r=new C(b.hourAngle(-1*n.fajrAngle,!1)).utcDate(e.getFullYear(),e.getMonth(),e.getDate()),"MoonsightingCommittee"===n.method&&t.latitude>=55&&(p=N/7,r=l(a,-p));const P=function(){if("MoonsightingCommittee"===n.method)return A.seasonAdjustedMorningTwilight(t.latitude,g(e),e.getFullYear(),a);{const t=n.nightPortions().fajr;return p=t*N,l(a,-p)}}();if((isNaN(r.getTime())||P>r)&&(r=P),n.ishaInterval>0)M=u(d,n.ishaInterval);else{M=new C(b.hourAngle(-1*n.ishaAngle,!0)).utcDate(e.getFullYear(),e.getMonth(),e.getDate()),"MoonsightingCommittee"===n.method&&t.latitude>=55&&(p=N/7,M=l(d,p));const r=function(){if("MoonsightingCommittee"===n.method)return A.seasonAdjustedEveningTwilight(t.latitude,g(e),e.getFullYear(),d,n.shafaq);{const t=n.nightPortions().isha;return p=t*N,l(d,p)}}();(isNaN(M.getTime())||r<M)&&(M=r)}if(f=d,n.maghribAngle){const t=new C(b.hourAngle(-1*n.maghribAngle,!0)).utcDate(e.getFullYear(),e.getMonth(),e.getDate());d<t&&M>t&&(f=t)}const L=(n.adjustments.fajr||0)+(n.methodAdjustments.fajr||0),F=(n.adjustments.sunrise||0)+(n.methodAdjustments.sunrise||0),q=(n.adjustments.dhuhr||0)+(n.methodAdjustments.dhuhr||0),Y=(n.adjustments.asr||0)+(n.methodAdjustments.asr||0),x=(n.adjustments.maghrib||0)+(n.methodAdjustments.maghrib||0),I=(n.adjustments.isha||0)+(n.methodAdjustments.isha||0);this.fajr=c(u(r,L),n.rounding),this.sunrise=c(u(a,F),n.rounding),this.dhuhr=c(u(s,q),n.rounding),this.asr=c(u(o,Y),n.rounding),this.sunset=c(d,n.rounding),this.maghrib=c(u(f,x),n.rounding),this.isha=c(u(M,I),n.rounding)}timeForPrayer(t){return t===P.Fajr?this.fajr:t===P.Sunrise?this.sunrise:t===P.Dhuhr?this.dhuhr:t===P.Asr?this.asr:t===P.Maghrib?this.maghrib:t===P.Isha?this.isha:null}currentPrayer(){let t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:new Date;return t>=this.isha?P.Isha:t>=this.maghrib?P.Maghrib:t>=this.asr?P.Asr:t>=this.dhuhr?P.Dhuhr:t>=this.sunrise?P.Sunrise:t>=this.fajr?P.Fajr:P.None}nextPrayer(){let t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:new Date;return t>=this.isha?P.None:t>=this.maghrib?P.Isha:t>=this.asr?P.Maghrib:t>=this.dhuhr?P.Asr:t>=this.sunrise?P.Dhuhr:t>=this.fajr?P.Sunrise:P.Fajr}}t.CalculationMethod=N,t.CalculationParameters=O,t.Coordinates=s,t.HighLatitudeRule=a,t.Madhab=i,t.PolarCircleResolution=S,t.Prayer=P,t.PrayerTimes=L,t.Qibla=function(t){const e=new s(21.4225241,39.8261818),n=Math.sin(f(e.longitude)-f(t.longitude)),r=Math.cos(f(t.latitude))*Math.tan(f(e.latitude)),i=Math.sin(f(t.latitude))*Math.cos(f(e.longitude)-f(t.longitude));return b(M(Math.atan2(n,r-i)))},t.Rounding=o,t.Shafaq=w,t.SunnahTimes=class{constructor(t){const e=h(t.date,1),n=(new L(t.coordinates,e,t.calculationParameters).fajr.getTime()-t.maghrib.getTime())/1e3;this.middleOfTheNight=c(l(t.maghrib,n/2)),this.lastThirdOfTheNight=c(l(t.maghrib,n*(2/3)))}}});</script>
 <script>
 (function(){
 'use strict';
@@ -534,7 +593,7 @@ function load(){
     var r=localStorage.getItem(KEY);
     if(r){
       var p=JSON.parse(r);
-      if(p&&Array.isArray(p.tasks)){state.tasks=p.tasks;state.sort=p.sort==='manual'?'manual':'priority';state.group=!!p.group;state.lock=p.lock===false?false:true;state.collapsed=p.collapsed&&typeof p.collapsed==='object'?p.collapsed:{};state.compact=!!p.compact;state.hide=!!p.hide;state.tpls=Array.isArray(p.tpls)?p.tpls:[];state.sync=p.sync&&(p.sync.token||p.vault)?p.sync:null;state.tomb=p.tomb&&typeof p.tomb==='object'?p.tomb:{};state.tplsU=p.tplsU||0;state.order=Array.isArray(p.order)?p.order:null;state.orderU=p.orderU||0;state.vault=p.vault||null;state.dz=p.dz&&typeof p.dz==='object'?p.dz:{};state.cap=p.cap===20?20:10;}
+      if(p&&Array.isArray(p.tasks)){state.tasks=p.tasks;state.sort=p.sort==='manual'?'manual':'priority';state.group=!!p.group;state.lock=p.lock===false?false:true;state.collapsed=p.collapsed&&typeof p.collapsed==='object'?p.collapsed:{};state.compact=!!p.compact;state.hide=!!p.hide;state.tpls=Array.isArray(p.tpls)?p.tpls:[];state.sync=p.sync&&(p.sync.token||p.vault)?p.sync:null;state.tomb=p.tomb&&typeof p.tomb==='object'?p.tomb:{};state.tplsU=p.tplsU||0;state.order=Array.isArray(p.order)?p.order:null;state.orderU=p.orderU||0;state.vault=p.vault||null;state.dz=p.dz&&typeof p.dz==='object'?p.dz:{};state.cap=p.cap===20?20:10;state.catHue=p.catHue&&typeof p.catHue==='object'?p.catHue:{};state.dzU=p.dzU&&typeof p.dzU==='object'?p.dzU:{};}
     }
   }catch(e){memOnly=true;}
 }
@@ -698,7 +757,7 @@ function renderDay(){
   $('#chips').hidden=cats.length===0;
   $('#chips').innerHTML=cats.length?
     '<button class="chip" data-cat="" aria-pressed="'+(!filterCat)+'">Semua</button>'+
-    cats.map(function(c){return '<button class="chip" data-cat="'+esc(c)+'" aria-pressed="'+(filterCat===c)+'">'+esc(c)+'</button>';}).join(''):'';
+    cats.map(function(c){return '<button class="chip" style="--h:'+catHue(c)+'" data-cat="'+esc(c)+'" aria-pressed="'+(filterCat===c)+'">'+esc(c)+'</button>';}).join(''):'';
 
   var allCats=[];
   state.tasks.forEach(function(t){catList(t).forEach(function(c){if(allCats.indexOf(c)<0)allCats.push(c);});});
@@ -738,7 +797,7 @@ function renderDay(){
       (selMode?'<button class="chk pk" data-act="pick" aria-label="Pilih" aria-pressed="'+(!!sel[t.id])+'">&#10003;</button>':'<button class="chk" data-act="toggle" aria-label="Tandai selesai" aria-pressed="'+(!!dn)+'">&#10003;</button>')+
       '<div class="body"><div class="txt">'+esc(t.text)+'</div><div class="meta">'+
         '<span class="tag">'+PRI[t.pri]+'</span>'+
-        catList(t).map(function(c){return '<span class="tag cat" style="--h:'+hue(c)+'">'+esc(c)+'</span>';}).join('')+
+        catList(t).map(function(c){return '<span class="tag cat" style="--h:'+catHue(c)+'">'+esc(c)+'</span>';}).join('')+
         (t.rec?'<span class="tag rec">'+esc(recLabel(t))+'</span>':'')+
         (t.from?'<span class="tag">Dari '+dm(t.from)+'</span>':'')+
         (t.carried?'<span class="tag">Dipindah</span>':'')+
@@ -817,18 +876,20 @@ $('#calNext').onclick=function(){calM++;if(calM>11){calM=0;calY++;}renderCal();}
 
 /* ---------- tabs ---------- */
 function tab(name){
-  ['day','dz','hist','data'].forEach(function(n){
+  ['day','pr','dz','hist','data'].forEach(function(n){
     $('#v-'+n).hidden=n!==name;
     $('#t-'+n).setAttribute('aria-selected',n===name);
   });
   if(name!=='day'){selMode=false;sel={};$('#bulk').hidden=true;document.body.classList.remove('bk');}
   $('#fab').hidden=name!=='day';
+  if(name==='pr')renderPr();
   if(name==='dz')renderDz();
   if(name==='hist')renderHist();
   if(name==='day')renderDay();
   window.scrollTo(0,0);
 }
 $('#t-day').onclick=function(){tab('day');};
+$('#t-pr').onclick=function(){tab('pr');};
 $('#t-dz').onclick=function(){tab('dz');};
 $('#t-hist').onclick=function(){tab('hist');};
 $('#t-data').onclick=function(){tab('data');};
@@ -1027,7 +1088,7 @@ function renderPaste(){
     return '<label class="'+(pSkip[i]?'skip':'')+'"><input type="checkbox" data-i="'+i+'"'+(pSkip[i]?'':' checked')+'>'+
       '<div class="body"><div class="txt">'+esc(x.text)+'</div><div class="meta">'+
       '<span class="tag">'+PRI[x.pri]+'</span>'+
-      catList(x).map(function(c){return '<span class="tag cat" style="--h:'+hue(c)+'">'+esc(c)+'</span>';}).join('')+
+      catList(x).map(function(c){return '<span class="tag cat" style="--h:'+catHue(c)+'">'+esc(c)+'</span>';}).join('')+
       (x.rec?'<span class="tag rec">'+esc(recLabel({freq:x.rec.freq,days:x.rec.days,start:cur}))+'</span>':'')+
       (x.done?'<span class="tag">Selesai</span>':'')+
       '</div></div></label>';
@@ -1105,7 +1166,7 @@ function renderCatStats(){
   var keys=Object.keys(m).sort(function(a,b){return m[b].t-m[a].t;});
   $('#catStats').innerHTML=keys.length?keys.map(function(c){
     var o=m[c],pc=Math.round(o.n/o.t*100);
-    return '<div class="hrow"><span>'+esc(c)+'</span><small>'+o.n+'/'+o.t+' selesai ('+pc+'%)</small><span class="pb"><i class="'+(pc===100?'f':'')+'" style="width:'+pc+'%"></i></span></div>';
+    return '<div class="hrow'+(c==='Tanpa kategori'?'':' catrow')+'"'+(c==='Tanpa kategori'?'':' style="--h:'+catHue(c)+'"')+'><span>'+esc(c)+'</span><small>'+o.n+'/'+o.t+' selesai ('+pc+'%)</small><span class="pb"><i class="'+(pc===100?'f':'')+'" style="width:'+pc+'%"></i></span></div>';
   }).join(''):'<div class="empty">Belum ada data.</div>';
 }
 function renderTpl(){
@@ -1161,7 +1222,7 @@ function renderList(list,fn){
   return keys.map(function(c){
     var a=g[c],n=a.filter(function(t){return t.done&&t.done[cur];}).length;
     var col=state.collapsed&&state.collapsed[c];
-    return '<li class="gh"><button class="ghb" data-gt="'+esc(c)+'" aria-expanded="'+(!col)+'"><span class="chev">'+(col?'&#9656;':'&#9662;')+'</span><b>'+esc(c||'Tanpa kategori')+'</b><small>'+n+'/'+a.length+'</small><span class="pb"><i style="width:'+Math.round(n/a.length*100)+'%"></i></span></button></li>'+(col?'':a.map(fn).join(''));
+    return '<li class="gh"><button class="ghb"'+(c?' style="--h:'+catHue(c)+'"':'')+' data-gt="'+esc(c)+'" aria-expanded="'+(!col)+'"><span class="chev">'+(col?'&#9656;':'&#9662;')+'</span><b>'+esc(c||'Tanpa kategori')+'</b><small>'+n+'/'+a.length+'</small><span class="pb"><i style="width:'+Math.round(n/a.length*100)+'%"></i></span></button></li>'+(col?'':a.map(fn).join(''));
   }).join('');
 }
 $('#list').addEventListener('click',function(e){
@@ -1258,10 +1319,11 @@ function decrypt(env,pw){
     return crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(env.iv)},key,unb64(env.data));
   }).then(function(pt){return JSON.parse(new TextDecoder().decode(pt));});
 }
-function payload(m){return{v:1,tasks:m.tasks,tomb:m.tomb||{},tpls:m.tpls||[],tplsU:m.tplsU||0,order:m.order||null,orderU:m.orderU||0};}
+function sortObj(o){if(!o||typeof o!=='object')return o;var r={};Object.keys(o).sort().forEach(function(k){r[k]=sortObj(o[k]);});return r;}
+function payload(m){return{v:1,tasks:m.tasks,tomb:m.tomb||{},tpls:m.tpls||[],tplsU:m.tplsU||0,order:m.order||null,orderU:m.orderU||0,catHue:m.catHue||{},dz:m.dz||{},dzU:m.dzU||{}};}
 function normalize(r){
   var tb=r.tomb||{};
-  return JSON.stringify({t:(r.tasks||[]).slice().sort(function(a,b){return a.id<b.id?-1:1;}),b:Object.keys(tb).sort().map(function(k){return[k,tb[k]];}),l:r.tpls||[],u:r.tplsU||0,o:r.order||null,ou:r.orderU||0});
+  return JSON.stringify({t:(r.tasks||[]).slice().sort(function(a,b){return a.id<b.id?-1:1;}),b:Object.keys(tb).sort().map(function(k){return[k,tb[k]];}),l:r.tpls||[],u:r.tplsU||0,o:r.order||null,ou:r.orderU||0,h:Object.keys(r.catHue||{}).sort().map(function(k){return[k,r.catHue[k]];}),z:sortObj(r.dz||{}),zu:sortObj(r.dzU||{})});
 }
 function readFile(g){
   var f=g.files&&g.files[FN];
@@ -1287,7 +1349,28 @@ function merge(r){
   var remoteNewer=(r.tplsU||0)>(state.tplsU||0);
   var rOrd=(r.orderU||0)>(state.orderU||0),ord=rOrd?r.order:state.order,ou=Math.max(r.orderU||0,state.orderU||0);
   if(Array.isArray(ord)){var ix={};ord.forEach(function(id,i){ix[id]=i;});tasks.sort(function(a,b){return (a.id in ix?ix[a.id]:1e9)-(b.id in ix?ix[b.id]:1e9);});}
-  return{tasks:tasks,tomb:tomb,tpls:remoteNewer&&Array.isArray(r.tpls)?r.tpls:(state.tpls||[]),tplsU:Math.max(r.tplsU||0,state.tplsU||0),order:Array.isArray(ord)?ord:null,orderU:ou};
+  var chm={},ck;[state.catHue||{},r.catHue||{}].forEach(function(o){for(ck in o)chm[ck]=(ck in chm)?Math.min(chm[ck],o[ck]):o[ck];});
+  var dzm={},dzu={},cutD=addDays(todayStr,-120),dk={};
+  Object.keys(state.dz||{}).concat(Object.keys(r.dz||{})).forEach(function(d){dk[d]=1;});
+  Object.keys(dk).forEach(function(d){
+    if(d<cutD)return;
+    ['am','pm'].forEach(function(p){
+      var key=d+'|'+p;
+      function rec(o,u){
+        var x=(o&&o[d])||{},tp=x[p],dn=x['d_'+p],sum=0,q;
+        if(!tp&&!dn)return null;
+        for(q in tp)sum+=tp[q];
+        return{tp:tp||{},dn:dn,ts:(u&&u[key])||1,sum:sum};
+      }
+      var a=rec(state.dz,state.dzU),b=rec(r.dz,r.dzU),w=a;
+      if(b&&(!a||b.ts>a.ts||(b.ts===a.ts&&b.sum>a.sum)))w=b;
+      if(!w)return;
+      dzm[d]=dzm[d]||{};dzm[d][p]=w.tp;
+      if(w.dn)dzm[d]['d_'+p]=1;
+      dzu[key]=w.ts;
+    });
+  });
+  return{dz:dzm,dzU:dzu,catHue:chm,tasks:tasks,tomb:tomb,tpls:remoteNewer&&Array.isArray(r.tpls)?r.tpls:(state.tpls||[]),tplsU:Math.max(r.tplsU||0,state.tplsU||0),order:Array.isArray(ord)?ord:null,orderU:ou};
 }
 function findGist(page){
   return gh('/gists?per_page=100&page='+page).then(function(list){
@@ -1326,11 +1409,11 @@ function doSync(){
     }).then(function(rem){
       var m=merge(rem||{}),out=payload(m);
       var changed=!rem||normalize(rem)!==normalize(out);
-      var b4=snap();
-      state.tasks=m.tasks;state.tomb=m.tomb;state.tpls=m.tpls;state.tplsU=m.tplsU;state.order=m.order;state.orderU=m.orderU;
-      var ch=snap()!==b4;
+      var b4=snap(),z4=JSON.stringify(state.dz);
+      state.tasks=m.tasks;state.tomb=m.tomb;state.tpls=m.tpls;state.tplsU=m.tplsU;state.order=m.order;state.orderU=m.orderU;state.catHue=m.catHue||state.catHue;state.dz=m.dz||state.dz;state.dzU=m.dzU||state.dzU;
+      var ch=snap()!==b4||JSON.stringify(state.dz)!==z4;
       lastSnap=snap();persist();
-      if(ch){if(!$('#v-hist').hidden)renderHist();else renderDay();}
+      if(ch){if(!$('#v-hist').hidden)renderHist();else if(!$('#v-dz').hidden)renderDz();else if($('#v-pr').hidden)renderDay();}
       if(changed){
         if(!sy.salt)sy.salt=b64(crypto.getRandomValues(new Uint8Array(16)));
         return encrypt(out,sy.pw,unb64(sy.salt)).then(function(env2){
@@ -1388,6 +1471,12 @@ function setArr(){
 }
 function P(n,w){return n+' '+w+(String(n)==='1'?'':'s');}
 var DICT={
+'Sholat':'Prayer','Waktu sholat':'Prayer times','Lokasi dan metode':'Location and method','Gunakan lokasi saya':'Use my location',
+'Kota':'City','Lintang':'Latitude','Bujur':'Longitude','Metode perhitungan':'Calculation method','Ashar':'Asr',
+'Kemenag RI (perkiraan)':'Kemenag Indonesia (approximate)','Singapura (MUIS)':'Singapore (MUIS)','Liga Muslim Dunia':'Muslim World League','Umm al-Qura':'Umm al-Qura',
+'Ashar standar (Syafi\u2019i)':'Standard Asr (Shafi\u2019i)','Ashar Hanafi':'Hanafi Asr',
+'Waktu dihitung di perangkat ini dengan pustaka Adhan (MIT) memakai koordinat dan metode di atas, jadi bisa dipakai tanpa internet. Hasilnya perkiraan dan bisa berbeda 1 sampai 2 menit dari jadwal resmi Kemenag atau masjid setempat. Mohon cocokkan dengan jadwal yang Anda percaya. Waktu ditampilkan mengikuti zona waktu perangkat ini, dan lokasi hanya disimpan di perangkat ini.':'Times are calculated on this device with the Adhan library (MIT) using the coordinates and method above, so they work without internet. Results are approximate and may differ by 1 to 2 minutes from the official Kemenag schedule or your local mosque. Please check against a schedule you trust. Times follow this device time zone, and the location is stored only on this device.',
+'Lokasi diperbarui':'Location updated','Lokasi ditolak atau tidak tersedia':'Location denied or unavailable','Lokasi tidak tersedia':'Location is not available','Koordinat tidak valid':'Invalid coordinates',
 'Sesuai target':'On target','Tidak sesuai target':'Off target','Pindahkan ke besok':'Move to tomorrow','Dipindahkan ke besok':'Moved to tomorrow',
 'Checklist (satu per baris)':'Checklist (one per line)','Tema':'Theme','Tema gelap':'Dark theme','Tema terang':'Light theme','Tema otomatis':'Auto theme',
 'Ringkasan minggu ini':'This week summary','Dzikir (7 hari)':'Adhkar (7 days)','Ketukan maks.':'Max taps',
@@ -1560,7 +1649,7 @@ function setLang(l,init){
   $('#lEn').setAttribute('aria-pressed',String(l==='en'));
   $('#lId').setAttribute('aria-pressed',String(l==='id'));
   obs.observe(document.body,OBS_CFG);
-  if(!$('#v-hist').hidden)renderHist();else renderDay();
+  if(!$('#v-hist').hidden)renderHist();else if(!$('#v-pr').hidden)renderPr();else if(!$('#v-dz').hidden)renderDz();else renderDay();
 }
 function initLang(){HELP_ID=$('#pHelp').innerHTML;setLang(LANG,true);$('#fab').hidden=false;}
 $('#lEn').onclick=function(){setLang('en');};
@@ -1588,7 +1677,7 @@ function renderCatSug(){
   mine.forEach(function(c){if(all.indexOf(c)<0)all.push(c);});
   all.sort();
   $('#catSug').innerHTML=all.map(function(c){
-    return '<button type="button" class="chip" data-cs="'+esc(c)+'" aria-pressed="'+(mine.indexOf(c)>=0)+'">'+esc(c)+'</button>';
+    return '<button type="button" class="chip" style="--h:'+catHue(c)+'" data-cs="'+esc(c)+'" aria-pressed="'+(mine.indexOf(c)>=0)+'">'+esc(c)+'</button>';
   }).join('');
 }
 $('#catSug').onclick=function(e){
@@ -1640,13 +1729,15 @@ $('#dzList').onclick=function(e){
   var tp=day[n]||0;day[n]=tp>=dzNeed(d)?0:tp+1;
   var all=dzList().every(function(x){return (day[x.n]||0)>=dzNeed(x);});
   if(all)dd['d_'+dzP]=1;else delete dd['d_'+dzP];
+  state.dzU=state.dzU||{};state.dzU[todayStr+'|'+dzP]=Date.now();
   persist();renderDz();
+  if(state.sync&&state.sync.token)schedule();
 };
 $('#cap10').onclick=function(){state.cap=10;persist();renderDz();};
 $('#cap20').onclick=function(){state.cap=20;persist();renderDz();};
 $('#dzAm').onclick=function(){dzP='am';renderDz();};
 $('#dzPm').onclick=function(){dzP='pm';renderDz();};
-var TABS=['day','dz','hist','data'],sx=0,sy=0,st0=0,sTg=null;
+var TABS=['day','pr','dz','hist','data'],sx=0,sy=0,st0=0,sTg=null;
 document.addEventListener('touchstart',function(e){
   var t=e.touches[0];sx=t.clientX;sy=t.clientY;st0=Date.now();sTg=e.target;
 },{passive:true});
@@ -1858,6 +1949,106 @@ document.addEventListener('visibilitychange',function(){
   if(PK&&state.vault&&Date.now()-hideAt>300000)lockNow();
 });
 function initPin(){renderPin();if(state.vault)showLock(true,'unlock');}
+
+/* ---------- warna kategori ---------- */
+var chT=null;
+function catHue(c){
+  state.catHue=state.catHue||{};
+  var h=state.catHue[c];
+  if(h===undefined){
+    var used=Object.keys(state.catHue).map(function(k){return state.catHue[k];}),best=265,bd=-1,i;
+    if(used.length){
+      for(i=0;i<24;i++){
+        var cand=i*15+7,md=360;
+        used.forEach(function(u){var d=Math.abs(cand-u);d=Math.min(d,360-d);if(d<md)md=d;});
+        if(md>bd){bd=md;best=cand;}
+      }
+    }
+    h=state.catHue[c]=best;
+    clearTimeout(chT);chT=setTimeout(persist,0);
+  }
+  return h;
+}
+
+/* ---------- waktu sholat ---------- */
+var CITIES=[['Surakarta',-7.5666,110.8167],['Jakarta',-6.2088,106.8456],['Bandung',-6.9175,107.6191],['Semarang',-6.9667,110.4167],['Yogyakarta',-7.7956,110.3695],['Surabaya',-7.2575,112.7521],['Medan',3.5952,98.6722],['Palembang',-2.9761,104.7754],['Balikpapan',-1.2379,116.8529],['Makassar',-5.1477,119.4327],['Denpasar',-8.6705,115.2126],['Banda Aceh',5.5483,95.3238]];
+var prDay=null;
+function prLoc(){
+  try{var o=JSON.parse(localStorage.getItem('todo-loc')||'null');if(o&&isFinite(o.lat)&&isFinite(o.lon))return o;}catch(e){}
+  return{name:'Surakarta',lat:-7.5666,lon:110.8167,method:'kemenag',asr:'std'};
+}
+function prSave(o){try{localStorage.setItem('todo-loc',JSON.stringify(o));}catch(e){}}
+function prParams(o){
+  var a=adhan,q;
+  if(o.method==='mwl')q=a.CalculationMethod.MuslimWorldLeague();
+  else if(o.method==='ummq')q=a.CalculationMethod.UmmAlQura();
+  else if(o.method==='sing')q=a.CalculationMethod.Singapore();
+  else{q=a.CalculationMethod.Other();q.fajrAngle=20;q.ishaAngle=18;q.adjustments={fajr:2,sunrise:-2,dhuhr:2,asr:2,maghrib:2,isha:2};}
+  q.madhab=o.asr==='hanafi'?a.Madhab.Hanafi:a.Madhab.Shafi;
+  return q;
+}
+function prTimes(o,day){return new adhan.PrayerTimes(new adhan.Coordinates(o.lat,o.lon),parse(day),prParams(o));}
+function hm(d){return pad(d.getHours())+':'+pad(d.getMinutes());}
+function renderPr(){
+  if(typeof adhan==='undefined'){$('#prList').innerHTML='<p>'+L('Pustaka waktu sholat tidak tersedia.','Prayer time library unavailable.')+'</p>';return;}
+  var o=prLoc();
+  if(!prDay)prDay=todayStr;
+  var cs=$('#prCity');
+  if(!cs.options.length){
+    cs.innerHTML=CITIES.map(function(c,i){return '<option value="'+i+'">'+esc(c[0])+'</option>';}).join('')+'<option value="custom">'+esc(L('Kustom','Custom'))+'</option>';
+  }
+  var ci=-1;CITIES.forEach(function(c,i){if(c[0]===o.name)ci=i;});
+  cs.value=ci>=0?String(ci):'custom';
+  if(document.activeElement!==$('#prLat'))$('#prLat').value=o.lat;
+  if(document.activeElement!==$('#prLon'))$('#prLon').value=o.lon;
+  $('#prMethod').value=o.method||'kemenag';$('#prAsr').value=o.asr||'std';
+  var t=prTimes(o,prDay),now=new Date(),isToday=prDay===todayStr;
+  var keys=['fajr','dhuhr','asr','maghrib','isha'];
+  var nm=LANG==='en'?['Fajr','Dhuhr','Asr','Maghrib','Isha']:['Subuh','Dzuhur','Ashar','Maghrib','Isya'];
+  var nx=-1,i;
+  if(isToday)for(i=0;i<5;i++){if(t[keys[i]]>now){nx=i;break;}}
+  $('#prDate').textContent=longDate(prDay)+', '+(ci>=0?o.name:o.name==='Lokasi saya'?L('Lokasi saya','My location'):L('Kustom','Custom'));
+  var lbl='';
+  if(isToday){
+    var tg,name;
+    if(nx>=0){tg=t[keys[nx]];name=nm[nx];}else{tg=prTimes(o,addDays(prDay,1)).fajr;name=nm[0];}
+    var mins=Math.max(0,Math.round((tg-now)/60000)),hh=Math.floor(mins/60),mm=mins%60;
+    lbl=L('Berikutnya: ','Next: ')+name+' '+L('dalam ','in ')+(hh?hh+L(' j ','h '):'')+mm+L(' m','m');
+  }
+  $('#prNext2').textContent=lbl;
+  var h='';
+  keys.forEach(function(k,j){
+    h+='<div class="pr'+((isToday&&t[k]<=now)?' past':'')+(j===nx?' nx':'')+'"><b>'+nm[j]+'</b><time>'+hm(t[k])+'</time></div>';
+    if(j===0)h+='<div class="pr sun"><b>'+L('Terbit','Sunrise')+'</b><time>'+hm(t.sunrise)+'</time></div>';
+  });
+  $('#prList').innerHTML=h;
+}
+$('#prPrev').onclick=function(){prDay=addDays(prDay||todayStr,-1);renderPr();};
+$('#prNextD').onclick=function(){prDay=addDays(prDay||todayStr,1);renderPr();};
+$('#prToday').onclick=function(){prDay=todayStr;renderPr();};
+$('#prCity').onchange=function(){
+  if(this.value==='custom')return;
+  var c=CITIES[Number(this.value)],o=prLoc();
+  o.name=c[0];o.lat=c[1];o.lon=c[2];prSave(o);renderPr();
+};
+function prCoord(){
+  var la=parseFloat($('#prLat').value),lo=parseFloat($('#prLon').value);
+  if(!(la>=-90&&la<=90&&lo>=-180&&lo<=180)){toast('Koordinat tidak valid');return;}
+  var o=prLoc();o.lat=la;o.lon=lo;
+  var hit=null;CITIES.forEach(function(c){if(Math.abs(c[1]-la)<1e-4&&Math.abs(c[2]-lo)<1e-4)hit=c[0];});
+  o.name=hit||'Kustom';prSave(o);renderPr();
+}
+$('#prLat').onchange=prCoord;$('#prLon').onchange=prCoord;
+$('#prMethod').onchange=function(){var o=prLoc();o.method=this.value;prSave(o);renderPr();};
+$('#prAsr').onchange=function(){var o=prLoc();o.asr=this.value;prSave(o);renderPr();};
+$('#prGeo').onclick=function(){
+  if(!navigator.geolocation){toast('Lokasi tidak tersedia');return;}
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var o=prLoc();o.lat=+pos.coords.latitude.toFixed(4);o.lon=+pos.coords.longitude.toFixed(4);o.name='Lokasi saya';
+    prSave(o);renderPr();toast('Lokasi diperbarui');
+  },function(){toast('Lokasi ditolak atau tidak tersedia');},{timeout:15000,maximumAge:600000});
+};
+setInterval(function(){if(!$('#v-pr').hidden&&!document.hidden)renderPr();},30000);
 
 /* ---------- list actions ---------- */
 $('#chips').onclick=function(e){
