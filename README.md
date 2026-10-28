@@ -8,10 +8,10 @@ A single-file, offline-capable daily to-do app with a morning and evening adhkar
 
 - **Daily planner**: tasks per date with priority, one or more colored categories, notes, checklists, and repeat rules (daily, weekly on chosen days, monthly).
 - **Done, on target or off target**: mark a task done, then flag it as "off target" when it was done but not as planned (for example, praying but not at the mosque).
-- **Week strip, history, and weekly summary**: jump between days, monthly calendar, 14-day chart, streaks, per-category stats, and a summary of this week against the last one.
+- **Week strip, history, and weekly summary**: jump between days, monthly calendar, 14-day chart, streaks, per-category stats, and a summary of this week against the last one. The by-date list shows the last 30 days; the calendar can still browse older months.
 - **Paste a list**: paste a whole list and review the parsed tasks before adding. Supports `#category`, `!high`, `!medium`, `!low`, `@daily`, `@monthly`, `@mon,thu`, and `[x]` for done.
 - **Quick actions**: swipe a task right to complete it or left to delete it, tap » to move it to tomorrow, undo recent changes, and save pasted lists as templates.
-- **Sorting and views**: sort by priority or manually (drag, with a lock against accidental moves; the order syncs), compact mode, hide done, group by category, multi-select actions.
+- **Sorting and views**: three compact dropdowns above the list for sort (priority or manual, with a lock against accidental drags; the order syncs), category filter (colored to match the task tags), and view options (compact mode, hide done, group by category, multi-select). In multi-select you can delete the chosen tasks on the current date only (repeating tasks are skipped for that day) or permanently on all days.
 - **Prayer times tab**: the five daily prayer times with a countdown to the next one, calculated offline for your location.
 - **Adhkar tab**: morning and evening adhkar (Hisnul Muslim) in Arabic with Indonesian and English meanings, repetition counts, and a tap counter. Long counts are split into at most 10 or 20 taps, and completed sessions appear in History. Counts and history sync across your devices (the newest change per day and time of day wins).
 - **Themes and languages**: dark, light, or automatic theme, and an English or Indonesian interface, both switchable from the top of the main page.
@@ -37,7 +37,7 @@ The app works fully without sync. To sync, open the **Data** tab and connect a G
 ## Prayer times
 
 - Open the **Prayer** tab. Times for Fajr, Dhuhr, Asr, Maghrib, and Isha are calculated on your device with the [Adhan](https://github.com/batoulapps/adhan-js) library, so they work without internet. Sunrise is shown as a reference.
-- The default location is Surakarta. Under **Location and method** choose another city, use your device location, or enter coordinates. Choose the calculation method (Kemenag Indonesia approximation, Singapore/MUIS, Muslim World League, or Umm al-Qura) and the Asr convention (standard or Hanafi).
+- The default location is Surakarta. Tap **Location and method** to open a panel where you can choose another city, use your device location, or enter coordinates. Choose the calculation method (Kemenag Indonesia approximation, Singapore/MUIS, Muslim World League, or Umm al-Qura) and the Asr convention (standard or Hanafi).
 - The location is stored only in your browser. Times follow the device time zone.
 - **Results are approximate.** They can differ by 1 to 2 minutes from the official Kemenag schedule or your local mosque. The Kemenag option uses the 20 and 18 degree angles with a 2-minute precaution, which is an approximation of the official method. Please check against a schedule you trust.
 

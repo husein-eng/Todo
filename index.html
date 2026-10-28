@@ -292,6 +292,26 @@ html[data-theme=light] .ghb[style] b,html[data-theme=light] .ghb[style] .chev,ht
 .prset{margin:14px 0 8px}
 .prset .row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .prset select,.prset input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:11px 14px;font-size:16px;min-height:46px}
+.tools{position:relative;display:flex;flex-wrap:nowrap;gap:8px;margin:2px 0 12px}
+.dd{flex:1;min-width:0}
+.ddb{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:9px 12px;min-height:42px;color:var(--text);font-size:14px}
+.ddb span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ddb i{flex:none;width:7px;height:7px;border:solid var(--muted);border-width:0 2px 2px 0;transform:rotate(45deg);margin-top:-3px}
+.ddb[aria-expanded=true]{border-color:var(--accent)}
+.ddb.catsel{border-color:hsl(var(--h) 45% 40%);color:hsl(var(--h) 70% 78%);background:hsl(var(--h) 30% 14%)}
+.ddm{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:15;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:0 14px 36px rgba(0,0,0,.45);max-height:52vh;overflow:auto}
+.ddm .orow{width:100%}
+.ddi{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;padding:11px 10px;border-radius:10px;color:var(--text);font-size:15px}
+.ddi:hover{background:var(--surface2)}
+.ddi[aria-pressed=true]{background:var(--surface2);box-shadow:inset 0 0 0 1px var(--accent)}
+.ddi .cdot{flex:none;width:10px;height:10px;border-radius:50%;background:hsl(var(--h) 65% 60%)}
+.ddm #tLock{margin-top:4px;border-top:1px solid var(--line);border-radius:0 0 10px 10px}
+html[data-theme=light] .ddb.catsel{color:hsl(var(--h) 55% 32%);border-color:hsl(var(--h) 40% 70%);background:hsl(var(--h) 60% 94%)}
+.psheet{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:620px;max-height:88vh;overflow:auto;background:var(--surface);border:1px solid var(--line);border-bottom:0;border-radius:28px 28px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom,0px));z-index:22;box-shadow:0 -20px 60px rgba(0,0,0,.5)}
+.psheet h3{margin:0 0 4px;font:400 22px var(--serif)}
+.psheet .act{display:flex;margin-top:14px}
+body.psh .scrim{opacity:1;pointer-events:auto}
+@media(min-width:900px){.psheet{max-width:560px;left:auto;right:36px}}
 /* Navigasi */
 .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:9}
 .tabs div{display:grid;grid-template-columns:repeat(5,1fr);max-width:640px;margin:0 auto}
@@ -429,17 +449,22 @@ html[data-theme=light] .ghb[style] b,html[data-theme=light] .ghb[style] .chev,ht
       <button id="carryBtn">Pindahkan ke hari ini</button>
     </div>
     <div class="tools" id="tools" hidden>
-      <div class="seg" role="group" aria-label="Urutan"><button data-sort="priority">Prioritas</button><button data-sort="manual">Manual</button></div>
-      <button class="chip" data-t="lock" id="tLock" hidden>Urutan terkunci</button>
-      <button class="chip optb" id="optBtn" aria-expanded="false">Opsi tampilan</button>
-      <div class="optp" id="optp" hidden>
-        <button class="orow" data-t="compact" id="tCompact"><span>Ringkas</span><i></i></button>
-        <button class="orow" data-t="hide" id="tHide"><span>Sembunyikan selesai</span><i></i></button>
-        <button class="orow" data-t="group" id="tGroup"><span>Kelompok</span><i></i></button>
-        <button class="orow" data-t="select" id="tSelect"><span>Pilih</span><i></i></button>
-      </div>
+      <div class="dd" id="ddSort"><button class="ddb" data-dd="ddSort" aria-haspopup="true" aria-expanded="false"><span id="sortLbl">Prioritas</span><i></i></button>
+        <div class="ddm" hidden>
+          <button class="ddi" data-sort="priority">Prioritas</button>
+          <button class="ddi" data-sort="manual">Manual</button>
+          <button class="ddi" data-t="lock" id="tLock" hidden>Urutan terkunci</button>
+        </div></div>
+      <div class="dd" id="ddCat"><button class="ddb" data-dd="ddCat" aria-haspopup="true" aria-expanded="false"><span id="catLbl">Semua kategori</span><i></i></button>
+        <div class="ddm" id="chips" hidden></div></div>
+      <div class="dd" id="ddOpt"><button class="ddb" data-dd="ddOpt" aria-haspopup="true" aria-expanded="false"><span>Tampilan</span><i></i></button>
+        <div class="ddm" hidden>
+          <button class="orow" data-t="compact" id="tCompact"><span>Ringkas</span><i></i></button>
+          <button class="orow" data-t="hide" id="tHide"><span>Sembunyikan selesai</span><i></i></button>
+          <button class="orow" data-t="group" id="tGroup"><span>Kelompok</span><i></i></button>
+          <button class="orow" data-t="select" id="tSelect"><span>Pilih</span><i></i></button>
+        </div></div>
     </div>
-    <div class="chips" id="chips"></div>
     <ul class="list" id="list"></ul>
     </div>
   </section>
@@ -452,7 +477,9 @@ html[data-theme=light] .ghb[style] b,html[data-theme=light] .ghb[style] .chev,ht
     <p class="prdate" id="prDate"></p>
     <p class="prnext" id="prNext2" data-ni></p>
     <div id="prList" data-ni></div>
-    <details class="more prset" id="prSet"><summary>Lokasi dan metode</summary>
+    <button class="btn sec" id="prOpen" type="button" style="width:100%;margin:14px 0 8px">Lokasi dan metode</button>
+    <div class="psheet prset" id="prSheet" hidden>
+      <h3>Lokasi dan metode</h3>
       <div class="row">
         <select id="prCity" class="full" aria-label="Kota"></select>
         <button class="btn sec full" id="prGeo" type="button">Gunakan lokasi saya</button>
@@ -469,7 +496,8 @@ html[data-theme=light] .ghb[style] b,html[data-theme=light] .ghb[style] .chev,ht
           <option value="hanafi">Ashar Hanafi</option>
         </select>
       </div>
-    </details>
+      <div class="act"><button class="btn pri" id="prClose" type="button">Tutup</button></div>
+    </div>
     <p class="dznote">Waktu dihitung di perangkat ini dengan pustaka Adhan (MIT) memakai koordinat dan metode di atas, jadi bisa dipakai tanpa internet. Hasilnya perkiraan dan bisa berbeda 1 sampai 2 menit dari jadwal resmi Kemenag atau masjid setempat. Mohon cocokkan dengan jadwal yang Anda percaya. Waktu ditampilkan mengikuti zona waktu perangkat ini, dan lokasi hanya disimpan di perangkat ini.</p>
   </section>
 
@@ -511,7 +539,7 @@ html[data-theme=light] .ghb[style] b,html[data-theme=light] .ghb[style] .chev,ht
     <div id="catStats"></div>
     <h2>14 hari terakhir</h2>
     <div class="chart" id="chart"></div>
-    <h2>Per tanggal</h2>
+    <h2>Per tanggal (30 hari terakhir)</h2>
     <div id="hlist"></div>
   </section>
 
@@ -754,17 +782,23 @@ function renderDay(){
   all.forEach(function(t){catList(t).forEach(function(c){if(cats.indexOf(c)<0)cats.push(c);});});
   cats.sort();
   if(filterCat&&cats.indexOf(filterCat)<0)filterCat='';
-  $('#chips').hidden=cats.length===0;
+  $('#ddCat').hidden=cats.length===0;
   $('#chips').innerHTML=cats.length?
-    '<button class="chip" data-cat="" aria-pressed="'+(!filterCat)+'">Semua</button>'+
-    cats.map(function(c){return '<button class="chip" style="--h:'+catHue(c)+'" data-cat="'+esc(c)+'" aria-pressed="'+(filterCat===c)+'">'+esc(c)+'</button>';}).join(''):'';
+    '<button class="ddi" data-cat="" aria-pressed="'+(!filterCat)+'">Semua kategori</button>'+
+    cats.map(function(c){return '<button class="ddi" style="--h:'+catHue(c)+'" data-cat="'+esc(c)+'" aria-pressed="'+(filterCat===c)+'"><span class="cdot"></span><span class="ucat">'+esc(c)+'</span></button>';}).join(''):'';
+  var cl=$('#catLbl'),cb=$('#ddCat .ddb');
+  cl.className=filterCat?'ucat':'';
+  cl.textContent=filterCat||'Semua kategori';
+  cb.classList.toggle('catsel',!!filterCat);
+  if(filterCat)cb.style.setProperty('--h',catHue(filterCat));
 
   var allCats=[];
   state.tasks.forEach(function(t){catList(t).forEach(function(c){if(allCats.indexOf(c)<0)allCats.push(c);});});
   renderCatSug();
   $('#cats').innerHTML=allCats.sort().map(function(c){return '<option value="'+esc(c)+'">';}).join('');
 
-  $('#tools').hidden=all.length<2;
+  $('#tools').hidden=all.length<1;
+  $('#sortLbl').textContent=state.sort==='manual'?(state.lock===false?'Manual (terbuka)':'Manual'):'Prioritas';
   Array.prototype.forEach.call(document.querySelectorAll('#tools [data-sort]'),function(b){
     b.setAttribute('aria-pressed',String(b.dataset.sort===state.sort));
   });
@@ -859,15 +893,14 @@ function renderHist(){
   }
   $('#chart').innerHTML=bars;
 
-  var rows='',e=earliest();
-  d=todayStr;
-  for(i=0;i<400&&d>=e;i++){
+  var rows='';
+  for(i=0;i<30;i++){
+    d=addDays(todayStr,-i);
     s=stat(d);
     if(s.total){
       rows+='<button class="hrow" data-date="'+d+'"><span>'+shortDate(d)+'</span><small>'+s.done+'/'+s.total+' selesai ('+s.pct+'%)</small>'+
         '<span class="pb"><i class="'+(s.pct===100?'f':'')+'" style="width:'+s.pct+'%"></i></span></button>';
     }
-    d=addDays(d,-1);
   }
   $('#hlist').innerHTML=rows||'<div class="empty">Riwayat muncul setelah Anda menambahkan kegiatan.</div>';
 }
@@ -881,6 +914,7 @@ function tab(name){
     $('#t-'+n).setAttribute('aria-selected',n===name);
   });
   if(name!=='day'){selMode=false;sel={};$('#bulk').hidden=true;document.body.classList.remove('bk');}
+  openPrSheet(false);
   $('#fab').hidden=name!=='day';
   if(name==='pr')renderPr();
   if(name==='dz')renderDz();
@@ -1258,12 +1292,13 @@ $('#bulk').onclick=function(e){
     picked.forEach(function(t){if(!t.rec){t.date=d;t.done={};n++;}});
     save();finish(n+' kegiatan dipindahkan');
   }else if(act==='del'){
-    modal('Hapus '+picked.length+' kegiatan?','Kegiatan yang dipilih akan dihapus. Anda masih bisa menekan Urungkan.',[
-      {label:'Hapus',cls:'dng',fn:function(){
-        var ids={};picked.forEach(function(t){ids[t.id]=1;});
-        state.tasks=state.tasks.filter(function(t){return !ids[t.id];});
-        save();finish('Dihapus');
-      }},
+    var nr=picked.filter(function(t){return t.rec;}).length;
+    var removeAll=function(){var ids={};picked.forEach(function(t){ids[t.id]=1;});state.tasks=state.tasks.filter(function(t){return !ids[t.id];});save();finish('Dihapus');};
+    var dayOnly=function(){var ids={};picked.forEach(function(t){if(t.rec){t.skip=t.skip||{};t.skip[cur]=true;}else ids[t.id]=1;});state.tasks=state.tasks.filter(function(t){return !ids[t.id];});save();finish('Dihapus');};
+    if(!nr)modal('Hapus '+picked.length+' kegiatan?','Kegiatan yang dipilih akan dihapus. Anda masih bisa menekan Urungkan.',[{label:'Hapus',cls:'dng',fn:removeAll},{label:'Batal'}]);
+    else modal('Hapus '+picked.length+' kegiatan?','Kegiatan berulang bisa dilewati hanya pada tanggal ini atau dihapus di semua hari. Kegiatan sekali-saja dihapus. Anda masih bisa menekan Urungkan.',[
+      {label:'Hapus hanya di tanggal ini',cls:'pri',fn:dayOnly},
+      {label:'Hapus permanen di semua hari',cls:'dng',fn:removeAll},
       {label:'Batal'}
     ]);
   }
@@ -1282,9 +1317,9 @@ $('#fab').onclick=function(){
   if(document.body.classList.contains('sh')){resetForm();return;}
   document.body.classList.add('sh');$('#fText').focus();
 };
-$('#scrim').onclick=function(){resetForm();};
+$('#scrim').onclick=function(){resetForm();openPrSheet(false);};
 document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'){if(!$('#paste').hidden)$('#paste').hidden=true;else resetForm();}
+  if(e.key==='Escape'){closeDd();if(!$('#prSheet').hidden)openPrSheet(false);else if(!$('#paste').hidden)$('#paste').hidden=true;else resetForm();}
 });
 
 /* ---------- sinkron GitHub Gist ---------- */
@@ -1471,6 +1506,10 @@ function setArr(){
 }
 function P(n,w){return n+' '+w+(String(n)==='1'?'':'s');}
 var DICT={
+'Semua kategori':'All categories','Tampilan':'View','Manual (terbuka)':'Manual (unlocked)',
+'Hapus hanya di tanggal ini':'Delete on this date only','Hapus permanen di semua hari':'Delete permanently on all days',
+'Kegiatan berulang bisa dilewati hanya pada tanggal ini atau dihapus di semua hari. Kegiatan sekali-saja dihapus. Anda masih bisa menekan Urungkan.':'Repeating tasks can be skipped on this date only or deleted on all days. One-time tasks are deleted. You can still tap Undo.',
+'Per tanggal (30 hari terakhir)':'By date (last 30 days)',
 'Sholat':'Prayer','Waktu sholat':'Prayer times','Lokasi dan metode':'Location and method','Gunakan lokasi saya':'Use my location',
 'Kota':'City','Lintang':'Latitude','Bujur':'Longitude','Metode perhitungan':'Calculation method','Ashar':'Asr',
 'Kemenag RI (perkiraan)':'Kemenag Indonesia (approximate)','Singapura (MUIS)':'Singapore (MUIS)','Liga Muslim Dunia':'Muslim World League','Umm al-Qura':'Umm al-Qura',
@@ -1601,7 +1640,7 @@ function trs(s){
 }
 function tr(s){return LANG==='en'?trs(s):s;}
 var HELP_ID='',HELP_EN='<li>Prefixes like <code>-</code>, <code>*</code>, <code>1.</code> or <code>[ ]</code> are removed automatically. <code>[x]</code> marks a task as done.</li><li>A line ending with <code>:</code> or starting with <code># </code> (with a space) becomes the category for the lines below it.</li><li>Per line: <code>#category</code>, <code>!high</code> <code>!medium</code> <code>!low</code>, <code>@daily</code>, <code>@monthly</code>, <code>@mon,thu</code>. All optional, and they override the settings below.</li>';
-var SKIP='.subs span,.txt,.notebox,.tag.cat,[data-cat]:not([data-cat=""]),[data-tl],.srow>span,.hrow>span:first-child,.ghb b,[data-ni]';
+var SKIP='.ucat,.subs span,.txt,.notebox,.tag.cat,[data-cat]:not([data-cat=""]),[data-tl],.srow>span,.hrow>span:first-child,.ghb b,[data-ni]';
 var ORIG=new WeakMap(),AORIG=new WeakMap(),ATTRS=['placeholder','aria-label','title'];
 function textNode(n){
   var p=n.parentElement,cur=n.nodeValue;
@@ -1687,9 +1726,6 @@ $('#catSug').onclick=function(e){
   $('#fCat').value=mine.join(', ');renderCatSug();
 };
 $('#fCat').addEventListener('input',renderCatSug);
-$('#optBtn').onclick=function(){
-  var p=$('#optp');p.hidden=!p.hidden;this.setAttribute('aria-expanded',String(!p.hidden));
-};
 var lockT;
 function armLock(){
   clearTimeout(lockT);
@@ -1746,7 +1782,7 @@ document.addEventListener('touchend',function(e){
   var el=sTg,t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
   sTg=null;
   if(Math.abs(dx)<70||Math.abs(dy)>Math.abs(dx)*0.6||Date.now()-st0>700)return;
-  if(drag||document.body.classList.contains('sh')||!$('#paste').hidden||document.querySelector('.ov'))return;
+  if(drag||document.body.classList.contains('sh')||!$('#paste').hidden||!$('#prSheet').hidden||document.querySelector('.ov'))return;
   if(el.closest&&el.closest('.chips,input,textarea,select,.drag,.pv,.add,.paste,.chart,.daychips,.modal,.cal,.item,.lockbox'))return;
   var ci=-1;
   TABS.forEach(function(n,i){if(!$('#v-'+n).hidden)ci=i;});
@@ -2050,6 +2086,30 @@ $('#prGeo').onclick=function(){
 };
 setInterval(function(){if(!$('#v-pr').hidden&&!document.hidden)renderPr();},30000);
 
+/* ---------- dropdown & sheet lokasi ---------- */
+function closeDd(){
+  Array.prototype.forEach.call(document.querySelectorAll('.ddm'),function(m){m.hidden=true;});
+  Array.prototype.forEach.call(document.querySelectorAll('.ddb'),function(b){b.setAttribute('aria-expanded','false');});
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-dd]');
+  if(b){
+    var m=document.querySelector('#'+b.dataset.dd+' .ddm'),open=m.hidden;
+    closeDd();m.hidden=!open;b.setAttribute('aria-expanded',String(open));return;
+  }
+  if(e.target.closest('.ddm')){
+    if(e.target.closest('[data-sort],[data-cat],[data-t=lock],[data-t=select]'))closeDd();
+    return;
+  }
+  closeDd();
+});
+function openPrSheet(on){
+  $('#prSheet').hidden=!on;
+  document.body.classList.toggle('psh',!!on);
+}
+$('#prOpen').onclick=function(){openPrSheet(true);};
+$('#prClose').onclick=function(){openPrSheet(false);};
+
 /* ---------- list actions ---------- */
 $('#chips').onclick=function(e){
   var b=e.target.closest('[data-cat]');if(!b)return;
@@ -2061,7 +2121,7 @@ $('#tools').onclick=function(e){
   else if(b.dataset.t==='compact')state.compact=!state.compact;
   else if(b.dataset.t==='lock'){state.lock=(state.lock===false);if(state.lock===false)armLock();}
   else if(b.dataset.t==='group')state.group=!state.group;
-  else if(b.dataset.t==='select'){selMode=!selMode;sel={};$('#optp').hidden=true;$('#optBtn').setAttribute('aria-expanded','false');}
+  else if(b.dataset.t==='select'){selMode=!selMode;sel={};closeDd();}
   else state.hide=!state.hide;
   save();renderDay();
 };
