@@ -16,7 +16,7 @@ A single-file, offline-capable daily to-do app with a morning and evening adhkar
 - **Adhkar tab**: morning and evening adhkar (Hisnul Muslim) in Arabic with Indonesian and English meanings, repetition counts, and a tap counter. Long counts are split into at most 10 or 20 taps, and completed sessions appear in History. Counts and history sync across your devices (the newest change per day and time of day wins).
 - **Themes and languages**: dark, light, or automatic theme, and an English or Indonesian interface, both switchable from the top of the main page.
 - **Works offline** once opened, and can be installed to the home screen as an app.
-- **Swipe** left or right outside the task cards to move between tabs.
+- **Swipe** left or right outside the task cards to move between tabs. The current tab is kept when you refresh the page.
 
 ## Install on your phone or laptop
 

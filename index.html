@@ -318,6 +318,23 @@ body.psh .scrim{opacity:1;pointer-events:auto}
 .item.missed .txt{text-decoration:line-through;text-decoration-color:var(--p3)}
 .item.missed .chk{border-color:var(--p3);border-style:dashed}
 .compact .tag.miss:not(.on){display:none}
+.week .past b{color:var(--muted)}
+.week .past{background:color-mix(in srgb,var(--surface) 55%,transparent)}
+.week .fut{background:transparent;border:1px dashed var(--line)}
+.week i.p{background:var(--p2)}
+.week i.z{background:var(--p3)}
+.week .fut i.h{background:transparent;border:1px solid var(--muted)}
+.week .sel.past b,.week .sel.fut b{color:var(--on)}
+.week .sel.fut{border:1px solid var(--accent)}
+.week .sel i.p,.week .sel i.z,.week .sel.fut i.h{background:var(--on);border-color:var(--on)}
+.wk-top{display:flex;align-items:baseline;gap:12px;margin-bottom:12px}
+.wk-top b{font:400 42px/1 var(--serif);color:var(--accent)}
+.wk-top span{color:var(--muted)}
+.wk-grid{display:grid;grid-template-columns:max-content 1fr;gap:9px 20px;font-size:15px}
+.wl{color:var(--muted)}
+.wv{font-weight:600;overflow-wrap:anywhere}
+.wv.warn{color:var(--p2)}
+.wv.bad{color:var(--p3)}
 /* Navigasi */
 .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:9}
 .tabs div{display:grid;grid-template-columns:repeat(5,1fr);max-width:640px;margin:0 auto}
@@ -761,7 +778,7 @@ function renderDay(){
   var wh='';
   for(var wi=0;wi<7;wi++){
     var wd=ymd(wk),ws=stat(wd);
-    wh+='<button data-wd="'+wd+'" class="'+(wd===cur?'sel':'')+(wd===todayStr?' td':'')+'" aria-label="'+shortDate(wd)+'"><small>'+HARI[wk.getDay()].slice(0,3)+'</small><b>'+wk.getDate()+'</b><i class="'+(ws.total?(ws.pct===100?'f':'h'):'')+'"></i></button>';
+    wh+='<button data-wd="'+wd+'" class="'+(wd===cur?'sel':'')+(wd===todayStr?' td':'')+(wd<todayStr?' past':wd>todayStr?' fut':'')+'" aria-label="'+shortDate(wd)+'"><small>'+HARI[wk.getDay()].slice(0,3)+'</small><b>'+wk.getDate()+'</b><i class="'+(ws.total?(wd>todayStr?'h':(ws.pct===100?'f':ws.pct>0?'p':(wd<todayStr?'z':'h'))):'')+'"></i></button>';
     wk.setDate(wk.getDate()+1);
   }
   $('#week').innerHTML=wh;
@@ -897,7 +914,7 @@ function renderHist(){
     d=addDays(todayStr,-i);s=stat(d);
     var cls=s.total===0?'z':(s.pct===100?'f':'');
     bars+='<button data-date="'+d+'" aria-label="'+shortDate(d)+': '+s.pct+'%" title="'+shortDate(d)+': '+s.pct+'%">'+
-      '<i class="'+cls+'" style="height:'+(s.total?Math.max(s.pct,4):3)+'%"></i><span>'+parse(d).getDate()+'</span></button>';
+      '<i class="'+cls+'" style="height:'+(s.total?Math.max(4,Math.round(s.pct*0.8)):3)+'px"></i><span>'+parse(d).getDate()+'</span></button>';
   }
   $('#chart').innerHTML=bars;
 
@@ -917,6 +934,7 @@ $('#calNext').onclick=function(){calM++;if(calM>11){calM=0;calY++;}renderCal();}
 
 /* ---------- tabs ---------- */
 function tab(name){
+  try{history.replaceState(null,'',name==='day'?location.pathname+location.search:'#'+name);}catch(e){}
   ['day','pr','dz','hist','data'].forEach(function(n){
     $('#v-'+n).hidden=n!==name;
     $('#t-'+n).setAttribute('aria-selected',n===name);
@@ -1884,16 +1902,21 @@ function renderWeek(){
   var dl=pb===null?'':' ('+(pa-pb>=0?'+':'')+(pa-pb)+' '+L('dibanding minggu lalu','vs last week')+')';
   var rate=a.done?Math.round(a.on/a.done*100):0,worst=null;
   Object.keys(a.cats).forEach(function(c){var x=a.cats[c];if(x.t>=3){var q=x.n/x.t;if(!worst||q<worst.q)worst={c:c,q:q};}});
-  box.innerHTML='<p><b>'+pa+'%</b> '+L('selesai','completed')+dl+'</p>'+
-    '<p>'+L('Sesuai target','On target')+': '+rate+'% '+L('dari yang selesai','of completed')+'. '+L('Tidak sesuai target','Off target')+': '+a.off+'. '+L('Terlewat','Missed')+': '+a.miss+'</p>'+
-    (a.best&&a.bestPct>0?'<p>'+L('Hari terbaik','Best day')+': '+shortDate(a.best)+' ('+Math.round(a.bestPct*100)+'%)</p>':'')+
-    (worst?'<p>'+L('Paling sering terlewat','Most missed')+': '+esc(worst.c==='Tanpa kategori'?L('Tanpa kategori','No category'):worst.c)+' ('+Math.round(worst.q*100)+'% '+L('selesai','done')+')</p>':'');
+  function row(l,v,c){return '<span class="wl">'+l+'</span><span class="wv'+(c?' '+c:'')+'">'+v+'</span>';}
+  box.innerHTML='<div class="wk-top"><b>'+pa+'%</b><span>'+L('selesai','completed')+dl+'</span></div><div class="wk-grid">'+
+    row(L('Sesuai target','On target'),rate+'% '+L('dari yang selesai','of completed'))+
+    row(L('Tidak sesuai target','Off target'),a.off,a.off?'warn':'')+
+    row(L('Terlewat','Missed'),a.miss,a.miss?'bad':'')+
+    (a.best&&a.bestPct>0?row(L('Hari terbaik','Best day'),shortDate(a.best)+' ('+Math.round(a.bestPct*100)+'%)'):'')+
+    (worst?row(L('Paling sering terlewat','Most missed'),esc(worst.c==='Tanpa kategori'?L('Tanpa kategori','No category'):worst.c)+' ('+Math.round(worst.q*100)+'% '+L('selesai','done')+')'):'')+
+    '</div>';
 }
 function renderDzHist(){
   var h='';
   ['am','pm'].forEach(function(p){
     var n=0,dots='',i,d,ok;
-    for(i=6;i>=0;i--){d=addDays(todayStr,-i);ok=!!(state.dz&&state.dz[d]&&state.dz[d]['d_'+p]);if(ok)n++;dots+='<i class="dot'+(ok?' on':'')+'"></i>';}
+    for(i=6;i>=0;i--){d=addDays(todayStr,-i);ok=!!(state.dz&&state.dz[d]&&state.dz[d]['d_'+p]);if(ok)n++;}
+    for(i=0;i<7;i++)dots+='<i class="dot'+(i<n?' on':'')+'"></i>';
     h+='<div class="hrow" style="cursor:default"><span>'+(p==='am'?L('Pagi','Morning'):L('Petang','Evening'))+'</span><small>'+n+'/7</small><span class="dots">'+dots+'</span></div>';
   });
   $('#dzHist').innerHTML=h;
@@ -2382,6 +2405,7 @@ renderDay();
 renderSync();
 initLang();
 initPin();
+(function(){var h0=(location.hash||'').slice(1);if(TABS.indexOf(h0)>0)tab(h0);})();
 doSync();
 })();
 </script>
