@@ -249,7 +249,7 @@ textarea.im{width:100%;min-height:90px;background:var(--bg);border:1px solid var
 .dzc{border:0;font:inherit;cursor:pointer;display:flex;gap:6px;align-items:center;min-width:64px;justify-content:center}
 .dzc small{opacity:.8}
 .dzc.ok{background:var(--ok);color:#06241b}
-.hrow .dots{grid-column:1/-1;display:flex;gap:6px}
+.hrow .dots{grid-column:1/-1;display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
 .dot{width:14px;height:14px;border-radius:50%;background:var(--surface2);border:1px solid var(--line)}
 .dot.on{background:var(--ok);border-color:var(--ok)}
 html[data-theme=light]{--bg:#f4f3fb;--surface:#fff;--surface2:#ebeaf6;--line:#d9d7ec;--text:#1d1b33;--muted:#6a6788;--accent:#e2582a;--ok:#12a37f;--on:#fff;--p3:#e0334c;--p2:#c98a00;--p1:#1b86b8;color-scheme:light}
@@ -341,6 +341,16 @@ body.psh .scrim{opacity:1;pointer-events:auto}
 .chart i.b3,.hrow .pb i.b3{background:color-mix(in srgb,var(--ok) 60%,var(--p2))}
 #chartLegend,#dateLegend{margin:10px 2px 4px}
 .week .sel,.week .sel.past,.week .sel.fut{background:var(--accent);border:1px solid var(--accent)}
+.tools{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;flex-wrap:wrap;background:var(--bg);margin:0 -16px 10px;padding:8px 16px 8px;box-shadow:0 8px 10px -9px rgba(0,0,0,.6)}
+.dd{flex:1 1 0}
+.tprog{flex-basis:100%;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted)}
+.tprog .bar{flex:1;height:5px;border-radius:3px;background:var(--surface2);overflow:hidden}
+.tprog .bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.tprog.full .bar i{background:var(--ok)}
+.mmore{display:block;width:100%;background:var(--surface);border:1px dashed var(--line);border-radius:14px;padding:10px;color:var(--accent);margin:4px 0 8px}
+.dc{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--muted)}
+.dc .dot{width:16px;height:16px;margin-bottom:2px}
+.dc.t small{color:var(--text);font-weight:700}
 /* Navigasi */
 .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:9}
 .tabs div{display:grid;grid-template-columns:repeat(5,1fr);max-width:640px;margin:0 auto}
@@ -494,6 +504,7 @@ body.psh .scrim{opacity:1;pointer-events:auto}
           <button class="orow" data-t="group" id="tGroup"><span>Kelompok</span><i></i></button>
           <button class="orow" data-t="select" id="tSelect"><span>Pilih</span><i></i></button>
         </div></div>
+      <div class="tprog" id="tprog"><span class="bar"><i></i></span><span id="tpTxt"></span></div>
     </div>
     <ul class="list" id="list"></ul>
     </div>
@@ -570,9 +581,10 @@ body.psh .scrim{opacity:1;pointer-events:auto}
     <h2>14 hari terakhir</h2>
     <div class="chart" id="chart"></div>
     <div class="legend" id="chartLegend"><span><i style="background:var(--p3)"></i>0%</span><span><i style="background:hsl(24 90% 58%)"></i>1–39%</span><span><i style="background:var(--p2)"></i>40–69%</span><span><i style="background:color-mix(in srgb,var(--ok) 60%,var(--p2))"></i>70–99%</span><span><i style="background:var(--ok)"></i>100%</span></div>
-    <h2>Per tanggal (30 hari terakhir)</h2>
+    <h2 id="dateH">Per tanggal (14 hari terakhir)</h2>
     <div class="legend" id="dateLegend"><span><i style="background:var(--p3)"></i>0%</span><span><i style="background:hsl(24 90% 58%)"></i>1–39%</span><span><i style="background:var(--p2)"></i>40–69%</span><span><i style="background:color-mix(in srgb,var(--ok) 60%,var(--p2))"></i>70–99%</span><span><i style="background:var(--ok)"></i>100%</span></div>
     <div id="hlist"></div>
+    <button class="mmore" id="histMore" type="button" hidden></button>
   </section>
 
   <!-- Data -->
@@ -830,6 +842,9 @@ function renderDay(){
   $('#cats').innerHTML=allCats.sort().map(function(c){return '<option value="'+esc(c)+'">';}).join('');
 
   $('#tools').hidden=all.length<1;
+  $('#tpTxt').textContent=st.done+'/'+st.total+' '+L('selesai','done')+', '+st.pct+'%';
+  $('#tprog .bar i').style.width=st.pct+'%';
+  $('#tprog').classList.toggle('full',st.total>0&&st.done===st.total);
   $('#sortLbl').textContent=state.sort==='manual'?(state.lock===false?'Manual (terbuka)':'Manual'):'Prioritas';
   Array.prototype.forEach.call(document.querySelectorAll('#tools [data-sort]'),function(b){
     b.setAttribute('aria-pressed',String(b.dataset.sort===state.sort));
@@ -926,8 +941,8 @@ function renderHist(){
   }
   $('#chart').innerHTML=bars;
 
-  var rows='';
-  for(i=0;i<30;i++){
+  var rows='',nd=histMore?30:14;
+  for(i=0;i<nd;i++){
     d=addDays(todayStr,-i);
     s=stat(d);
     if(s.total){
@@ -936,6 +951,9 @@ function renderHist(){
     }
   }
   $('#hlist').innerHTML=rows||'<div class="empty">Riwayat muncul setelah Anda menambahkan kegiatan.</div>';
+  $('#dateH').textContent=histMore?'Per tanggal (30 hari terakhir)':'Per tanggal (14 hari terakhir)';
+  $('#histMore').textContent=histMore?'Tampilkan 14 hari':'Tampilkan 30 hari';
+  $('#histMore').hidden=!rows;
 }
 $('#calPrev').onclick=function(){calM--;if(calM<0){calM=11;calY--;}renderCal();};
 $('#calNext').onclick=function(){calM++;if(calM>11){calM=0;calY++;}renderCal();};
@@ -1547,6 +1565,7 @@ function setArr(){
 }
 function P(n,w){return n+' '+w+(String(n)==='1'?'':'s');}
 var DICT={
+'Per tanggal (14 hari terakhir)':'By date (last 14 days)','Tampilkan 30 hari':'Show 30 days','Tampilkan 14 hari':'Show 14 days',
 'Menggantikan kegiatan berulang bernama sama mulai tanggal ini':'Replaced the repeating task with the same name from this date',
 'Terlewat':'Missed','Tandai terlewat':'Mark as missed','Sembunyikan terlewat':'Hide missed',
 'Semua kategori':'All categories','Tampilan':'View','Manual (terbuka)':'Manual (unlocked)',
@@ -1928,8 +1947,11 @@ function renderDzHist(){
   var h='';
   ['am','pm'].forEach(function(p){
     var n=0,dots='',i,d,ok;
-    for(i=6;i>=0;i--){d=addDays(todayStr,-i);ok=!!(state.dz&&state.dz[d]&&state.dz[d]['d_'+p]);if(ok)n++;}
-    for(i=0;i<7;i++)dots+='<i class="dot'+(i<n?' on':'')+'"></i>';
+    for(i=0;i<7;i++){
+      d=addDays(todayStr,-i);ok=!!(state.dz&&state.dz[d]&&state.dz[d]['d_'+p]);if(ok)n++;
+      var dt=parse(d);
+      dots+='<span class="dc'+(i===0?' t':'')+'"><i class="dot'+(ok?' on':'')+'"></i><small>'+HARI[dt.getDay()].slice(0,3)+'</small><small>'+dt.getDate()+'</small></span>';
+    }
     h+='<div class="hrow" style="cursor:default"><span>'+(p==='am'?L('Pagi','Morning'):L('Petang','Evening'))+'</span><small>'+n+'/7</small><span class="dots">'+dots+'</span></div>';
   });
   $('#dzHist').innerHTML=h;
@@ -2181,6 +2203,10 @@ function supersede(nt){
   });
   return n;
 }
+
+/* ---------- riwayat 14/30 hari ---------- */
+var histMore=false;
+$('#histMore').onclick=function(){histMore=!histMore;renderHist();};
 
 /* ---------- list actions ---------- */
 $('#chips').onclick=function(e){
