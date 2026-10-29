@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>To-Do Harian</title>
+<title>Daily To-Do</title>
 <script>try{var m=localStorage.getItem('todo-theme')||'dark',r=m==='auto'?(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):m;document.documentElement.setAttribute('data-theme',r);}catch(e){}</script>
 <style>
 :root{
@@ -333,8 +333,14 @@ body.psh .scrim{opacity:1;pointer-events:auto}
 .wk-grid{display:grid;grid-template-columns:max-content 1fr;gap:9px 20px;font-size:15px}
 .wl{color:var(--muted)}
 .wv{font-weight:600;overflow-wrap:anywhere}
-.wv.warn{color:var(--p2)}
+.wv.amber{color:var(--p2)}
 .wv.bad{color:var(--p3)}
+.chart i.b0,.hrow .pb i.b0{background:var(--p3)}
+.chart i.b1,.hrow .pb i.b1{background:hsl(24 90% 58%)}
+.chart i.b2,.hrow .pb i.b2{background:var(--p2)}
+.chart i.b3,.hrow .pb i.b3{background:color-mix(in srgb,var(--ok) 60%,var(--p2))}
+#chartLegend,#dateLegend{margin:10px 2px 4px}
+.week .sel,.week .sel.past,.week .sel.fut{background:var(--accent);border:1px solid var(--accent)}
 /* Navigasi */
 .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:9}
 .tabs div{display:grid;grid-template-columns:repeat(5,1fr);max-width:640px;margin:0 auto}
@@ -353,7 +359,7 @@ body.psh .scrim{opacity:1;pointer-events:auto}
 @media(min-width:900px){
   .tabs{top:0;right:auto;width:220px;border-top:0;border-right:1px solid var(--line);padding:28px 14px}
   .tabs div{display:flex;flex-direction:column;gap:6px;max-width:none}
-  .tabs div::before{content:"To-Do Harian";font:400 24px var(--serif);padding:0 16px 20px}
+  .tabs div::before{content:attr(data-brand);font:400 24px var(--serif);padding:0 16px 20px}
   .tabs button{text-align:left;padding:12px 16px;border-radius:14px}
   .tabs button[aria-selected=true]{background:var(--surface2)}
   .tabs button[aria-selected=true]::before{display:none}
@@ -563,7 +569,9 @@ body.psh .scrim{opacity:1;pointer-events:auto}
     <div id="catStats"></div>
     <h2>14 hari terakhir</h2>
     <div class="chart" id="chart"></div>
+    <div class="legend" id="chartLegend"><span><i style="background:var(--p3)"></i>0%</span><span><i style="background:hsl(24 90% 58%)"></i>1–39%</span><span><i style="background:var(--p2)"></i>40–69%</span><span><i style="background:color-mix(in srgb,var(--ok) 60%,var(--p2))"></i>70–99%</span><span><i style="background:var(--ok)"></i>100%</span></div>
     <h2>Per tanggal (30 hari terakhir)</h2>
+    <div class="legend" id="dateLegend"><span><i style="background:var(--p3)"></i>0%</span><span><i style="background:hsl(24 90% 58%)"></i>1–39%</span><span><i style="background:var(--p2)"></i>40–69%</span><span><i style="background:color-mix(in srgb,var(--ok) 60%,var(--p2))"></i>70–99%</span><span><i style="background:var(--ok)"></i>100%</span></div>
     <div id="hlist"></div>
   </section>
 
@@ -622,7 +630,7 @@ body.psh .scrim{opacity:1;pointer-events:auto}
 <button class="fab" id="fab" aria-label="Tambah kegiatan">+</button>
 <div class="bulk" id="bulk" hidden><span id="bCount"></span><button class="chip" data-b="all">Semua</button><button class="chip" data-b="done">Selesai</button><button class="chip" data-b="miss">Terlewat</button><button class="chip" data-b="cat">Kategori</button><button class="chip" data-b="move">Pindah</button><button class="chip" data-b="del">Hapus</button><button class="chip" data-b="exit">Batal</button></div>
 <button class="undo" id="undo" hidden>Urungkan</button>
-<nav class="tabs" role="tablist"><div>
+<nav class="tabs" role="tablist"><div data-brand="Daily To-Do">
   <button role="tab" id="t-day" aria-selected="true">Harian</button>
   <button role="tab" id="t-pr" aria-selected="false">Sholat</button>
   <button role="tab" id="t-dz" aria-selected="false">Dzikir</button>
@@ -912,7 +920,7 @@ function renderHist(){
   var bars='';
   for(i=13;i>=0;i--){
     d=addDays(todayStr,-i);s=stat(d);
-    var cls=s.total===0?'z':(s.pct===100?'f':'');
+    var cls=band(s);
     bars+='<button data-date="'+d+'" aria-label="'+shortDate(d)+': '+s.pct+'%" title="'+shortDate(d)+': '+s.pct+'%">'+
       '<i class="'+cls+'" style="height:'+(s.total?Math.max(4,Math.round(s.pct*0.8)):3)+'px"></i><span>'+parse(d).getDate()+'</span></button>';
   }
@@ -924,7 +932,7 @@ function renderHist(){
     s=stat(d);
     if(s.total){
       rows+='<button class="hrow" data-date="'+d+'"><span>'+shortDate(d)+'</span><small>'+s.done+'/'+s.total+' selesai ('+s.pct+'%)</small>'+
-        '<span class="pb"><i class="'+(s.pct===100?'f':'')+'" style="width:'+s.pct+'%"></i></span></button>';
+        '<span class="pb"><i class="'+band(s)+'" style="width:'+s.pct+'%"></i></span></button>';
     }
   }
   $('#hlist').innerHTML=rows||'<div class="empty">Riwayat muncul setelah Anda menambahkan kegiatan.</div>';
@@ -1070,8 +1078,9 @@ $('#f').onsubmit=function(e){
     var nt={id:uid(),text:text,pri:pri,cat:cat,note:note,sub:sub,rec:rep!=='none',done:{}};
     if(nt.rec){nt.freq=rep;nt.start=cur;nt.end=null;if(rep==='weekly')nt.days=fDays.slice();}
     else nt.date=cur;
+    var nrep=nt.rec?supersede(nt):0;
     state.tasks.push(nt);
-    toast('Kegiatan ditambahkan');
+    toast(nrep?'Menggantikan kegiatan berulang bernama sama mulai tanggal ini':'Kegiatan ditambahkan');
   }
   save();resetForm();renderDay();
 };
@@ -1188,6 +1197,7 @@ $('#pAdd').onclick=function(){
       if(x.rec.freq==='weekly')nt.days=(x.rec.days&&x.rec.days.length?x.rec.days:[parse(cur).getDay()]).slice();
     }else nt.date=cur;
     if(x.done)nt.done[cur]=true;
+    if(nt.rec)supersede(nt);
     state.tasks.push(nt);
   });
   save();
@@ -1537,6 +1547,7 @@ function setArr(){
 }
 function P(n,w){return n+' '+w+(String(n)==='1'?'':'s');}
 var DICT={
+'Menggantikan kegiatan berulang bernama sama mulai tanggal ini':'Replaced the repeating task with the same name from this date',
 'Terlewat':'Missed','Tandai terlewat':'Mark as missed','Sembunyikan terlewat':'Hide missed',
 'Semua kategori':'All categories','Tampilan':'View','Manual (terbuka)':'Manual (unlocked)',
 'Hapus hanya di tanggal ini':'Delete on this date only','Hapus permanen di semua hari':'Delete permanently on all days',
@@ -1713,6 +1724,8 @@ function setLang(l,init){
   LANG=l;
   if(!init){try{localStorage.setItem('todo-lang',l);}catch(e){}}
   document.documentElement.lang=l;
+  document.title=L('To-Do Harian','Daily To-Do');
+  var tbr=document.querySelector('.tabs div');if(tbr)tbr.setAttribute('data-brand',L('To-Do Harian','Daily To-Do'));
   setArr();
   obs.disconnect();
   $('#pHelp').innerHTML=l==='en'?HELP_EN:HELP_ID;
@@ -1905,7 +1918,7 @@ function renderWeek(){
   function row(l,v,c){return '<span class="wl">'+l+'</span><span class="wv'+(c?' '+c:'')+'">'+v+'</span>';}
   box.innerHTML='<div class="wk-top"><b>'+pa+'%</b><span>'+L('selesai','completed')+dl+'</span></div><div class="wk-grid">'+
     row(L('Sesuai target','On target'),rate+'% '+L('dari yang selesai','of completed'))+
-    row(L('Tidak sesuai target','Off target'),a.off,a.off?'warn':'')+
+    row(L('Tidak sesuai target','Off target'),a.off,a.off?'amber':'')+
     row(L('Terlewat','Missed'),a.miss,a.miss?'bad':'')+
     (a.best&&a.bestPct>0?row(L('Hari terbaik','Best day'),shortDate(a.best)+' ('+Math.round(a.bestPct*100)+'%)'):'')+
     (worst?row(L('Paling sering terlewat','Most missed'),esc(worst.c==='Tanpa kategori'?L('Tanpa kategori','No category'):worst.c)+' ('+Math.round(worst.q*100)+'% '+L('selesai','done')+')'):'')+
@@ -2147,6 +2160,27 @@ function openPrSheet(on){
 }
 $('#prOpen').onclick=function(){openPrSheet(true);};
 $('#prClose').onclick=function(){openPrSheet(false);};
+
+/* ---------- band warna, kegiatan pengganti ---------- */
+function band(s){
+  if(!s.total)return 'z';
+  if(s.pct>=100)return 'f';
+  if(s.pct>=70)return 'b3';
+  if(s.pct>=40)return 'b2';
+  return s.done>0?'b1':'b0';
+}
+function supersede(nt){
+  var key=String(nt.text).trim().toLowerCase(),n=0;
+  state.tasks=state.tasks.filter(function(o){
+    if(!o.rec||o.id===nt.id||String(o.text).trim().toLowerCase()!==key)return true;
+    if(o.end&&o.end<nt.start)return true;
+    n++;
+    if(o.start>=nt.start)return false;
+    o.end=addDays(nt.start,-1);
+    return true;
+  });
+  return n;
+}
 
 /* ---------- list actions ---------- */
 $('#chips').onclick=function(e){

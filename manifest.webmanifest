@@ -1,7 +1,7 @@
 {
- "name": "To-Do Harian",
+ "name": "Daily To-Do",
  "short_name": "To-Do",
- "lang": "id",
+ "lang": "en",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
