@@ -351,6 +351,11 @@ body.psh .scrim{opacity:1;pointer-events:auto}
 .dc{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--muted)}
 .dc .dot{width:16px;height:16px;margin-bottom:2px}
 .dc.t small{color:var(--text);font-weight:700}
+.add .row,.paste .row,.prset .row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.add .row>*,.paste .row>*,.prset .row>*{min-width:0;max-width:100%}
+.add,.paste,.psheet{overflow-x:hidden}
+.add input,.add select,.add textarea,.paste input,.paste select,.paste textarea,.prset input,.prset select{min-width:0;max-width:100%}
+.add details.more,.add .catsug{min-width:0;max-width:100%}
 /* Navigasi */
 .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:9}
 .tabs div{display:grid;grid-template-columns:repeat(5,1fr);max-width:640px;margin:0 auto}
@@ -1080,7 +1085,9 @@ $('#f').onsubmit=function(e){
   if(rep==='weekly'&&!fDays.length){toast('Pilih minimal satu hari');return;}
   if(editing){
     var t=state.tasks.find(function(x){return x.id===editing;});
-    if(t){
+    var v={text:text,pri:pri,cat:cat,note:note,sub:sub},days=fDays.slice();
+    var doneEdit=function(){toast('Perubahan disimpan');save();resetForm();renderDay();};
+    var applyAll=function(){
       t.text=text;t.pri=pri;t.cat=cat;t.note=note;t.sub=sub;
       if(t.sd)Object.keys(t.sd).forEach(function(k){t.sd[k]=t.sd[k].filter(function(i){return i<sub.length;});if(!t.sd[k].length)delete t.sd[k];});
       if(rep==='none'){
@@ -1088,10 +1095,28 @@ $('#f').onsubmit=function(e){
       }else{
         if(!t.rec){t.rec=true;t.start=t.date||cur;t.end=null;delete t.date;}
         t.freq=rep;
-        if(rep==='weekly')t.days=fDays.slice();else delete t.days;
+        if(rep==='weekly')t.days=days.slice();else delete t.days;
+      }
+      doneEdit();
+    };
+    if(!t){doneEdit();return;}
+    if(t.rec&&rep!=='none'){
+      var oldDays=(t.freq==='weekly')?weekDays(t).slice().sort().join():'0,1,2,3,4,5,6';
+      var changed=text!==t.text||pri!==t.pri||cat!==(t.cat||'')||note!==(t.note||'')||sub.join('\n')!==(t.sub||[]).join('\n')||rep!==(t.freq||'daily')||(rep==='weekly'&&days.slice().sort().join()!==oldDays);
+      if(changed){
+        var allD=(t.freq==='weekly')?weekDays(t):[0,1,2,3,4,5,6];
+        var elig=rep==='weekly'&&t.freq!=='monthly'&&days.every(function(d){return allD.indexOf(d)>=0;})&&days.length<allD.length;
+        var btns=[{label:'Hanya tanggal ini',cls:'pri',fn:function(){editDateOnly(t,v);doneEdit();}}];
+        if(elig)btns.push({label:'Hanya hari terpilih, mulai tanggal ini',cls:'sec',fn:function(){splitDays(t,v,days);doneEdit();}});
+        btns.push({label:'Tanggal ini dan seterusnya',cls:'sec',fn:function(){editFollowing(t,v,rep,days);doneEdit();}});
+        btns.push({label:'Semua tanggal',cls:'sec',fn:applyAll});
+        btns.push({label:'Batal'});
+        modal('Ubah kegiatan berulang','Terapkan perubahan ke tanggal mana?',btns);
+        return;
       }
     }
-    toast('Perubahan disimpan');
+    applyAll();
+    return;
   }else{
     var nt={id:uid(),text:text,pri:pri,cat:cat,note:note,sub:sub,rec:rep!=='none',done:{}};
     if(nt.rec){nt.freq=rep;nt.start=cur;nt.end=null;if(rep==='weekly')nt.days=fDays.slice();}
@@ -1565,6 +1590,9 @@ function setArr(){
 }
 function P(n,w){return n+' '+w+(String(n)==='1'?'':'s');}
 var DICT={
+'Ubah kegiatan berulang':'Edit repeating task','Terapkan perubahan ke tanggal mana?':'Apply the changes to which dates?',
+'Hanya tanggal ini':'This date only','Hanya hari terpilih, mulai tanggal ini':'Only the selected weekdays, from this date',
+'Tanggal ini dan seterusnya':'This and following dates','Semua tanggal':'All dates',
 'Per tanggal (14 hari terakhir)':'By date (last 14 days)','Tampilkan 30 hari':'Show 30 days','Tampilkan 14 hari':'Show 14 days',
 'Menggantikan kegiatan berulang bernama sama mulai tanggal ini':'Replaced the repeating task with the same name from this date',
 'Terlewat':'Missed','Tandai terlewat':'Mark as missed','Sembunyikan terlewat':'Hide missed',
@@ -2207,6 +2235,53 @@ function supersede(nt){
 /* ---------- riwayat 14/30 hari ---------- */
 var histMore=false;
 $('#histMore').onclick=function(){histMore=!histMore;renderHist();};
+
+/* ---------- ubah kegiatan berulang per tanggal ---------- */
+function newSeries(v,rep,days,t){
+  var o={id:uid(),text:v.text,pri:v.pri,cat:v.cat,note:v.note,sub:v.sub.slice(),rec:true,freq:rep,start:cur,end:t.end||null,done:{}};
+  if(rep==='weekly')o.days=days.slice();
+  return o;
+}
+function moveMaps(from,pick){
+  ['done','skip','ms','sd'].forEach(function(k){
+    if(!from[k])return;
+    Object.keys(from[k]).forEach(function(d){
+      if(d<cur)return;
+      var tg=pick(d);
+      if(tg){tg[k]=tg[k]||{};tg[k][d]=from[k][d];}
+      delete from[k][d];
+    });
+  });
+}
+function closeOld(t,news){
+  var at=state.tasks.indexOf(t);
+  if(t.start>=cur)state.tasks.splice(at,1);else{t.end=addDays(cur,-1);at++;}
+  news.forEach(function(n,j){state.tasks.splice(at+j,0,n);});
+}
+function editDateOnly(t,v){
+  t.skip=t.skip||{};t.skip[cur]=true;
+  var c={id:uid(),text:v.text,pri:v.pri,cat:v.cat,note:v.note,sub:v.sub.slice(),rec:false,date:cur,done:{}};
+  if(t.done&&t.done[cur])c.done[cur]=t.done[cur];
+  if(t.ms&&t.ms[cur]){c.ms={};c.ms[cur]=true;}
+  state.tasks.splice(state.tasks.indexOf(t)+1,0,c);
+}
+function editFollowing(t,v,rep,days){
+  var nt=newSeries(v,rep,days,t);
+  moveMaps(t,function(){return nt;});
+  closeOld(t,[nt]);
+}
+function splitDays(t,v,sel){
+  var all=(t.freq==='weekly')?weekDays(t):[0,1,2,3,4,5,6];
+  var rest=all.filter(function(d){return sel.indexOf(d)<0;});
+  var nt=newSeries(v,'weekly',sel,t);
+  var keep=null;
+  if(rest.length){
+    keep={id:uid(),text:t.text,pri:t.pri,cat:t.cat||'',note:t.note||'',sub:(t.sub||[]).slice(),rec:true,freq:rest.length===7?'daily':'weekly',start:cur,end:t.end||null,done:{}};
+    if(keep.freq==='weekly')keep.days=rest;
+  }
+  moveMaps(t,function(d){return sel.indexOf(parse(d).getDay())>=0?nt:(keep||nt);});
+  closeOld(t,keep?[keep,nt]:[nt]);
+}
 
 /* ---------- list actions ---------- */
 $('#chips').onclick=function(e){
