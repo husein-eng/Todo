@@ -356,6 +356,7 @@ body.psh .scrim{opacity:1;pointer-events:auto}
 .add,.paste,.psheet{overflow-x:hidden}
 .add input,.add select,.add textarea,.paste input,.paste select,.paste textarea,.prset input,.prset select{min-width:0;max-width:100%}
 .add details.more,.add .catsug{min-width:0;max-width:100%}
+details,details *,summary,.row,.row>*{box-sizing:border-box}
 /* Navigasi */
 .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:9}
 .tabs div{display:grid;grid-template-columns:repeat(5,1fr);max-width:640px;margin:0 auto}
@@ -1086,7 +1087,7 @@ $('#f').onsubmit=function(e){
   if(editing){
     var t=state.tasks.find(function(x){return x.id===editing;});
     var v={text:text,pri:pri,cat:cat,note:note,sub:sub},days=fDays.slice();
-    var doneEdit=function(){toast('Perubahan disimpan');save();resetForm();renderDay();};
+    var doneEdit=function(){toast('Perubahan disimpan');syncOrder();save();resetForm();renderDay();};
     var applyAll=function(){
       t.text=text;t.pri=pri;t.cat=cat;t.note=note;t.sub=sub;
       if(t.sd)Object.keys(t.sd).forEach(function(k){t.sd[k]=t.sd[k].filter(function(i){return i<sub.length;});if(!t.sd[k].length)delete t.sd[k];});
@@ -1890,9 +1891,9 @@ function moveTomorrow(t){
   var tm=addDays(cur,1);
   if(t.rec){
     t.skip=t.skip||{};t.skip[cur]=true;
-    state.tasks.push({id:uid(),text:t.text,pri:t.pri,cat:t.cat||'',note:t.note||'',sub:(t.sub||[]).slice(),rec:false,date:tm,done:{},from:cur});
+    state.tasks.splice(state.tasks.indexOf(t)+1,0,{id:uid(),text:t.text,pri:t.pri,cat:t.cat||'',note:t.note||'',sub:(t.sub||[]).slice(),rec:false,date:tm,done:{},from:cur});
   }else{t.date=tm;t.done={};delete t.sd;delete t.ms;}
-  save();renderDay();toast('Dipindahkan ke besok');
+  syncOrder();save();renderDay();toast('Dipindahkan ke besok');
 }
 $('#list').addEventListener('change',function(e){
   var c=e.target.closest('[data-si]');if(!c)return;
@@ -2237,6 +2238,7 @@ var histMore=false;
 $('#histMore').onclick=function(){histMore=!histMore;renderHist();};
 
 /* ---------- ubah kegiatan berulang per tanggal ---------- */
+function syncOrder(){state.order=state.tasks.map(function(t){return t.id;});state.orderU=Date.now();}
 function newSeries(v,rep,days,t){
   var o={id:uid(),text:v.text,pri:v.pri,cat:v.cat,note:v.note,sub:v.sub.slice(),rec:true,freq:rep,start:cur,end:t.end||null,done:{}};
   if(rep==='weekly')o.days=days.slice();
