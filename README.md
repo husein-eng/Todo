@@ -36,6 +36,12 @@ The app works fully without sync. To sync, open the **Data** tab and connect a G
 - The token and password are stored only in your browser's local storage on each device. Do not use sync on shared devices.
 - A token with the `gist` scope can access all gists in your account. Revoke it in GitHub settings if a device is lost.
 
+## Backup
+
+- In the **Data** tab, **Download backup** or **Copy data** saves everything that matters: tasks (with checklists, done, off-target and missed states), manual order, templates, category colors, adhkar counts and history, view settings, theme, language, and your prayer location. Importing a backup restores all of it. Older backup files still import.
+- The backup **never includes** your sync token, sync password, or PIN.
+- Sync is not a backup: a task deleted on one device is deleted on the others. A banner reminds you to back up if you have never done so after 7 days, and again after 30 days.
+
 ## Prayer times
 
 - Open the **Prayer** tab. Times for Fajr, Dhuhr, Asr, Maghrib, and Isha are calculated on your device with the [Adhan](https://github.com/batoulapps/adhan-js) library, so they work without internet. Sunrise is shown as a reference.
