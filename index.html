@@ -584,8 +584,9 @@ details,details *,summary,.row,.row>*{box-sizing:border-box}
     <div class="card" id="weekSum" data-ni></div>
     <h2>Dzikir (7 hari)</h2>
     <div id="dzHist" data-ni></div>
-    <h2>Per kategori (30 hari)</h2>
+    <h2 id="catH">Per kategori (14 hari)</h2>
     <div id="catStats"></div>
+    <button class="mmore" id="catMore" type="button" hidden></button>
     <h2>14 hari terakhir</h2>
     <div class="chart" id="chart"></div>
     <div class="legend" id="chartLegend"><span><i style="background:var(--p3)"></i>0%</span><span><i style="background:hsl(24 90% 58%)"></i>1–39%</span><span><i style="background:var(--p2)"></i>40–69%</span><span><i style="background:color-mix(in srgb,var(--ok) 60%,var(--p2))"></i>70–99%</span><span><i style="background:var(--ok)"></i>100%</span></div>
@@ -1268,9 +1269,10 @@ function applyPrefs(){
   $('#bCount').textContent=n+' kegiatan dipilih';
   document.body.classList.toggle('bk',selMode);
 }
+var catWide=false;
 function renderCatStats(){
   var m={},i,d;
-  for(i=0;i<30;i++){
+  for(i=0;i<(catWide?30:14);i++){
     d=addDays(todayStr,-i);
     tasksOn(d).forEach(function(t){
       (catList(t).length?catList(t):['Tanpa kategori']).forEach(function(c){var o=m[c]||(m[c]={n:0,t:0});o.t++;if(t.done&&t.done[d])o.n++;});
@@ -1281,7 +1283,11 @@ function renderCatStats(){
     var o=m[c],pc=Math.round(o.n/o.t*100);
     return '<div class="hrow'+(c==='Tanpa kategori'?'':' catrow')+'"'+(c==='Tanpa kategori'?'':' style="--h:'+catHue(c)+'"')+'><span>'+esc(c)+'</span><small>'+o.n+'/'+o.t+' selesai ('+pc+'%)</small><span class="pb"><i class="'+(pc===100?'f':'')+'" style="width:'+pc+'%"></i></span></div>';
   }).join(''):'<div class="empty">Belum ada data.</div>';
+  $('#catH').textContent=catWide?'Per kategori (30 hari)':'Per kategori (14 hari)';
+  $('#catMore').textContent=catWide?'Tampilkan 14 hari':'Tampilkan 30 hari';
+  $('#catMore').hidden=!keys.length;
 }
+$('#catMore').onclick=function(){catWide=!catWide;renderCatStats();};
 function renderTpl(){
   var l=state.tpls||[];
   $('#pTpl').hidden=!l.length;
@@ -1589,6 +1595,7 @@ function setArr(){
 }
 function P(n,w){return n+' '+w+(String(n)==='1'?'':'s');}
 var DICT={
+'Per kategori (14 hari)':'By category (14 days)',
 'Cadangkan':'Back up','Nanti':'Later',
 'Ubah kegiatan berulang':'Edit repeating task','Terapkan perubahan ke tanggal mana?':'Apply the changes to which dates?',
 'Hanya tanggal ini':'This date only','Hanya hari terpilih, mulai tanggal ini':'Only the selected weekdays, from this date',
