@@ -133,7 +133,7 @@ ul.list.manual{grid-template-columns:1fr}
 .item.done .txt{text-decoration:line-through}
 .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
 .tag{padding:1px 9px;border-radius:8px;border:1px solid var(--line);color:var(--muted);background:none;font-size:12.5px}
-.tag.cat{color:hsl(var(--h) 80% 80%);border-color:hsl(var(--h) 35% 32%);background:hsl(var(--h) 35% 16%)}
+.tag.cat{color:hsl(var(--h) calc(80% * var(--s,1)) calc(80% + var(--l,0%)));border-color:hsl(var(--h) calc(35% * var(--s,1)) calc(32% + var(--l,0%)));background:hsl(var(--h) calc(35% * var(--s,1)) calc(16% + var(--l,0%)))}
 .tag.rec{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,transparent)}
 button.tag.note{color:var(--text);cursor:pointer}
 button.tag.note[aria-expanded=true]{background:var(--surface2)}
@@ -260,21 +260,21 @@ html[data-theme=light] .chk{border-color:#a9a6cc}
 html[data-theme=light] .dz .idn{color:#4a4766}
 html[data-theme=light] .btn.dng{background:#fde8eb;color:#b4233a;border-color:#f4c4cc}
 html[data-theme=light] .warn{background:#fff3d6;border-color:#f0d58a;color:#7a5600}
-html[data-theme=light] .tag.cat{color:hsl(var(--h) 55% 32%);border-color:hsl(var(--h) 40% 78%);background:hsl(var(--h) 60% 94%)}
+html[data-theme=light] .tag.cat{color:hsl(var(--h) calc(55% * var(--s,1)) calc(32% + var(--l,0%)));border-color:hsl(var(--h) calc(40% * var(--s,1)) calc(78% + var(--l,0%)));background:hsl(var(--h) calc(60% * var(--s,1)) calc(94% + var(--l,0%)))}
 html[data-theme=light] .item.done .chk,html[data-theme=light] .chk.pk[aria-pressed=true]{color:#fff}
 .topbar{display:flex;justify-content:flex-end;margin:0 0 8px}
 .topbar .langsw{position:static;background:var(--surface)}
 .topbar .langsw button{padding:6px 14px;min-height:30px;font-size:12px}
 .ring{margin-top:0}
-.chip[data-cat]:not([data-cat=""]),.chip[data-cs]{color:hsl(var(--h) 70% 78%);border-color:hsl(var(--h) 35% 30%);background:hsl(var(--h) 30% 14%)}
-.chip[data-cat]:not([data-cat=""])[aria-pressed=true],.chip[data-cs][aria-pressed=true]{background:hsl(var(--h) 55% 38%);border-color:hsl(var(--h) 65% 58%);color:#fff;font-weight:700}
-.ghb[style] b,.ghb[style] .chev{color:hsl(var(--h) 70% 76%)}
-.ghb[style] .pb i{background:hsl(var(--h) 60% 55%)}
-.hrow.catrow span:first-child{color:hsl(var(--h) 70% 76%)}
-.hrow.catrow .pb i{background:hsl(var(--h) 60% 55%)}
-html[data-theme=light] .chip[data-cat]:not([data-cat=""]),html[data-theme=light] .chip[data-cs]{color:hsl(var(--h) 55% 32%);border-color:hsl(var(--h) 40% 78%);background:hsl(var(--h) 60% 94%)}
-html[data-theme=light] .chip[data-cat]:not([data-cat=""])[aria-pressed=true],html[data-theme=light] .chip[data-cs][aria-pressed=true]{background:hsl(var(--h) 60% 42%);border-color:hsl(var(--h) 60% 36%);color:#fff}
-html[data-theme=light] .ghb[style] b,html[data-theme=light] .ghb[style] .chev,html[data-theme=light] .hrow.catrow span:first-child{color:hsl(var(--h) 55% 32%)}
+.chip[data-cat]:not([data-cat=""]),.chip[data-cs]{color:hsl(var(--h) calc(70% * var(--s,1)) calc(78% + var(--l,0%)));border-color:hsl(var(--h) calc(35% * var(--s,1)) calc(30% + var(--l,0%)));background:hsl(var(--h) calc(30% * var(--s,1)) calc(14% + var(--l,0%)))}
+.chip[data-cat]:not([data-cat=""])[aria-pressed=true],.chip[data-cs][aria-pressed=true]{background:hsl(var(--h) calc(55% * var(--s,1)) calc(38% + var(--l,0%)));border-color:hsl(var(--h) calc(65% * var(--s,1)) calc(58% + var(--l,0%)));color:#fff;font-weight:700}
+.ghb[style] b,.ghb[style] .chev{color:hsl(var(--h) calc(70% * var(--s,1)) calc(76% + var(--l,0%)))}
+.ghb[style] .pb i{background:hsl(var(--h) calc(60% * var(--s,1)) calc(55% + var(--l,0%)))}
+.hrow.catrow span:first-child{color:hsl(var(--h) calc(70% * var(--s,1)) calc(76% + var(--l,0%)))}
+.hrow.catrow .pb i{background:hsl(var(--h) calc(60% * var(--s,1)) calc(55% + var(--l,0%)))}
+html[data-theme=light] .chip[data-cat]:not([data-cat=""]),html[data-theme=light] .chip[data-cs]{color:hsl(var(--h) calc(55% * var(--s,1)) calc(32% + var(--l,0%)));border-color:hsl(var(--h) calc(40% * var(--s,1)) calc(78% + var(--l,0%)));background:hsl(var(--h) calc(60% * var(--s,1)) calc(94% + var(--l,0%)))}
+html[data-theme=light] .chip[data-cat]:not([data-cat=""])[aria-pressed=true],html[data-theme=light] .chip[data-cs][aria-pressed=true]{background:hsl(var(--h) calc(60% * var(--s,1)) calc(42% + var(--l,0%)));border-color:hsl(var(--h) calc(60% * var(--s,1)) calc(36% + var(--l,0%)));color:#fff}
+html[data-theme=light] .ghb[style] b,html[data-theme=light] .ghb[style] .chev,html[data-theme=light] .hrow.catrow span:first-child{color:hsl(var(--h) calc(55% * var(--s,1)) calc(32% + var(--l,0%)))}
 .prhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
 .prhead h2{margin:0}
 .prdate{color:var(--muted);font-size:14px;margin:0 0 10px}
@@ -296,15 +296,15 @@ html[data-theme=light] .ghb[style] b,html[data-theme=light] .ghb[style] .chev,ht
 .ddb span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ddb i{flex:none;width:7px;height:7px;border:solid var(--muted);border-width:0 2px 2px 0;transform:rotate(45deg);margin-top:-3px}
 .ddb[aria-expanded=true]{border-color:var(--accent)}
-.ddb.catsel{border-color:hsl(var(--h) 45% 40%);color:hsl(var(--h) 70% 78%);background:hsl(var(--h) 30% 14%)}
+.ddb.catsel{border-color:hsl(var(--h) calc(45% * var(--s,1)) calc(40% + var(--l,0%)));color:hsl(var(--h) calc(70% * var(--s,1)) calc(78% + var(--l,0%)));background:hsl(var(--h) calc(30% * var(--s,1)) calc(14% + var(--l,0%)))}
 .ddm{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:15;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:0 14px 36px rgba(0,0,0,.45);max-height:52vh;overflow:auto}
 .ddm .orow{width:100%}
 .ddi{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;padding:11px 10px;border-radius:10px;color:var(--text);font-size:15px}
 .ddi:hover{background:var(--surface2)}
 .ddi[aria-pressed=true]{background:var(--surface2);box-shadow:inset 0 0 0 1px var(--accent)}
-.ddi .cdot{flex:none;width:10px;height:10px;border-radius:50%;background:hsl(var(--h) 65% 60%)}
+.ddi .cdot{flex:none;width:10px;height:10px;border-radius:50%;background:hsl(var(--h) calc(65% * var(--s,1)) calc(60% + var(--l,0%)))}
 .ddm #tLock{margin-top:4px;border-top:1px solid var(--line);border-radius:0 0 10px 10px}
-html[data-theme=light] .ddb.catsel{color:hsl(var(--h) 55% 32%);border-color:hsl(var(--h) 40% 70%);background:hsl(var(--h) 60% 94%)}
+html[data-theme=light] .ddb.catsel{color:hsl(var(--h) calc(55% * var(--s,1)) calc(32% + var(--l,0%)));border-color:hsl(var(--h) calc(40% * var(--s,1)) calc(70% + var(--l,0%)));background:hsl(var(--h) calc(60% * var(--s,1)) calc(94% + var(--l,0%)))}
 .psheet{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:620px;max-height:88vh;overflow:auto;background:var(--surface);border:1px solid var(--line);border-bottom:0;border-radius:28px 28px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom,0px));z-index:22;box-shadow:0 -20px 60px rgba(0,0,0,.5)}
 .psheet h3{margin:0 0 4px;font:400 22px var(--serif)}
 .psheet .act{display:flex;margin-top:14px}
@@ -834,12 +834,12 @@ function renderDay(){
   $('#ddCat').hidden=cats.length===0;
   $('#chips').innerHTML=cats.length?
     '<button class="ddi" data-cat="" aria-pressed="'+(!filterCat)+'">Semua kategori</button>'+
-    cats.map(function(c){return '<button class="ddi" style="--h:'+catHue(c)+'" data-cat="'+esc(c)+'" aria-pressed="'+(filterCat===c)+'"><span class="cdot"></span><span class="ucat">'+esc(c)+'</span></button>';}).join(''):'';
+    cats.map(function(c){return '<button class="ddi" style="'+catVars(c)+'" data-cat="'+esc(c)+'" aria-pressed="'+(filterCat===c)+'"><span class="cdot"></span><span class="ucat">'+esc(c)+'</span></button>';}).join(''):'';
   var cl=$('#catLbl'),cb=$('#ddCat .ddb');
   cl.className=filterCat?'ucat':'';
   cl.textContent=filterCat||'Kategori';
   cb.classList.toggle('catsel',!!filterCat);
-  if(filterCat)cb.style.setProperty('--h',catHue(filterCat));
+  if(filterCat)cb.setAttribute('style',catVars(filterCat));else cb.removeAttribute('style');
 
   var allCats=[];
   state.tasks.forEach(function(t){catList(t).forEach(function(c){if(allCats.indexOf(c)<0)allCats.push(c);});});
@@ -884,7 +884,7 @@ function renderDay(){
       (selMode?'<button class="chk pk" data-act="pick" aria-label="Pilih" aria-pressed="'+(!!sel[t.id])+'">&#10003;</button>':'<button class="chk" data-act="toggle" aria-label="Tandai selesai" aria-pressed="'+(!!dn)+'">&#10003;</button>')+
       '<div class="body"><div class="txt">'+esc(t.text)+'</div><div class="meta">'+
         '<span class="tag">'+PRI[t.pri]+'</span>'+
-        catList(t).map(function(c){return '<span class="tag cat" style="--h:'+catHue(c)+'">'+esc(c)+'</span>';}).join('')+
+        catList(t).map(function(c){return '<span class="tag cat" style="'+catVars(c)+'">'+esc(c)+'</span>';}).join('')+
         (t.rec?'<span class="tag rec">'+esc(recLabel(t))+'</span>':'')+
         (t.from?'<span class="tag">Dari '+dm(t.from)+'</span>':'')+
         (t.carried?'<span class="tag">Dipindah</span>':'')+
@@ -1200,7 +1200,7 @@ function renderPaste(){
     return '<label class="'+(pSkip[i]?'skip':'')+'"><input type="checkbox" data-i="'+i+'"'+(pSkip[i]?'':' checked')+'>'+
       '<div class="body"><div class="txt">'+esc(x.text)+'</div><div class="meta">'+
       '<span class="tag">'+PRI[x.pri]+'</span>'+
-      catList(x).map(function(c){return '<span class="tag cat" style="--h:'+catHue(c)+'">'+esc(c)+'</span>';}).join('')+
+      catList(x).map(function(c){return '<span class="tag cat" style="'+catVars(c)+'">'+esc(c)+'</span>';}).join('')+
       (x.rec?'<span class="tag rec">'+esc(recLabel({freq:x.rec.freq,days:x.rec.days,start:cur}))+'</span>':'')+
       (x.done?'<span class="tag">Selesai</span>':'')+
       '</div></div></label>';
@@ -1281,7 +1281,7 @@ function renderCatStats(){
   var keys=Object.keys(m).sort(function(a,b){return m[b].t-m[a].t;});
   $('#catStats').innerHTML=keys.length?keys.map(function(c){
     var o=m[c],pc=Math.round(o.n/o.t*100);
-    return '<div class="hrow'+(c==='Tanpa kategori'?'':' catrow')+'"'+(c==='Tanpa kategori'?'':' style="--h:'+catHue(c)+'"')+'><span>'+esc(c)+'</span><small>'+o.n+'/'+o.t+' selesai ('+pc+'%)</small><span class="pb"><i class="'+(pc===100?'f':'')+'" style="width:'+pc+'%"></i></span></div>';
+    return '<div class="hrow'+(c==='Tanpa kategori'?'':' catrow')+'"'+(c==='Tanpa kategori'?'':' style="'+catVars(c)+'"')+'><span>'+esc(c)+'</span><small>'+o.n+'/'+o.t+' selesai ('+pc+'%)</small><span class="pb"><i class="'+(pc===100?'f':'')+'" style="width:'+pc+'%"></i></span></div>';
   }).join(''):'<div class="empty">Belum ada data.</div>';
   $('#catH').textContent=catWide?'Per kategori (30 hari)':'Per kategori (14 hari)';
   $('#catMore').textContent=catWide?'Tampilkan 14 hari':'Tampilkan 30 hari';
@@ -1341,7 +1341,7 @@ function renderList(list,fn){
   return keys.map(function(c){
     var a=g[c],n=a.filter(function(t){return t.done&&t.done[cur];}).length;
     var col=state.collapsed&&state.collapsed[c];
-    return '<li class="gh"><button class="ghb"'+(c?' style="--h:'+catHue(c)+'"':'')+' data-gt="'+esc(c)+'" aria-expanded="'+(!col)+'"><span class="chev">'+(col?'&#9656;':'&#9662;')+'</span><b>'+esc(c||'Tanpa kategori')+'</b><small>'+n+'/'+a.length+'</small><span class="pb"><i style="width:'+Math.round(n/a.length*100)+'%"></i></span></button></li>'+(col?'':a.map(fn).join(''));
+    return '<li class="gh"><button class="ghb"'+(c?' style="'+catVars(c)+'"':'')+' data-gt="'+esc(c)+'" aria-expanded="'+(!col)+'"><span class="chev">'+(col?'&#9656;':'&#9662;')+'</span><b>'+esc(c||'Tanpa kategori')+'</b><small>'+n+'/'+a.length+'</small><span class="pb"><i style="width:'+Math.round(n/a.length*100)+'%"></i></span></button></li>'+(col?'':a.map(fn).join(''));
   }).join('');
 }
 $('#list').addEventListener('click',function(e){
@@ -1815,7 +1815,7 @@ function renderCatSug(){
   mine.forEach(function(c){if(all.indexOf(c)<0)all.push(c);});
   all.sort();
   $('#catSug').innerHTML=all.map(function(c){
-    return '<button type="button" class="chip" style="--h:'+catHue(c)+'" data-cs="'+esc(c)+'" aria-pressed="'+(mine.indexOf(c)>=0)+'">'+esc(c)+'</button>';
+    return '<button type="button" class="chip" style="'+catVars(c)+'" data-cs="'+esc(c)+'" aria-pressed="'+(mine.indexOf(c)>=0)+'">'+esc(c)+'</button>';
   }).join('');
 }
 $('#catSug').onclick=function(e){
@@ -2096,23 +2096,26 @@ function initPin(){renderPin();if(state.vault)showLock(true,'unlock');}
 
 /* ---------- warna kategori ---------- */
 var chT=null;
-function catHue(c){
+var TONES=[[1,0],[0.5,6],[0.9,-10],[0.8,10]];
+function catVal(c){
   state.catHue=state.catHue||{};
-  var h=state.catHue[c];
-  if(h===undefined){
-    var used=Object.keys(state.catHue).map(function(k){return state.catHue[k];}),best=265,bd=-1,i;
+  var v=state.catHue[c];
+  if(v===undefined){
+    var used=Object.keys(state.catHue).map(function(k){var x=state.catHue[k];return{h:x%1000,t:Math.floor(x/1000)};}),best=265,bd=-1,hi,ti;
     if(used.length){
-      for(i=0;i<24;i++){
-        var cand=i*15+7,md=360;
-        used.forEach(function(u){var d=Math.abs(cand-u);d=Math.min(d,360-d);if(d<md)md=d;});
-        if(md>bd){bd=md;best=cand;}
+      for(ti=0;ti<4;ti++)for(hi=0;hi<36;hi++){
+        var h=hi*10+7,md=1e9;
+        used.forEach(function(u){var d=Math.abs(h-u.h);d=Math.min(d,360-d)+Math.abs(ti-u.t)*40;if(d<md)md=d;});
+        if(md>bd){bd=md;best=ti*1000+h;}
       }
     }
-    h=state.catHue[c]=best;
+    v=state.catHue[c]=best;
     clearTimeout(chT);chT=setTimeout(persist,0);
   }
-  return h;
+  return v;
 }
+function catHue(c){return catVal(c)%1000;}
+function catVars(c){var v=catVal(c),t=TONES[Math.floor(v/1000)]||TONES[0];return '--h:'+(v%1000)+';--s:'+t[0]+';--l:'+t[1]+'%';}
 
 /* ---------- waktu sholat ---------- */
 var CITIES=[['Surakarta',-7.5666,110.8167],['Jakarta',-6.2088,106.8456],['Bandung',-6.9175,107.6191],['Semarang',-6.9667,110.4167],['Yogyakarta',-7.7956,110.3695],['Surabaya',-7.2575,112.7521],['Medan',3.5952,98.6722],['Palembang',-2.9761,104.7754],['Balikpapan',-1.2379,116.8529],['Makassar',-5.1477,119.4327],['Denpasar',-8.6705,115.2126],['Banda Aceh',5.5483,95.3238]];
@@ -2533,7 +2536,7 @@ function doImport(txt){
   var sort=p.sort==='manual'?'manual':'priority';
   var tplsI=Array.isArray(p.tpls)?p.tpls.filter(function(x){return x&&typeof x.name==='string'&&typeof x.text==='string';}).map(function(x){return{name:x.name.slice(0,24),text:x.text.slice(0,8000)};}).slice(0,50):null;
   var chmI=null;
-  if(p.catHue&&typeof p.catHue==='object'){chmI={};Object.keys(p.catHue).forEach(function(k){var v=Number(p.catHue[k]);if(isFinite(v)&&v>=0&&v<360)chmI[k.slice(0,24)]=Math.round(v);});}
+  if(p.catHue&&typeof p.catHue==='object'){chmI={};Object.keys(p.catHue).forEach(function(k){var v=Number(p.catHue[k]);if(isFinite(v)&&v>=0&&v<4000)chmI[k.slice(0,24)]=Math.round(v);});}
   var dzI=null;
   if(p.dz&&typeof p.dz==='object'){
     dzI={};

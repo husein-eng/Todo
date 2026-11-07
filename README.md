@@ -6,7 +6,7 @@ A single-file, offline-capable daily to-do app with a morning and evening adhkar
 
 ## Features
 
-- **Daily planner**: tasks per date with priority, one or more colored categories, notes, checklists, and repeat rules (daily, weekly on chosen days, monthly).
+- **Daily planner**: tasks per date with priority, one or more categories (each gets its own color, from a palette of 144 combinations), notes, checklists, and repeat rules (daily, weekly on chosen days, monthly).
 - **Done, on target or off target**: mark a task done, then flag it as "off target" when it was done but not as planned (for example, praying but not at the mosque). Tasks you did not do can be marked as **missed** (single or in multi-select); missed tasks count as not done in the percentages and can be hidden separately from done ones.
 - **Week strip, history, and weekly summary**: jump between days, monthly calendar, color-coded 14-day chart and by-date list (bars change color by completion: 0%, 1 to 39%, 40 to 69%, 70 to 99%, 100%), streaks, per-category stats, and a summary of this week against the last one. The by-date list shows the last 14 days with a button to expand it to 30; the calendar can still browse older months.
 - **Paste a list**: paste a whole list and review the parsed tasks before adding. Supports `#category`, `!high`, `!medium`, `!low`, `@daily`, `@monthly`, `@mon,thu`, and `[x]` for done.
