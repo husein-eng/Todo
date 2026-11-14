@@ -358,6 +358,8 @@ details,details *,summary,.row,.row>*{box-sizing:border-box}
 .bkb{display:flex;gap:6px;flex:none}
 .banner .ghost{background:none;color:var(--muted);border:1px solid var(--line)}
 .tools.ddopen{z-index:12}
+#allDone{margin-top:10px}
+.sum small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
 /* Navigasi */
 .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:9}
 .tabs div{display:grid;grid-template-columns:repeat(5,1fr);max-width:640px;margin:0 auto}
@@ -565,6 +567,8 @@ details,details *,summary,.row,.row>*{box-sizing:border-box}
       <div><b id="sAvg">0%</b><span>Rata-rata 7 hari terakhir</span></div>
       <div><b id="sStreak">0</b><span>Hari beruntun selesai semua</span></div>
     </div>
+    <h2 id="adH">Hari selesai semua</h2>
+    <div class="sum" id="allDone" data-ni></div>
     <h2>Kalender</h2>
     <div class="cal">
       <div class="calhead">
@@ -935,7 +939,7 @@ function renderHist(){
   }
   $('#sStreak').textContent=streak;
 
-  renderCal();renderWeek();renderDzHist();renderCatStats();
+  renderAllDone();renderCal();renderWeek();renderDzHist();renderCatStats();
 
   var bars='';
   for(i=13;i>=0;i--){
@@ -1595,6 +1599,7 @@ function setArr(){
 }
 function P(n,w){return n+' '+w+(String(n)==='1'?'':'s');}
 var DICT={
+'Hari selesai semua':'All-done days',
 'Per kategori (14 hari)':'By category (14 days)',
 'Cadangkan':'Back up','Nanti':'Later',
 'Ubah kegiatan berulang':'Edit repeating task','Terapkan perubahan ke tanggal mana?':'Apply the changes to which dates?',
@@ -2311,6 +2316,37 @@ function renderBk(){
 }
 $('#bkNow').onclick=function(){$('#exFile').click();};
 $('#bkLater').onclick=function(){bkSet('todo-bksnooze',Date.now()+7*864e5);renderBk();};
+
+/* ---------- hari selesai semua ---------- */
+function allDoneStats(){
+  var res={wk:0,wkN:0,mo:0,moN:0,all:0,allN:0,best:0},first=null,floor=addDays(todayStr,-1830);
+  state.tasks.forEach(function(t){var d=t.rec?t.start:t.date;if(d&&(first===null||d<first))first=d;});
+  if(first===null)return res;
+  if(first<floor)first=floor;
+  var d=first,wkStart=addDays(todayStr,-((parse(todayStr).getDay()+6)%7)),moStart=todayStr.slice(0,7)+'-01',run=0;
+  while(d<=todayStr){
+    var st=stat(d);
+    if(st.total&&st.done===st.total){res.all++;run++;if(run>res.best)res.best=run;}else run=0;
+    if(st.total){
+      res.allN++;
+      if(d>=wkStart){res.wkN++;if(st.done===st.total)res.wk++;}
+      if(d>=moStart){res.moN++;if(st.done===st.total)res.mo++;}
+    }
+    d=addDays(d,1);
+  }
+  return res;
+}
+function renderAllDone(){
+  var r=allDoneStats();
+  function tile(n,label,sub){return '<div><b>'+n+'</b><span>'+label+'</span><small>'+sub+'</small></div>';}
+  function of(n){return L('dari '+n+' hari berkegiatan','of '+n+' days with tasks');}
+  $('#adH').textContent=L('Hari selesai semua','All-done days');
+  $('#allDone').innerHTML=
+    tile(r.wk,L('Minggu ini','This week'),of(r.wkN))+
+    tile(r.mo,L('Bulan ini','This month'),of(r.moN))+
+    tile(r.all,L('Keseluruhan','All time'),of(r.allN))+
+    tile(r.best,L('Rekor beruntun','Best streak'),L('hari berturut-turut','days in a row'));
+}
 
 /* ---------- list actions ---------- */
 $('#chips').onclick=function(e){
