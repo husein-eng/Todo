@@ -360,6 +360,8 @@ details,details *,summary,.row,.row>*{box-sizing:border-box}
 .tools.ddopen{z-index:12}
 #allDone{margin-top:10px}
 .sum small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+#dzAll{background:var(--accent);color:var(--on);border:0}
+#dzAll.dzdone{background:var(--surface2);color:var(--muted);border:1px solid var(--line)}
 /* Navigasi */
 .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:9}
 .tabs div{display:grid;grid-template-columns:repeat(5,1fr);max-width:640px;margin:0 auto}
@@ -558,6 +560,7 @@ details,details *,summary,.row,.row>*{box-sizing:border-box}
     </div>
     <p class="dznote">Teks Arab dan Inggris dari dataset Hisnul Muslim (lisensi MIT), bab Dzikir Pagi dan Petang. Terjemah Indonesia adalah terjemah makna yang disusun asisten AI. Mohon diperiksa dengan rujukan terpercaya atau ustadz sebelum diandalkan. Waktu otomatis mengikuti jam (sebelum pukul 12 pagi, setelah itu petang) dan bisa diubah manual.</p>
     <div class="dzbar"><span id="dzProg"></span><div class="seg" role="group" aria-label="Ketukan maks."><button id="cap10">10</button><button id="cap20">20</button></div></div>
+    <button class="btn sec" id="dzAll" type="button" style="width:100%;margin:0 0 12px">Tandai dzikir pagi selesai</button>
     <p class="dznote">Ketuk angka di kartu untuk menghitung. Bacaan di atas batas dibagi rata, misalnya 100× dengan batas 10 berarti 10 ketukan @10×.</p>
     <div id="dzList" data-ni></div>
   </section>
@@ -1599,6 +1602,11 @@ function setArr(){
 }
 function P(n,w){return n+' '+w+(String(n)==='1'?'':'s');}
 var DICT={
+'Tandai dzikir pagi selesai':'Mark morning adhkar as done','Tandai dzikir petang selesai':'Mark evening adhkar as done',
+'Reset dzikir pagi':'Reset morning adhkar','Reset dzikir petang':'Reset evening adhkar',
+'Reset hitungan dzikir pagi?':'Reset morning adhkar counts?','Reset hitungan dzikir petang?':'Reset evening adhkar counts?',
+'Semua hitungan sesi ini kembali ke 0.':'All counts for this session go back to 0.','Reset':'Reset','Hitungan direset':'Counts reset',
+'Dzikir pagi ditandai selesai':'Morning adhkar marked as done','Dzikir petang ditandai selesai':'Evening adhkar marked as done',
 'Hari selesai semua':'All-done days',
 'Per kategori (14 hari)':'By category (14 days)',
 'Cadangkan':'Back up','Nanti':'Later',
@@ -1860,6 +1868,9 @@ function renderDz(){
   });
   $('#dzList').innerHTML=h;
   $('#dzProg').textContent=(k&&dn===k)?(dzP==='am'?'Dzikir pagi selesai':'Dzikir petang selesai'):'Selesai '+dn+'/'+k;
+  var dzComplete=k>0&&dn===k;
+  $('#dzAll').textContent=dzComplete?(dzP==='am'?'Reset dzikir pagi':'Reset dzikir petang'):(dzP==='am'?'Tandai dzikir pagi selesai':'Tandai dzikir petang selesai');
+  $('#dzAll').classList.toggle('dzdone',dzComplete);
 }
 $('#dzList').onclick=function(e){
   var b=e.target.closest('[data-n]');if(!b)return;
@@ -1872,6 +1883,24 @@ $('#dzList').onclick=function(e){
   state.dzU=state.dzU||{};state.dzU[todayStr+'|'+dzP]=Date.now();
   persist();renderDz();
   if(state.sync&&state.sync.token)schedule();
+};
+$('#dzAll').onclick=function(){
+  var items=dzList();
+  if(!items.length)return;
+  state.dz=state.dz||{};
+  var dd=state.dz[todayStr]=state.dz[todayStr]||{},day=dd[dzP]=dd[dzP]||{};
+  var complete=items.every(function(x){return (day[x.n]||0)>=dzNeed(x);});
+  function commit(){state.dzU=state.dzU||{};state.dzU[todayStr+'|'+dzP]=Date.now();persist();renderDz();if(state.sync&&state.sync.token)schedule();}
+  if(complete){
+    modal(dzP==='am'?'Reset hitungan dzikir pagi?':'Reset hitungan dzikir petang?','Semua hitungan sesi ini kembali ke 0.',[
+      {label:'Reset',cls:'dng',fn:function(){items.forEach(function(x){day[x.n]=0;});delete dd['d_'+dzP];commit();toast('Hitungan direset');}},
+      {label:'Batal'}
+    ]);
+  }else{
+    items.forEach(function(x){day[x.n]=dzNeed(x);});
+    dd['d_'+dzP]=1;commit();
+    toast(dzP==='am'?'Dzikir pagi ditandai selesai':'Dzikir petang ditandai selesai');
+  }
 };
 $('#cap10').onclick=function(){state.cap=10;persist();renderDz();};
 $('#cap20').onclick=function(){state.cap=20;persist();renderDz();};
